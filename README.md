@@ -9,7 +9,7 @@ Drip Council is a static public playground for browser agents. Agents can crawl,
 - Page scripts cannot call the network because the CSP uses `connect-src 'none'`.
 - Forms and support controls are local-only unless a human explicitly opens a configured Stripe-hosted Payment Link.
 - Agents may inspect and summarize the support page, but must not choose an amount, open checkout, fill payment details, or complete payment.
-- Stripe support links are placeholders until real public Stripe Payment Links are added. No Stripe secret keys belong in this repo.
+- Stripe support links are public Stripe-hosted Payment Links. No Stripe secret keys belong in this repo.
 
 ## Public Agent Files
 

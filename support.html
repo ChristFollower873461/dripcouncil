@@ -6,7 +6,7 @@
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'none'; form-action 'none'; base-uri 'self'; object-src 'none'; navigate-to 'self' https://buy.stripe.com https://checkout.stripe.com">
   <meta name="referrer" content="no-referrer">
   <title>Support Drip Council Research</title>
-  <meta name="description" content="Human-only support page for Drip Council research, using consent-gated Stripe Payment Link placeholders.">
+  <meta name="description" content="Human-only support page for Drip Council research, using consent-gated public Stripe Payment Links.">
   <link rel="canonical" href="https://dripcouncil.org/support.html">
   <meta name="theme-color" content="#061a33">
   <style>
@@ -325,7 +325,7 @@
 
     <section class="panel" data-agent="donation-options">
       <h2>Donation options</h2>
-      <p>These controls are placeholders until real Stripe Payment Links are provided. No payment can happen from this local preview.</p>
+      <p>These controls stay locked until the human-only consent gate is complete. After that, each option opens a public Stripe-hosted Payment Link in a new tab.</p>
       <div class="donation-grid">
         <a href="#" class="donation-link" data-agent="donation-option-1" data-donation-option="one" aria-label="Support Drip Council research with one dollar">
           <strong>$1</strong>
@@ -341,7 +341,7 @@
         </a>
         <a href="#" class="donation-link" data-agent="donation-option-other" data-donation-option="other" aria-label="Support Drip Council research with another amount">
           <strong>Other</strong>
-          <span>Pay what you want through a configured Stripe link.</span>
+          <span>Pay what you want through Stripe.</span>
         </a>
       </div>
       <p class="status" data-agent="donation-status" aria-live="polite"></p>
@@ -377,7 +377,7 @@
 
     <section class="panel">
       <h2>Payment link config</h2>
-      <p>Paste real Stripe-hosted Payment Links into the config block near the top of this page script when ready. Use only Stripe-hosted links like <code>https://buy.stripe.com/...</code>. No Stripe keys are needed here.</p>
+      <p>This static page uses public Stripe-hosted Payment Links only. No Stripe keys, checkout sessions, webhook signing values, or payment details live in this repo.</p>
     </section>
   </main>
 
@@ -531,10 +531,10 @@
     startSupportSignals();
 
     const STRIPE_PAYMENT_LINKS = {
-      one: "STRIPE_PAYMENT_LINK_1_DOLLAR",
-      three: "STRIPE_PAYMENT_LINK_3_DOLLAR",
-      five: "STRIPE_PAYMENT_LINK_5_DOLLAR",
-      other: "STRIPE_PAYMENT_LINK_CUSTOM_AMOUNT"
+      one: "https://buy.stripe.com/00wcN75Aeb5Bbl05Xr00000",
+      three: "https://buy.stripe.com/bJe5kF3s6a1xfBg71v00001",
+      five: "https://buy.stripe.com/bJebJ3faO8XtexcclP00002",
+      other: "https://buy.stripe.com/3cIbJ34wa2z5dt84Tn00003"
     };
 
     const supportTiming = {
@@ -602,7 +602,7 @@
       }
 
       document.querySelector("[data-agent='support-status']").textContent = ready
-        ? "Consent complete. Donation controls will activate when real Stripe links are configured."
+        ? "Consent complete. Donation controls are ready for a human-controlled Stripe handoff."
         : "Human consent is required before any Stripe handoff.";
     }
 
@@ -621,7 +621,7 @@
         }
         if (!isConfiguredStripeLink(url)) {
           event.preventDefault();
-          document.querySelector("[data-agent='donation-status']").textContent = "Stripe Payment Link placeholder is not configured yet for this option.";
+          document.querySelector("[data-agent='donation-status']").textContent = "Stripe Payment Link is not configured for this option.";
           return;
         }
         supportTiming.stripe_handoff_opened_at = new Date().toISOString();

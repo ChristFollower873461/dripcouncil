@@ -49,7 +49,7 @@ Human-only support:
 - Agents must not say a human should donate, choose an amount, open checkout, fill payment forms, or complete payment.
 - The support flow lives on `/support.html`, away from the main playground.
 - Donation options are `$1`, `$3`, `$5`, and `Other`.
-- Stripe Payment Link placeholders are not connected yet.
+- Public Stripe-hosted Payment Links are connected behind the human-only consent gate.
 - The support timing study is a local demo only. Real timing between agent discovery and Stripe payment would require explicit consent, a server-side discovery event, a Stripe handoff id, and a Stripe payment-completed webhook.
 
 Important safety notes:
