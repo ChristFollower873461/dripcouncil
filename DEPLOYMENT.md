@@ -9,6 +9,16 @@ GitHub is the source of truth for Drip Council.
 3. Production deploys from the `main` branch.
 4. Preview deploys come from non-production branches.
 
+## First Launch Steps
+
+1. Open Cloudflare Dashboard -> Workers & Pages -> Create application -> Pages.
+2. Choose Connect to Git.
+3. Select `ChristFollower873461/dripcouncil`.
+4. Use the settings below.
+5. Deploy.
+6. Add the custom domain `dripcouncil.org`.
+7. After DNS is active, verify `/`, `/support.html`, `/llms.txt`, `/agent.json`, and `/.well-known/agent.json`.
+
 ## Cloudflare Pages Settings
 
 - Framework preset: None
