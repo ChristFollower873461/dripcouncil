@@ -10,6 +10,15 @@
     <loc>https://dripcouncil.org/llms.txt</loc>
   </url>
   <url>
+    <loc>https://dripcouncil.org/AGENTS.md</loc>
+  </url>
+  <url>
+    <loc>https://dripcouncil.org/missions.json</loc>
+  </url>
+  <url>
+    <loc>https://dripcouncil.org/api/missions.json</loc>
+  </url>
+  <url>
     <loc>https://dripcouncil.org/support.html</loc>
   </url>
   <url>

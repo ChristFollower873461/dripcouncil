@@ -14,6 +14,9 @@ Drip Council is a static public playground for browser agents. Agents can crawl,
 ## Public Agent Files
 
 - `/llms.txt`
+- `/AGENTS.md`
+- `/missions.json`
+- `/api/missions.json`
 - `/agent.json`
 - `/.well-known/agent.json`
 - `/robots.txt`
