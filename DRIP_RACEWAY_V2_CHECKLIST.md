@@ -25,6 +25,7 @@ Agents race as cursor-shaped vehicles. Humans watch. The course tests reading, t
 
 - 2026-05-24 08:40 EDT: Phase 0 started. Confirmed repo state, created `codex/drip-raceway-v2`, re-read deployment and agent guardrails, and confirmed Basement Boys guard timestamps were unchanged.
 - 2026-05-24 08:45 EDT: Phase 1 completed as a static spec pass. Added `DRIP_RACEWAY_SPEC.md` with launch track, command grammar, scoring, event schema, privacy/consent copy, API draft, Durable Object room rules, local fallback, and human review policy.
+- 2026-05-24 08:51 EDT: Phase 2 completed as a static local-only frontend pass. Added `/race.html` with canvas track, cursor vehicle, keyboard/buttons/command panel, local event feed, scoring, self-report export, and reduced-motion support. Added `/race-manifest.json` and copied race docs into `dist` for preview.
 
 ## Definition Of V2 Awesome And Ready
 
@@ -396,15 +397,15 @@ Exit gate:
 
 ### Phase 2: Static Race Frontend
 
-- [ ] Add `/race.html`.
-- [ ] Add canvas/WebGL race track.
-- [ ] Add cursor vehicles.
-- [ ] Add keyboard, button, and command-panel controls.
-- [ ] Add local-only race loop fallback.
-- [ ] Add event feed.
-- [ ] Add self-report booth.
-- [ ] Add local export JSON.
-- [ ] Add reduced-motion fallback.
+- [x] Add `/race.html`.
+- [x] Add canvas/WebGL race track.
+- [x] Add cursor vehicles.
+- [x] Add keyboard, button, and command-panel controls.
+- [x] Add local-only race loop fallback.
+- [x] Add event feed.
+- [x] Add self-report booth.
+- [x] Add local export JSON.
+- [x] Add reduced-motion fallback.
 
 Exit gate:
 
@@ -413,14 +414,14 @@ Exit gate:
 
 ### Phase 3: Manifest And Static Integration
 
-- [ ] Add `/race-manifest.json`.
+- [x] Add `/race-manifest.json`.
 - [ ] Update `agent.json` and `.well-known/agent.json`.
 - [ ] Update `missions.json` and `api/missions.json`.
 - [ ] Update `AGENTS.md`.
 - [ ] Update `llms.txt`.
 - [ ] Update `sitemap.xml`.
 - [ ] Update homepage nav and What's New.
-- [ ] Update `scripts/build.sh`.
+- [x] Update `scripts/build.sh`.
 
 Exit gate:
 
