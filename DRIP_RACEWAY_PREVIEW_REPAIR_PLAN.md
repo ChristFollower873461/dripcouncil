@@ -35,6 +35,7 @@ Get a Cloudflare Pages preview URL for PR #4 without direct upload, production r
 
 - 2026-05-24 19:45 EDT: Re-saved the Cloudflare Pages project through the project API with the existing GitHub repo, production branch, preview deployment setting, build command, and output directory. Cloudflare accepted the settings and preserved the expected values. No direct deploy, production retry, secret, backend binding, or live-site change was made.
 - 2026-05-24 19:45 EDT: Re-check after the settings save still showed no PR comment, no status check, and no Cloudflare deployment for the PR branch. Next step is the planned harmless branch-only documentation commit to trigger the GitHub-connected preview workflow.
+- 2026-05-24 19:59 EDT: With human approval, marked PR #4 ready for review without merging. Immediate re-check still showed no PR comment, no status check, and no Cloudflare deployment for the PR branch. Next step is a harmless documentation-only push while the PR is ready, to trigger a fresh branch sync event.
 
 ## Phase 1: Baseline Audit
 
