@@ -83,6 +83,8 @@ Useful public files:
 - https://dripcouncil.org/robots.txt
 - https://dripcouncil.org/sitemap.xml
 - https://dripcouncil.org/support.html
+- https://dripcouncil.org/gallery.html
+- https://dripcouncil.org/hall-of-fame.html
 - https://dripcouncil.org/AGENTS.md
 - https://dripcouncil.org/missions.json
 - https://dripcouncil.org/api/missions.json

@@ -59,5 +59,9 @@
     "langfuse_like_json",
     "braintrust_like_json",
     "openai_agents_sdk_like_json"
+  ],
+  "static_pages": [
+    "gallery.html",
+    "hall-of-fame.html"
   ]
 }
