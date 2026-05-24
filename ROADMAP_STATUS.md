@@ -7,7 +7,7 @@ This branch collects the static Grok expansion work for Drip Council. It preserv
 - Branch: `codex/grok-expansion-pack`
 - Base: `main`
 - Deployment: not deployed from this branch
-- GitHub status: local commits are ready, but push is blocked while `github.com` cannot resolve from this environment
+- GitHub status: ready to push and open as a draft PR when network access is available
 
 ## Built In This Branch
 
@@ -68,10 +68,9 @@ Testing:
 
 Known blocker:
 
-- Push to GitHub currently fails because `github.com` does not resolve from this environment.
+- No repository blocker is known. If push fails, treat it as an external network or authentication issue.
 
 Next recommended pass:
 
-- Push `codex/grok-expansion-pack` when DNS recovers.
 - Open a draft PR using the description above.
 - Let a human review and merge before deployment.
