@@ -1,7 +1,13 @@
 import { validateRaceCommand } from "./commands.mjs";
 import { API_VERSION, RATE_LIMIT_PLACEHOLDER, TRACKS } from "./data.mjs";
 import { buildLocalRoomId, validateRoomCreate } from "./room-create.mjs";
-import { advanceRaceClock, applyValidatedCommandToState, createInitialRoomState, createRoomSnapshot } from "./room-state.mjs";
+import {
+  advanceRaceClock,
+  applyValidatedCommandToState,
+  createInitialRoomState,
+  createRoomSnapshot,
+  expireRoomIfNeeded
+} from "./room-state.mjs";
 
 export const RACE_ROOM_SCHEMA = "drip_raceway_room_v1";
 
@@ -39,6 +45,7 @@ export class RaceRoom {
       persistence_summary_enabled: false,
       command_validation_enabled: true,
       source_clock_enabled: true,
+      source_ttl_enabled: true,
       next_enabled_phase: "reviewed_room_creation"
     };
   }
@@ -91,10 +98,15 @@ export class RaceRoom {
   }
 
   async previewCommand(input, options = {}) {
+    const now = options.now || new Date().toISOString();
+    this.state = expireRoomIfNeeded(this.state, { now });
+    if (this.state.status === "expired") {
+      return this.roomExpiredResult(now);
+    }
+
     const validation = await this.validateCommand(input);
     if (!validation.ok) return validation;
 
-    const now = options.now || new Date().toISOString();
     this.state = applyValidatedCommandToState(this.state, validation, { now });
     return {
       ok: true,
@@ -110,6 +122,19 @@ export class RaceRoom {
     return {
       ok: true,
       preview_only: true,
+      writes_enabled: false,
+      snapshot: await this.getSnapshot({ now })
+    };
+  }
+
+  async checkExpiry(options = {}) {
+    await this.storageReady;
+    const now = options.now || new Date().toISOString();
+    this.state = expireRoomIfNeeded(this.state, { now });
+    return {
+      ok: true,
+      preview_only: true,
+      cleanup_enabled: false,
       writes_enabled: false,
       snapshot: await this.getSnapshot({ now })
     };
@@ -132,12 +157,30 @@ export class RaceRoom {
     };
   }
 
-  async alarm() {
+  async alarm(options = {}) {
     await this.storageReady;
+    const checked = await this.checkExpiry(options);
     return {
       ok: true,
-      action: "noop",
-      reason: "Room TTL cleanup is not active until live rooms are enabled."
+      action: "source_preview_expiry_check",
+      cleanup_enabled: false,
+      reason: "Room TTL cleanup is not active until live rooms are enabled.",
+      snapshot: checked.snapshot
+    };
+  }
+
+  async roomExpiredResult(now) {
+    return {
+      ok: false,
+      error: {
+        code: "room_expired",
+        message: "This RaceRoom preview is expired. Live room renewal and cleanup are disabled until the reviewed room phase.",
+        details: {
+          writes_enabled: false,
+          cleanup_enabled: false
+        }
+      },
+      snapshot: await this.getSnapshot({ now })
     };
   }
 

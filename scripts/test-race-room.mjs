@@ -5,6 +5,7 @@ import {
   applyValidatedCommandToState,
   createInitialRoomState,
   createRoomSnapshot,
+  expireRoomIfNeeded,
   startRaceClock
 } from "../src/race-api/room-state.mjs";
 import { validateRaceCommand } from "../src/race-api/commands.mjs";
@@ -37,6 +38,8 @@ assert.equal(snapshot.status, "skeleton");
 assert.equal(snapshot.checkpoints.total, 7);
 assert.equal(snapshot.clock.status, "not_started");
 assert.equal(snapshot.clock.elapsed_ms, 0);
+assert.equal(snapshot.ttl.status, "active");
+assert.equal(snapshot.ttl.cleanup_enabled, false);
 assert.equal(snapshot.safety.accepts_agent_writes, false);
 assert.equal(snapshot.safety.stores_private_prompts, false);
 
@@ -55,6 +58,8 @@ assert.equal(created.writes_enabled, false);
 assert.equal(created.snapshot.room_id, "room_signal-loop-01_casual_cruise_local-review_20260524133454");
 assert.equal(created.snapshot.clock.target_time_ms, 90000);
 assert.equal(created.snapshot.clock.status, "not_started");
+assert.equal(created.snapshot.ttl.expires_at, "2026-05-24T14:04:54.000Z");
+assert.equal(created.snapshot.ttl.expires_in_ms, 1800000);
 
 const blockedCreate = await room.createRoom({
   track_id: "signal-loop-01",
@@ -105,8 +110,9 @@ const invalid = await room.validateCommand({ command: "open_checkout" });
 assert.equal(invalid.ok, false);
 assert.equal(invalid.error.code, "unknown_command");
 
-const alarm = await room.alarm();
-assert.equal(alarm.action, "noop");
+const alarm = await room.alarm({ now: "2026-05-24T13:36:00.000Z" });
+assert.equal(alarm.action, "source_preview_expiry_check");
+assert.equal(alarm.cleanup_enabled, false);
 
 const state = createInitialRoomState({
   room_id: "room_test",
@@ -117,6 +123,7 @@ assert.equal(initialSnapshot.room_id, "room_test");
 assert.equal(initialSnapshot.checkpoints.completed, 0);
 assert.equal(initialSnapshot.checkpoints.next_segment, "start_gate");
 assert.equal(initialSnapshot.clock.status, "not_started");
+assert.equal(initialSnapshot.ttl.expires_in_ms, 1799000);
 
 const eventState = appendRoomEvent(state, {
   event_type: "agent_joined",
@@ -133,6 +140,21 @@ const clockSnapshot = createRoomSnapshot(clockState, { now: "2026-05-24T13:30:01
 assert.equal(clockSnapshot.status, "running");
 assert.equal(clockSnapshot.clock.elapsed_ms, 5000);
 assert.equal(clockSnapshot.recent_events.at(-1).event_type, "race_started");
+
+const ttlExpiredState = expireRoomIfNeeded(
+  createInitialRoomState({
+    room_id: "room_ttl",
+    now: "2026-05-24T13:00:00.000Z",
+    expires_at: "2026-05-24T13:00:10.000Z"
+  }),
+  { now: "2026-05-24T13:00:11.000Z" }
+);
+const ttlExpiredSnapshot = createRoomSnapshot(ttlExpiredState, { now: "2026-05-24T13:00:11.000Z" });
+assert.equal(ttlExpiredSnapshot.status, "expired");
+assert.equal(ttlExpiredSnapshot.expired_at, "2026-05-24T13:00:11.000Z");
+assert.equal(ttlExpiredSnapshot.ttl.status, "expired");
+assert.equal(ttlExpiredSnapshot.ttl.cleanup_enabled, false);
+assert.equal(ttlExpiredSnapshot.recent_events.at(-1).event_type, "room_expired");
 
 const command = validateRaceCommand({
   command: "read_sign",
@@ -179,5 +201,30 @@ assert.equal(finishSnapshot.clock.elapsed_ms, 6000);
 assert.equal(finishSnapshot.checkpoints.completed, 7);
 assert.equal(finishSnapshot.checkpoints.next_segment, null);
 assert.equal(finishSnapshot.recent_events.at(-2).event_type, "race_finished");
+
+const ttlRoom = new RaceRoom();
+await ttlRoom.createRoom({
+  schema: "drip_raceway_room_create_v1",
+  track_id: "signal-loop-01",
+  mode: "casual_cruise",
+  room_label_hash: "ttl-review",
+  local_only: true,
+  human_review_ack: true
+}, { now: "2026-05-24T13:40:00.000Z" });
+const ttlActive = await ttlRoom.checkExpiry({ now: "2026-05-24T14:09:59.000Z" });
+assert.equal(ttlActive.snapshot.status, "lobby");
+assert.equal(ttlActive.snapshot.ttl.status, "active");
+const ttlExpired = await ttlRoom.checkExpiry({ now: "2026-05-24T14:10:01.000Z" });
+assert.equal(ttlExpired.snapshot.status, "expired");
+assert.equal(ttlExpired.snapshot.ttl.status, "expired");
+assert.equal(ttlExpired.snapshot.recent_events.at(-1).event_type, "room_expired");
+const expiredPreview = await ttlRoom.previewCommand({
+  command: "read_sign",
+  segment_id: "start_gate",
+  control_source: "button"
+}, { now: "2026-05-24T14:10:02.000Z" });
+assert.equal(expiredPreview.ok, false);
+assert.equal(expiredPreview.error.code, "room_expired");
+assert.equal(expiredPreview.snapshot.checkpoints.completed, 0);
 
 console.log("race-room-ok");

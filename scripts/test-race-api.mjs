@@ -40,6 +40,8 @@ assert.equal(roomsJson.safety.accepts_agent_writes, false);
 assert.equal(roomsJson.durable_object.status, "skeleton_unbound");
 assert.equal(roomsJson.durable_object.source_clock_enabled, true);
 assert.equal(roomsJson.durable_object.source_checkpoint_progression_enabled, true);
+assert.equal(roomsJson.durable_object.source_ttl_enabled, true);
+assert.equal(roomsJson.durable_object.cleanup_enabled, false);
 assert.equal(roomsJson.durable_object.public_snapshot_route_enabled, false);
 assert.equal(roomsJson.create_room.request_schema, "drip_raceway_room_create_v1");
 assert.equal(roomsJson.create_room.review_gate.valid_request_response, "403 room_creation_disabled");

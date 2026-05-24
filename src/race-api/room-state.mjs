@@ -21,6 +21,7 @@ export function createInitialRoomState(options = {}) {
     status: "lobby",
     created_at: now,
     expires_at: options.expires_at || addMinutes(now, RATE_LIMIT_PLACEHOLDER.planned_limits.room_ttl_minutes),
+    expired_at: null,
     started_at: null,
     finished_at: null,
     last_activity_at: now,
@@ -65,9 +66,11 @@ export function createRoomSnapshot(state, options = {}) {
     generated_at: now,
     created_at: state.created_at,
     expires_at: state.expires_at,
+    expired_at: state.expired_at || null,
     started_at: state.started_at,
     finished_at: state.finished_at,
     last_activity_at: state.last_activity_at,
+    ttl: buildTtlSnapshot(state, now),
     clock: buildClockSnapshot(state, now, track),
     current_segment: state.current_segment,
     players: state.players.map(redactActor),
@@ -119,7 +122,10 @@ export function applyValidatedCommandToState(state, validation, options = {}) {
 
   const command = validation.command;
   const now = options.now || new Date().toISOString();
-  let next = startRaceClock(state, { now });
+  let next = expireRoomIfNeeded(state, { now });
+  if (next.status === "expired") return next;
+
+  next = startRaceClock(next, { now });
   next.current_segment = command.segment_id;
 
   if (["read_sign", "take_safe_route", "recover", "yield"].includes(command.command)) {
@@ -148,7 +154,9 @@ export function applyValidatedCommandToState(state, validation, options = {}) {
 
 export function startRaceClock(state, options = {}) {
   const now = options.now || new Date().toISOString();
-  let next = cloneState(state);
+  let next = expireRoomIfNeeded(state, { now });
+  if (next.status === "expired") return next;
+  next = cloneState(next);
 
   if (!next.started_at) {
     next.status = "running";
@@ -178,7 +186,10 @@ export function startRaceClock(state, options = {}) {
 
 export function advanceRaceClock(state, options = {}) {
   const now = options.now || new Date().toISOString();
-  const next = cloneState(state);
+  let next = expireRoomIfNeeded(state, { now });
+  if (next.status === "expired") return next;
+  next = cloneState(next);
+
   const track = TRACKS.find((item) => item.id === next.track_id) || DEFAULT_TRACK;
   const previousTicks = next.clock?.tick_count || 0;
   next.clock = {
@@ -187,6 +198,36 @@ export function advanceRaceClock(state, options = {}) {
     tick_count: previousTicks + 1
   };
   next.last_activity_at = now;
+  return next;
+}
+
+export function expireRoomIfNeeded(state, options = {}) {
+  const now = options.now || new Date().toISOString();
+  const ttl = buildTtlSnapshot(state, now);
+  if (!ttl.expired || ["expired", "finished"].includes(state.status)) {
+    return state;
+  }
+
+  let next = cloneState(state);
+  next.status = "expired";
+  next.expired_at = now;
+  next.last_activity_at = now;
+  next = appendRoomEvent(
+    next,
+    {
+      event_type: "room_expired",
+      created_at: now,
+      actor_type: "system",
+      control_source: "none",
+      segment_id: next.current_segment,
+      payload_json: {
+        expired_by_ms: ttl.expired_by_ms,
+        cleanup_enabled: false,
+        local_only: true
+      }
+    },
+    { now }
+  );
   return next;
 }
 
@@ -290,6 +331,23 @@ function buildClockSnapshot(state, now, track) {
     finished_at: finishedAt,
     last_tick_at: state.clock?.last_tick_at || null,
     tick_count: state.clock?.tick_count || 0
+  };
+}
+
+function buildTtlSnapshot(state, now) {
+  const nowMs = Date.parse(now);
+  const expiresMs = Date.parse(state.expires_at);
+  const expired = Number.isFinite(nowMs) && Number.isFinite(expiresMs) && nowMs >= expiresMs;
+  return {
+    status: expired ? "expired" : "active",
+    expired,
+    ttl_minutes: RATE_LIMIT_PLACEHOLDER.planned_limits.room_ttl_minutes,
+    expires_at: state.expires_at,
+    expired_at: state.expired_at || null,
+    expires_in_ms: expired ? 0 : Math.max(0, expiresMs - nowMs),
+    expired_by_ms: expired ? Math.max(0, nowMs - expiresMs) : 0,
+    cleanup_enabled: false,
+    public_cleanup_enabled: false
   };
 }
 

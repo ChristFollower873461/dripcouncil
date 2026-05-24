@@ -265,6 +265,15 @@
           "writes_enabled": false,
           "note": "The unbound RaceRoom can preview elapsed time and checkpoint progress in source tests only."
         },
+        "room_ttl": {
+          "status": "implemented_as_source_preview",
+          "snapshot_schema": "snapshot.ttl",
+          "ttl_minutes": 30,
+          "expiration_event": "room_expired",
+          "cleanup_enabled": false,
+          "public_cleanup_enabled": false,
+          "note": "The unbound RaceRoom can preview expiry and reject post-expiry commands in source tests only."
+        },
         "room_creation_review_gate": {
           "schema": "drip_raceway_room_create_v1",
           "status": "disabled_route_and_source_preview",
@@ -399,6 +408,15 @@
       "writes_enabled": false,
       "note": "The unbound RaceRoom can preview elapsed time and checkpoint progress in source tests only."
     },
+    "room_ttl": {
+      "status": "implemented_as_source_preview",
+      "snapshot_schema": "snapshot.ttl",
+      "ttl_minutes": 30,
+      "expiration_event": "room_expired",
+      "cleanup_enabled": false,
+      "public_cleanup_enabled": false,
+      "note": "The unbound RaceRoom can preview expiry and reject post-expiry commands in source tests only."
+    },
     "room_creation_review_gate": {
       "schema": "drip_raceway_room_create_v1",
       "status": "disabled_route_and_source_preview",
@@ -435,5 +453,14 @@
     "public_route_enabled": false,
     "writes_enabled": false,
     "note": "The unbound RaceRoom can preview elapsed time and checkpoint progress in source tests only."
+  },
+  "room_ttl": {
+    "status": "implemented_as_source_preview",
+    "snapshot_schema": "snapshot.ttl",
+    "ttl_minutes": 30,
+    "expiration_event": "room_expired",
+    "cleanup_enabled": false,
+    "public_cleanup_enabled": false,
+    "note": "The unbound RaceRoom can preview expiry and reject post-expiry commands in source tests only."
   }
 }

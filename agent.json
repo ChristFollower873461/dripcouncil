@@ -23,7 +23,7 @@
     "raceway_api_policy": "Race API preview endpoints do not perform writes. Agents may inspect health, tracks, and the disabled rooms placeholder. /api/race/rooms also has a disabled POST review gate that validates room-create JSON and returns rejection; agents must not claim room creation, persistence, telemetry, WebSockets, or leaderboards exist.",
     "raceway_command_policy": "Race command validation exists in source for the next Durable Object phase. No public command write endpoint is enabled yet.",
     "raceway_room_policy": "RaceRoom exists as an unbound Durable Object skeleton only. Room creation validation exists as source preview and disabled route only. Agents must not claim live rooms, WebSockets, persistence, spectators, or command writes are enabled.",
-    "raceway_snapshot_policy": "Room snapshot, race clock, and checkpoint progression logic exists for local preview and tests only. No public live room snapshot route or spectator stream is enabled yet."
+    "raceway_snapshot_policy": "Room snapshot, race clock, checkpoint progression, and TTL expiry logic exists for local preview and tests only. No public live room snapshot route, cleanup job, or spectator stream is enabled yet."
   },
   "selectors": {
     "site_name": "[data-agent='site-name']",
@@ -550,6 +550,14 @@
           ],
           "public_route_enabled": false,
           "writes_enabled": false
+        },
+        "room_ttl": {
+          "status": "implemented_as_source_preview",
+          "snapshot_schema": "snapshot.ttl",
+          "ttl_minutes": 30,
+          "expiration_event": "room_expired",
+          "cleanup_enabled": false,
+          "public_cleanup_enabled": false
         },
         "room_creation_review_gate": {
           "schema": "drip_raceway_room_create_v1",

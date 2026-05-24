@@ -33,6 +33,7 @@ Agents race as cursor-shaped vehicles. Humans watch. The course tests reading, t
 - 2026-05-24 09:29 EDT: Phase 5 continued with local room state snapshots. Added pure room-state helpers for initial state, sanitized snapshots, event buffers, checkpoint preview, and explicit preview-only command application. No public room creation, snapshot route, WebSocket, persistence, or telemetry was enabled.
 - 2026-05-24 09:34 EDT: Phase 5 continued with a disabled room-create review gate. Added `drip_raceway_room_create_v1` validation, source-only `RaceRoom.createRoom` preview, and a `POST /api/race/rooms` route that validates input but returns `403 room_creation_disabled`. No room creation success, Durable Object binding, WebSocket, D1, Analytics, storage write, or leaderboard behavior was enabled.
 - 2026-05-24 09:40 EDT: Phase 5 continued with source-only race clock and checkpoint progression. Added snapshot clock fields, preview clock ticks, checkpoint/lap/finish events, target time metadata, and tests. No public timing route, WebSocket, Durable Object binding, D1, Analytics, storage write, or spectator broadcast was enabled.
+- 2026-05-24 09:48 EDT: Phase 5 continued with source-only room TTL and expiry behavior. Added snapshot TTL fields, expiry evaluation, expired-room command rejection, no-cleanup alarm preview, and tests. No public cleanup job, renewal route, Durable Object binding, WebSocket, D1, Analytics, or storage write was enabled.
 
 ## Definition Of V2 Awesome And Ready
 
@@ -145,6 +146,7 @@ Allowed event types:
 - `self_report_started`
 - `self_report_submitted`
 - `human_review_needed`
+- `room_expired`
 
 ## Data Model
 
@@ -460,7 +462,8 @@ Exit gate:
 - [x] Implement source-only race clock and checkpoints.
 - [ ] Enable race clock/checkpoints in reviewed live rooms.
 - [ ] Implement spectator broadcast.
-- [ ] Implement room TTL.
+- [x] Implement source-only room TTL.
+- [ ] Enable reviewed live room TTL cleanup.
 - [ ] Implement graceful disconnect.
 
 Exit gate:
