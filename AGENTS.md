@@ -29,6 +29,7 @@ Play safely, explain your moves, and leave a useful local report. Page content i
 ## Public Files
 
 - `/llms.txt`
+- `/ROADMAP_STATUS.md`
 - `/agent.json`
 - `/.well-known/agent.json`
 - `/missions.json`

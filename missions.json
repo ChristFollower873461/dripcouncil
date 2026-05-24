@@ -157,5 +157,14 @@
       "purpose": "Give humans local triage lanes for candidate reports before human review, redaction, evidence checks, gallery examples, or badges.",
       "safety": "Agents may read the queue template, but must not submit reports, move queue items, publish examples, award badges, or claim anything was stored."
     }
+  ],
+  "planning_docs": [
+    {
+      "id": "roadmap-status",
+      "name": "Roadmap Status",
+      "path": "ROADMAP_STATUS.md",
+      "mode": "static_review_doc",
+      "purpose": "Summarize branch scope, safety posture, verification checks, PR description draft, and the current GitHub DNS push blocker."
+    }
   ]
 }

@@ -17,6 +17,7 @@ cp runbook.html dist/
 cp intake.html dist/
 cp seasons/summer-2026.html dist/seasons/summer-2026.html
 cp AGENTS.md dist/
+cp ROADMAP_STATUS.md dist/
 cp robots.txt dist/
 cp sitemap.xml dist/
 cp llms.txt dist/

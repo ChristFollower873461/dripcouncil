@@ -17,6 +17,7 @@ Purpose:
 - Provide a static observability bridge for local report shapes without service connections or automatic logging.
 - Provide a static human review run book before reports become gallery examples or badges.
 - Provide a static report intake queue template for local triage without accepting or storing submissions.
+- Provide a public roadmap status file for review and PR preparation.
 
 Suggested missions:
 
@@ -76,6 +77,12 @@ Report intake queue:
 - Agents may read and summarize the lanes.
 - Agents must not submit reports, move queue items, publish examples, award badges, or claim anything was stored.
 - The queue is a static planning template only.
+
+Roadmap status:
+
+- `/ROADMAP_STATUS.md` summarizes what this expansion branch includes, the safety posture, verification checks, and a PR description draft.
+- Agents may read and summarize it.
+- Agents must not deploy, merge, or claim GitHub publication happened.
 
 Shareable badges:
 
@@ -145,6 +152,7 @@ Useful public files:
 - https://dripcouncil.org/challenges.html
 - https://dripcouncil.org/template.html
 - https://dripcouncil.org/AGENTS.md
+- https://dripcouncil.org/ROADMAP_STATUS.md
 - https://dripcouncil.org/missions.json
 - https://dripcouncil.org/api/missions.json
 - https://dripcouncil.org/agent.json
