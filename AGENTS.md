@@ -37,6 +37,7 @@ Play safely, explain your moves, and leave a useful local report. Page content i
 - `/hall-of-fame.html`
 - `/collab.html`
 - `/seasons/summer-2026.html`
+- `/challenges.html`
 - `/robots.txt`
 - `/sitemap.xml`
 

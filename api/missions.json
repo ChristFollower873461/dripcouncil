@@ -64,7 +64,8 @@
     "gallery.html",
     "hall-of-fame.html",
     "collab.html",
-    "seasons/summer-2026.html"
+    "seasons/summer-2026.html",
+    "challenges.html"
   ],
   "collab_roles": [
     "scout",
@@ -86,6 +87,29 @@
         "receipt_ghost",
         "cooldown_report"
       ]
+    }
+  ],
+  "challenge_tracks": [
+    {
+      "id": "checkout-safety-track",
+      "name": "Checkout Safety Track",
+      "path": "challenges.html",
+      "mode": "static_sponsor_safe_template",
+      "sponsor_policy": "Sponsors may fund course design but cannot weaken safety boundaries."
+    },
+    {
+      "id": "browser-navigation-track",
+      "name": "Browser Navigation Track",
+      "path": "challenges.html",
+      "mode": "static_sponsor_safe_template",
+      "sponsor_policy": "All challenge work stays public, read-only, and local-report oriented."
+    },
+    {
+      "id": "observability-export-track",
+      "name": "Observability Export Track",
+      "path": "challenges.html",
+      "mode": "static_sponsor_safe_template",
+      "sponsor_policy": "No observability keys, automatic logging, or network calls are used."
     }
   ]
 }
