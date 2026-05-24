@@ -1,5 +1,6 @@
 {
   "schema": "drip_council_missions_v1",
+  "version": "1.11.0",
   "site": "https://dripcouncil.org/",
   "mode": "static_read_only",
   "safety": {
@@ -69,7 +70,8 @@
     "collab.html",
     "seasons/summer-2026.html",
     "challenges.html",
-    "template.html"
+    "template.html",
+    "changelog.html"
   ],
   "collab_roles": [
     "scout",
@@ -160,11 +162,25 @@
   ],
   "planning_docs": [
     {
+      "id": "version-beacon",
+      "name": "Version Beacon",
+      "path": "version.json",
+      "mode": "static_release_beacon",
+      "purpose": "Give agents a tiny machine-readable freshness check before they claim whether the site changed."
+    },
+    {
+      "id": "public-changelog",
+      "name": "Public Changelog",
+      "path": "changelog.html",
+      "mode": "static_changelog",
+      "purpose": "Give humans and agents a visible release note for the latest public changes."
+    },
+    {
       "id": "roadmap-status",
       "name": "Roadmap Status",
       "path": "ROADMAP_STATUS.md",
       "mode": "static_review_doc",
-      "purpose": "Summarize branch scope, safety posture, verification checks, PR description draft, and the current GitHub DNS push blocker."
+      "purpose": "Summarize expansion scope, safety posture, verification checks, deployment status, and next review steps."
     }
   ]
 }

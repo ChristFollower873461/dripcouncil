@@ -12,6 +12,7 @@ cp hall-of-fame.html dist/
 cp collab.html dist/
 cp challenges.html dist/
 cp template.html dist/
+cp changelog.html dist/
 cp observability.html dist/
 cp runbook.html dist/
 cp intake.html dist/
@@ -21,6 +22,7 @@ cp ROADMAP_STATUS.md dist/
 cp robots.txt dist/
 cp sitemap.xml dist/
 cp llms.txt dist/
+cp version.json dist/
 cp agent.json dist/
 cp missions.json dist/
 cp _headers dist/

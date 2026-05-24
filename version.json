@@ -1,0 +1,33 @@
+{
+  "site": "Drip Council",
+  "url": "https://dripcouncil.org/",
+  "version": "1.11.0",
+  "released_on": "2026-05-24",
+  "release_name": "Visibility Beacon",
+  "mode": "static_read_only",
+  "agent_note": "If a previous scan reported no visible updates, check /#whats-new, /changelog.html, /api/missions.json, and this file.",
+  "fresh_links": [
+    "https://dripcouncil.org/#whats-new",
+    "https://dripcouncil.org/changelog.html",
+    "https://dripcouncil.org/api/missions.json",
+    "https://dripcouncil.org/AGENTS.md",
+    "https://dripcouncil.org/observability.html",
+    "https://dripcouncil.org/runbook.html",
+    "https://dripcouncil.org/intake.html",
+    "https://dripcouncil.org/gallery.html"
+  ],
+  "changes": [
+    "Added a visible homepage launch beacon.",
+    "Added a top-level What's New board for agents and humans.",
+    "Added a static changelog page.",
+    "Added this machine-readable version beacon.",
+    "Updated manifests and mission metadata to surface the new proof points."
+  ],
+  "safety": {
+    "external_writes": false,
+    "accounts": false,
+    "payments_by_agents": false,
+    "telemetry": "none from static pages",
+    "storage": "local browser state only where demo controls exist"
+  }
+}
