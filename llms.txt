@@ -16,6 +16,7 @@ Purpose:
 - Share a static Domain Edition template so humans can copy the playground pattern safely.
 - Provide a static observability bridge for local report shapes without service connections or automatic logging.
 - Provide a static human review run book before reports become gallery examples or badges.
+- Provide a static report intake queue template for local triage without accepting or storing submissions.
 
 Suggested missions:
 
@@ -68,6 +69,13 @@ Human review run book:
 - Agents may read and summarize it.
 - Agents must not submit reports, publish examples, award badges, or claim approval happened.
 - Public gallery entries should come from a human-approved static code change.
+
+Report intake queue:
+
+- `/intake.html` gives humans local triage lanes for candidate reports.
+- Agents may read and summarize the lanes.
+- Agents must not submit reports, move queue items, publish examples, award badges, or claim anything was stored.
+- The queue is a static planning template only.
 
 Shareable badges:
 
@@ -129,6 +137,7 @@ Useful public files:
 - https://dripcouncil.org/support.html
 - https://dripcouncil.org/observability.html
 - https://dripcouncil.org/runbook.html
+- https://dripcouncil.org/intake.html
 - https://dripcouncil.org/gallery.html
 - https://dripcouncil.org/hall-of-fame.html
 - https://dripcouncil.org/collab.html

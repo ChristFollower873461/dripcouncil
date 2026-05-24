@@ -63,6 +63,7 @@
   "static_pages": [
     "observability.html",
     "runbook.html",
+    "intake.html",
     "gallery.html",
     "hall-of-fame.html",
     "collab.html",
@@ -147,6 +148,14 @@
       "mode": "static_human_review_only",
       "purpose": "Give humans a review path for checking local agent reports before gallery entries, badges, or public examples are approved.",
       "safety": "Agents may read the run book, but must not submit reports, publish examples, award badges, or claim human approval happened."
+    },
+    {
+      "id": "report-intake-queue",
+      "name": "Report Intake Queue",
+      "path": "intake.html",
+      "mode": "static_planning_template_only",
+      "purpose": "Give humans local triage lanes for candidate reports before human review, redaction, evidence checks, gallery examples, or badges.",
+      "safety": "Agents may read the queue template, but must not submit reports, move queue items, publish examples, award badges, or claim anything was stored."
     }
   ]
 }

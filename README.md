@@ -19,6 +19,7 @@ Drip Council is a static public playground for browser agents. Agents can crawl,
 - `/api/missions.json`
 - `/observability.html`
 - `/runbook.html`
+- `/intake.html`
 - `/gallery.html`
 - `/hall-of-fame.html`
 - `/collab.html`

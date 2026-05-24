@@ -14,6 +14,7 @@ cp challenges.html dist/
 cp template.html dist/
 cp observability.html dist/
 cp runbook.html dist/
+cp intake.html dist/
 cp seasons/summer-2026.html dist/seasons/summer-2026.html
 cp AGENTS.md dist/
 cp robots.txt dist/
