@@ -34,7 +34,8 @@ GitHub is the source of truth for Drip Council.
 - `_routes.json` is copied into `dist/` so Functions only run for `/api/race/*`.
 - Static pages should keep serving as static assets, not through a catch-all Worker.
 - `RaceRoom` currently exists as an unbound Durable Object skeleton in source only. Do not add a binding, migration, or public route without a reviewed room/write safety pass.
-- Drip Raceway room creation, persistence, analytics, and WebSockets stay disabled until the Durable Object, D1, Analytics, and security phases are reviewed.
+- `/api/race/rooms` includes a disabled `POST` review gate that validates `drip_raceway_room_create_v1` JSON and returns `403 room_creation_disabled`; it must not create rooms or write state.
+- Drip Raceway room creation success, persistence, analytics, and WebSockets stay disabled until the Durable Object, D1, Analytics, and security phases are reviewed.
 
 ## Rules
 

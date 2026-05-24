@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { validateRaceCommand } from "../src/race-api/commands.mjs";
-import { handleHealth, handleNotFound, handleRooms, handleTracks } from "../src/race-api/handlers.mjs";
+import { handleHealth, handleNotFound, handleRoomCreateDisabled, handleRooms, handleTracks } from "../src/race-api/handlers.mjs";
 
 async function readJson(response) {
   return JSON.parse(await response.text());
@@ -38,12 +38,36 @@ const roomsJson = await readJson(rooms);
 assert.equal(roomsJson.create_room.enabled, false);
 assert.equal(roomsJson.safety.accepts_agent_writes, false);
 assert.equal(roomsJson.durable_object.status, "skeleton_unbound");
+assert.equal(roomsJson.create_room.request_schema, "drip_raceway_room_create_v1");
+assert.equal(roomsJson.create_room.review_gate.valid_request_response, "403 room_creation_disabled");
 
-const postRoom = await handleRooms(context("/api/race/rooms", { method: "POST", body: "{}" }));
-assert.equal(postRoom.status, 405);
+const postRoom = await handleRooms(context("/api/race/rooms", {
+  method: "POST",
+  body: JSON.stringify({
+    schema: "drip_raceway_room_create_v1",
+    track_id: "signal-loop-01",
+    mode: "casual_cruise",
+    created_by_type: "human",
+    room_label_hash: "local-review",
+    local_only: true,
+    human_review_ack: true
+  })
+}));
+assert.equal(postRoom.status, 403);
+const postRoomJson = await readJson(postRoom);
+assert.equal(postRoomJson.error.code, "room_creation_disabled");
+assert.equal(postRoomJson.error.details.validated_request.track_id, "signal-loop-01");
+
+const invalidPostRoom = await handleRoomCreateDisabled(context("/api/race/rooms", {
+  method: "POST",
+  body: JSON.stringify({ track_id: "signal-loop-01", local_only: true })
+}));
+assert.equal(invalidPostRoom.status, 400);
+assert.equal((await readJson(invalidPostRoom)).error.code, "human_review_required");
 
 const options = await handleRooms(context("/api/race/rooms", { method: "OPTIONS" }));
 assert.equal(options.status, 204);
+assert.equal(options.headers.get("allow"), "GET, HEAD, POST, OPTIONS");
 
 const missingRoute = await handleNotFound(context("/api/race/nope"));
 assert.equal(missingRoute.status, 404);

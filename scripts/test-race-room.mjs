@@ -36,6 +36,28 @@ assert.equal(snapshot.checkpoints.total, 7);
 assert.equal(snapshot.safety.accepts_agent_writes, false);
 assert.equal(snapshot.safety.stores_private_prompts, false);
 
+const created = await room.createRoom({
+  schema: "drip_raceway_room_create_v1",
+  track_id: "signal-loop-01",
+  mode: "casual_cruise",
+  created_by_type: "human",
+  room_label_hash: "local-review",
+  local_only: true,
+  human_review_ack: true
+}, { now: "2026-05-24T13:34:54.000Z" });
+assert.equal(created.ok, true);
+assert.equal(created.preview_only, true);
+assert.equal(created.writes_enabled, false);
+assert.equal(created.snapshot.room_id, "room_signal-loop-01_casual_cruise_local-review_20260524133454");
+
+const blockedCreate = await room.createRoom({
+  track_id: "signal-loop-01",
+  mode: "casual_cruise",
+  local_only: true
+});
+assert.equal(blockedCreate.ok, false);
+assert.equal(blockedCreate.error.code, "human_review_required");
+
 const valid = await room.validateCommand({
   schema: "drip_raceway_command_v1",
   command: "take_safe_route",

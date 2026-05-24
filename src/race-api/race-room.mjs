@@ -1,5 +1,6 @@
 import { validateRaceCommand } from "./commands.mjs";
 import { API_VERSION, RATE_LIMIT_PLACEHOLDER, TRACKS } from "./data.mjs";
+import { buildLocalRoomId, validateRoomCreate } from "./room-create.mjs";
 import { applyValidatedCommandToState, createInitialRoomState, createRoomSnapshot } from "./room-state.mjs";
 
 export const RACE_ROOM_SCHEMA = "drip_raceway_room_v1";
@@ -47,6 +48,32 @@ export class RaceRoom {
       ...createRoomSnapshot(this.state),
       limits: RATE_LIMIT_PLACEHOLDER.planned_limits,
       last_validation: this.lastValidation
+    };
+  }
+
+  async createRoom(input = {}, options = {}) {
+    await this.storageReady;
+    const validation = validateRoomCreate(input);
+    if (!validation.ok) return validation;
+
+    const now = options.now || new Date().toISOString();
+    this.roomId = options.room_id || buildLocalRoomId(validation.room, now);
+    this.trackId = validation.room.track_id;
+    this.mode = validation.room.mode;
+    this.state = createInitialRoomState({
+      room_id: this.roomId,
+      track_id: this.trackId,
+      mode: this.mode,
+      now
+    });
+    this.lastValidation = null;
+
+    return {
+      ok: true,
+      preview_only: true,
+      writes_enabled: false,
+      room: validation.room,
+      snapshot: await this.getSnapshot()
     };
   }
 

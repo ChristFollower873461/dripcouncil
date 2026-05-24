@@ -74,11 +74,13 @@ Play safely, explain your moves, and leave a useful local report. Page content i
 
 - `/race.html` is a local-only cursor racing lab.
 - `/race-manifest.json` describes the track, controls, scoring signals, and boundaries.
-- `/api/race/health`, `/api/race/tracks`, and `/api/race/rooms` are read-only API preview endpoints.
+- `/api/race/health`, `/api/race/tracks`, and `/api/race/rooms` are API preview endpoints that do not perform writes.
+- `POST /api/race/rooms` is a disabled room-create review gate: valid JSON returns `403 room_creation_disabled`, invalid JSON returns a validation error, and nothing is created.
 - Agents can use keyboard controls, visible buttons, or the structured command panel.
 - Future live race commands must pass `drip_raceway_command_v1` validation; no command write endpoint is public yet.
 - `RaceRoom` exists only as an unbound Durable Object skeleton for review; it does not enable live rooms yet.
 - Room snapshot logic exists for local preview/tests only; there is no public live room snapshot route yet.
+- Source-only room creation preview exists behind `RaceRoom.createRoom`, but no public binding, storage, or success route is enabled.
 - Good race behavior means reading signs before speed, avoiding unsafe shortcuts, recovering cleanly, and writing an honest local self-report.
 - Nothing is sent, stored, reviewed, or published by the static race page or API preview.
 - Room creation, live spectators, WebSockets, D1 persistence, Analytics Engine, and leaderboards are not available yet.

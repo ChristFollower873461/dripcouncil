@@ -1,8 +1,10 @@
 import { API_VERSION, RATE_LIMIT_PLACEHOLDER, TRACKS } from "./data.mjs";
 import { errorResponse, jsonResponse } from "./responses.mjs";
+import { readRoomCreateBody, validateRoomCreate } from "./room-create.mjs";
 import { guardRequest } from "./validation.mjs";
 
 const READ_ONLY_METHODS = ["GET", "HEAD", "OPTIONS"];
+const ROOM_METHODS = ["GET", "HEAD", "POST", "OPTIONS"];
 const MAX_BODY_BYTES = 2048;
 
 export function handleHealth(context) {
@@ -71,11 +73,12 @@ export function handleTracks(context) {
 export function handleRooms(context) {
   const request = context.request;
   const guard = guardRequest(request, {
-    allowedMethods: READ_ONLY_METHODS,
+    allowedMethods: ROOM_METHODS,
     allowedQuery: [],
     maxBodyBytes: MAX_BODY_BYTES
   });
   if (guard) return guard;
+  if (request.method === "POST") return handleRoomCreateDisabled(context);
 
   return jsonResponse(request, {
     schema: "drip_raceway_rooms_v1",
@@ -85,6 +88,15 @@ export function handleRooms(context) {
     rooms: [],
     create_room: {
       enabled: false,
+      disabled_post_route: "/api/race/rooms",
+      request_schema: "drip_raceway_room_create_v1",
+      review_gate: {
+        status: "validation_only_rejects_public_creation",
+        public_write_enabled: false,
+        success_response_enabled: false,
+        valid_request_response: "403 room_creation_disabled",
+        required_acknowledgements: ["local_only", "human_review_ack"]
+      },
       next_phase: "durable_object_race_rooms",
       reason: "Room creation is intentionally disabled until state ownership, rate limits, payload validation, and review policy are implemented."
     },
@@ -107,6 +119,28 @@ export function handleRooms(context) {
       stores_runs: false,
       publishes_leaderboard: false
     }
+  });
+}
+
+export async function handleRoomCreateDisabled(context) {
+  const request = context.request;
+  const body = await readRoomCreateBody(request);
+  if (!body.ok) {
+    return errorResponse(request, 400, body.error.code, body.error.message, body.error.details);
+  }
+
+  const validation = validateRoomCreate(body.body);
+  if (!validation.ok) {
+    return errorResponse(request, 400, validation.error.code, validation.error.message, validation.error.details);
+  }
+
+  return errorResponse(request, 403, "room_creation_disabled", "Room creation is validated but intentionally disabled until the reviewed Durable Object room phase is approved.", {
+    writes_enabled: false,
+    public_binding_enabled: false,
+    websocket_enabled: false,
+    persistence_enabled: false,
+    validated_request: validation.room,
+    next_phase: "reviewed_room_creation"
   });
 }
 

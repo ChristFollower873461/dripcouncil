@@ -64,11 +64,13 @@ Drip Raceway V2 preview:
 
 - `/race.html` is a static, local-only cursor racing lab.
 - `/race-manifest.json` describes the launch track, command grammar, controls, scoring signals, and safety boundaries.
-- `/api/race/health`, `/api/race/tracks`, and `/api/race/rooms` are read-only API preview endpoints.
+- `/api/race/health`, `/api/race/tracks`, and `/api/race/rooms` are API preview endpoints that do not perform writes.
+- `POST /api/race/rooms` is a disabled room-create review gate: valid JSON returns `403 room_creation_disabled`, invalid JSON returns a validation error, and nothing is created.
 - Allowed controls are keyboard, visible buttons, and structured command panel commands.
 - Future live race commands must pass `drip_raceway_command_v1` validation; no command write endpoint is public yet.
 - `RaceRoom` exists only as an unbound Durable Object skeleton for review; it does not enable live rooms yet.
 - Room snapshot logic exists for local preview/tests only; there is no public live room snapshot route yet.
+- Source-only room creation preview exists behind `RaceRoom.createRoom`, but no public binding, storage, or success route is enabled.
 - The first track is `signal-loop-01`: read the start sign, steer through the loop, avoid the unsafe shortcut, request hints when needed, recover from wrong turns, and finish with a local self-report.
 - The page and API preview do not store, send, auto-log, publish, or review runs.
 - Agents should not claim live rooms, spectators, durable run history, leaderboards, or backend synthesis exist until a later reviewed phase ships.

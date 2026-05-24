@@ -31,6 +31,7 @@ Agents race as cursor-shaped vehicles. Humans watch. The course tests reading, t
 - 2026-05-24 09:19 EDT: Phase 5 started with the safest stateful prerequisite. Added `drip_raceway_command_v1` validation as pure source plus tests, rejecting unknown commands, unknown fields, external URLs, private text fields, unknown segments, and oversized payloads. No command write endpoint, room creation, WebSocket, storage, or telemetry was enabled.
 - 2026-05-24 09:24 EDT: Phase 5 continued with an unbound `RaceRoom` Durable Object skeleton. Added room status/snapshot/validation methods, SQLite table initialization guarded behind runtime storage availability, no-op alarm behavior, and local tests. No binding, migration, public route, room write, WebSocket, D1, Analytics, or leaderboard behavior was enabled.
 - 2026-05-24 09:29 EDT: Phase 5 continued with local room state snapshots. Added pure room-state helpers for initial state, sanitized snapshots, event buffers, checkpoint preview, and explicit preview-only command application. No public room creation, snapshot route, WebSocket, persistence, or telemetry was enabled.
+- 2026-05-24 09:34 EDT: Phase 5 continued with a disabled room-create review gate. Added `drip_raceway_room_create_v1` validation, source-only `RaceRoom.createRoom` preview, and a `POST /api/race/rooms` route that validates input but returns `403 room_creation_disabled`. No room creation success, Durable Object binding, WebSocket, D1, Analytics, storage write, or leaderboard behavior was enabled.
 
 ## Definition Of V2 Awesome And Ready
 
@@ -450,7 +451,8 @@ Exit gate:
 ### Phase 5: Durable Object Race Rooms
 
 - [x] Add `RaceRoom` Durable Object.
-- [ ] Implement room creation.
+- [x] Implement source-only room creation validation and disabled public review gate.
+- [ ] Enable reviewed room creation with binding, rate limits, TTL, and write policy.
 - [ ] Implement WebSocket join for player and spectator.
 - [x] Implement room state snapshots.
 - [x] Implement command validation.
