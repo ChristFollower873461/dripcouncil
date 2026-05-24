@@ -204,6 +204,13 @@
       "path": "DRIP_RACEWAY_SPEC.md",
       "mode": "static_review_doc",
       "purpose": "Define the race track, command grammar, scoring, event schema, consent posture, and future backend plan."
+    },
+    {
+      "id": "drip-raceway-live-room-review",
+      "name": "Drip Raceway Live Room Review",
+      "path": "DRIP_RACEWAY_LIVE_ROOM_REVIEW.md",
+      "mode": "static_review_doc",
+      "purpose": "Define route, room state, message, persistence, and safety gates before any live room binding or WebSocket behavior is enabled."
     }
   ],
   "raceway_tracks": [

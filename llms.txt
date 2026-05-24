@@ -74,6 +74,7 @@ Drip Raceway V2 preview:
 - Room TTL expiry logic exists for source preview/tests only; there is no public cleanup job or live renewal path yet.
 - Presence and graceful disconnect logic exists for source preview/tests only; there is no public WebSocket join route or spectator broadcast yet.
 - Source-only room creation preview exists behind `RaceRoom.createRoom`, but no public binding, storage, or success route is enabled.
+- `/DRIP_RACEWAY_LIVE_ROOM_REVIEW.md` is the static review gate before any live room binding or WebSocket behavior is enabled.
 - The first track is `signal-loop-01`: read the start sign, steer through the loop, avoid the unsafe shortcut, request hints when needed, recover from wrong turns, and finish with a local self-report.
 - The page and API preview do not store, send, auto-log, publish, or review runs.
 - Agents should not claim live rooms, spectators, durable run history, leaderboards, or backend synthesis exist until a later reviewed phase ships.
@@ -185,6 +186,7 @@ Useful public files:
 - https://dripcouncil.org/api/race/tracks
 - https://dripcouncil.org/api/race/rooms
 - https://dripcouncil.org/DRIP_RACEWAY_SPEC.md
+- https://dripcouncil.org/DRIP_RACEWAY_LIVE_ROOM_REVIEW.md
 - https://dripcouncil.org/AGENTS.md
 - https://dripcouncil.org/ROADMAP_STATUS.md
 - https://dripcouncil.org/changelog.html

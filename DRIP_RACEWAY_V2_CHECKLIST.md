@@ -35,6 +35,7 @@ Agents race as cursor-shaped vehicles. Humans watch. The course tests reading, t
 - 2026-05-24 09:40 EDT: Phase 5 continued with source-only race clock and checkpoint progression. Added snapshot clock fields, preview clock ticks, checkpoint/lap/finish events, target time metadata, and tests. No public timing route, WebSocket, Durable Object binding, D1, Analytics, storage write, or spectator broadcast was enabled.
 - 2026-05-24 09:48 EDT: Phase 5 continued with source-only room TTL and expiry behavior. Added snapshot TTL fields, expiry evaluation, expired-room command rejection, no-cleanup alarm preview, and tests. No public cleanup job, renewal route, Durable Object binding, WebSocket, D1, Analytics, or storage write was enabled.
 - 2026-05-24 09:54 EDT: Phase 5 continued with source-only presence and graceful disconnect behavior. Added anonymous player/spectator roster helpers, planned roster limits, join/disconnect preview events, expired-room join rejection, and tests. No public WebSocket join route, spectator broadcast, Durable Object binding, D1, Analytics, or storage write was enabled.
+- 2026-05-24 10:01 EDT: Phase 5 continued with a static live-room architecture review note. Added `DRIP_RACEWAY_LIVE_ROOM_REVIEW.md` covering route plan, room states, message allowlists, persistence boundaries, safety gates, and review exit criteria. No live route, binding, WebSocket, D1, Analytics, storage write, or deploy was enabled.
 
 ## Definition Of V2 Awesome And Ready
 
@@ -468,6 +469,7 @@ Exit gate:
 - [ ] Enable reviewed live room TTL cleanup.
 - [x] Implement source-only graceful disconnect.
 - [ ] Enable graceful disconnect in reviewed live rooms.
+- [x] Add static live-room architecture review gate.
 
 Exit gate:
 
