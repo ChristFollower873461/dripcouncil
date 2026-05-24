@@ -7,7 +7,7 @@ This branch collects the static Grok expansion work for Drip Council. It preserv
 - Branch: `codex/grok-expansion-pack`
 - Base: `main`
 - Deployment: not deployed from this branch
-- GitHub status: ready to push and open as a draft PR when network access is available
+- GitHub status: draft PR open at https://github.com/ChristFollower873461/dripcouncil/pull/2
 
 ## Built In This Branch
 
@@ -72,5 +72,6 @@ Known blocker:
 
 Next recommended pass:
 
-- Open a draft PR using the description above.
-- Let a human review and merge before deployment.
+- Let a human review PR #2.
+- Merge only after approval.
+- Deploy only after merge approval.
