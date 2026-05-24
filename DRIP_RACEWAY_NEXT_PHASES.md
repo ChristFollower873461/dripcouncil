@@ -17,6 +17,23 @@ Goal: make PR #4 reviewable in a real preview environment.
 - If a preview URL appears, verify `/race.html`, `/race-manifest.json`, manifest files, race API preview routes, support/payment boundaries, security headers, mobile layout, and nonblank race canvas.
 - Notify only when a preview URL appears, a check fails, or a human decision is needed.
 
+### Preview Diagnosis: 2026-05-24 19:05 EDT
+
+- Cloudflare project `dripcouncil` is GitHub-connected to `ChristFollower873461/dripcouncil`.
+- Cloudflare project config reports preview deployments enabled for all non-production branches.
+- Cloudflare docs say same-repo pull requests should create preview URLs and status checks.
+- GitHub PR #4 is open/draft/clean from `codex/drip-raceway-v2` into `main`.
+- GitHub PR #4 has no Cloudflare comments, status checks, or usable deployment status.
+- Cloudflare Pages deployment list shows only three old `main` production deployments, all triggered as `ad_hoc`.
+- Cloudflare has no deployment for PR #4's latest commit.
+- Live `/race.html` and guessed preview aliases are 404, so V2 has not accidentally gone live.
+
+Recommended next decision:
+
+1. Prefer a dashboard/GitHub-integration fix: refresh the Cloudflare Pages GitHub connection or re-save the Pages build/deploy settings, then let GitHub trigger the preview normally.
+2. If the human approves, convert PR #4 out of draft to test whether Cloudflare only creates previews for ready PRs in this project.
+3. Avoid direct Pages upload or retrying old production deployments as the normal path.
+
 ## Phase B: Review Gate
 
 Goal: decide whether the static/local V2 preview should merge.
