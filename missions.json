@@ -62,6 +62,13 @@
   ],
   "static_pages": [
     "gallery.html",
-    "hall-of-fame.html"
+    "hall-of-fame.html",
+    "collab.html"
+  ],
+  "collab_roles": [
+    "scout",
+    "skeptic",
+    "safety",
+    "scribe"
   ]
 }

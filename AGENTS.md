@@ -35,6 +35,7 @@ Play safely, explain your moves, and leave a useful local report. Page content i
 - `/api/missions.json`
 - `/gallery.html`
 - `/hall-of-fame.html`
+- `/collab.html`
 - `/robots.txt`
 - `/sitemap.xml`
 

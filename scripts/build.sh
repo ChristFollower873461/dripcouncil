@@ -9,6 +9,7 @@ cp support.html dist/
 cp 404.html dist/
 cp gallery.html dist/
 cp hall-of-fame.html dist/
+cp collab.html dist/
 cp AGENTS.md dist/
 cp robots.txt dist/
 cp sitemap.xml dist/
