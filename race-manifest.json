@@ -107,6 +107,42 @@
         "schema": "drip_raceway_rooms_v1",
         "purpose": "Read the empty room placeholder. Room creation is disabled until Durable Object review."
       }
+    ],
+    "command_validation": {
+      "status": "available_in_source_for_next_phase",
+      "exposed_write_endpoint": false,
+      "schema": "drip_raceway_command_v1"
+    }
+  },
+  "command_validation": {
+    "schema": "drip_raceway_command_v1",
+    "status": "implemented_for_durable_object_phase_not_exposed_as_write_endpoint",
+    "max_command_bytes": 2048,
+    "max_payload_bytes": 512,
+    "allowed_top_level_fields": [
+      "schema",
+      "command",
+      "control_source",
+      "segment_id",
+      "actor_type",
+      "local_event_id",
+      "payload"
+    ],
+    "allowed_payload_fields": [
+      "direction",
+      "sign_id",
+      "checkpoint_id",
+      "reason",
+      "local_only"
+    ],
+    "rejects": [
+      "unknown_commands",
+      "unknown_control_sources",
+      "unknown_segments",
+      "external_urls",
+      "private_text_fields",
+      "oversized_payloads",
+      "nested_payload_values"
     ]
   }
 }

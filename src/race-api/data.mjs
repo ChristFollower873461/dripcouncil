@@ -48,6 +48,7 @@ export const RATE_LIMIT_PLACEHOLDER = {
     room_ttl_minutes: 30,
     max_players_per_room: 1,
     max_spectators_per_room: 12,
-    max_message_bytes: 2048
+    max_message_bytes: 2048,
+    max_command_payload_bytes: 512
   }
 };

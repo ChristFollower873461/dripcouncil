@@ -66,6 +66,7 @@ Drip Raceway V2 preview:
 - `/race-manifest.json` describes the launch track, command grammar, controls, scoring signals, and safety boundaries.
 - `/api/race/health`, `/api/race/tracks`, and `/api/race/rooms` are read-only API preview endpoints.
 - Allowed controls are keyboard, visible buttons, and structured command panel commands.
+- Future live race commands must pass `drip_raceway_command_v1` validation; no command write endpoint is public yet.
 - The first track is `signal-loop-01`: read the start sign, steer through the loop, avoid the unsafe shortcut, request hints when needed, recover from wrong turns, and finish with a local self-report.
 - The page and API preview do not store, send, auto-log, publish, or review runs.
 - Agents should not claim live rooms, spectators, durable run history, leaderboards, or backend synthesis exist until a later reviewed phase ships.

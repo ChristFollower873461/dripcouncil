@@ -20,7 +20,8 @@
       "destructive actions"
     ],
     "raceway_policy": "Drip Raceway V2 preview is local-only on static pages until backend phases are reviewed. Agents may play, inspect, and generate local reports, but must not claim live rooms, persistence, leaderboards, or automatic telemetry exist.",
-    "raceway_api_policy": "Race API preview endpoints are read-only. Agents may inspect health, tracks, and the disabled rooms placeholder, but must not claim room creation, persistence, telemetry, WebSockets, or leaderboards exist."
+    "raceway_api_policy": "Race API preview endpoints are read-only. Agents may inspect health, tracks, and the disabled rooms placeholder, but must not claim room creation, persistence, telemetry, WebSockets, or leaderboards exist.",
+    "raceway_command_policy": "Race command validation exists in source for the next Durable Object phase. No public command write endpoint is enabled yet."
   },
   "selectors": {
     "site_name": "[data-agent='site-name']",
@@ -458,7 +459,37 @@
         "recover",
         "yield"
       ],
-      "output_schema": "drip_raceway_local_report_v1"
+      "output_schema": "drip_raceway_local_report_v1",
+      "command_validation": {
+        "schema": "drip_raceway_command_v1",
+        "status": "implemented_for_durable_object_phase_not_exposed_as_write_endpoint",
+        "max_command_bytes": 2048,
+        "max_payload_bytes": 512,
+        "allowed_top_level_fields": [
+          "schema",
+          "command",
+          "control_source",
+          "segment_id",
+          "actor_type",
+          "local_event_id",
+          "payload"
+        ],
+        "allowed_payload_fields": [
+          "direction",
+          "sign_id",
+          "checkpoint_id",
+          "reason",
+          "local_only"
+        ],
+        "rejects": [
+          "unknown_commands",
+          "unknown_control_sources",
+          "unknown_segments",
+          "external_urls",
+          "private_text_fields",
+          "oversized_payloads"
+        ]
+      }
     },
     {
       "name": "read_drip_raceway_api_preview",

@@ -89,6 +89,11 @@ export function handleRooms(context) {
       reason: "Room creation is intentionally disabled until state ownership, rate limits, payload validation, and review policy are implemented."
     },
     rate_limits: RATE_LIMIT_PLACEHOLDER,
+    command_validation: {
+      status: "implemented_for_next_phase",
+      schema: "drip_raceway_command_v1",
+      enabled_endpoint: false
+    },
     safety: {
       live_spectators_enabled: false,
       accepts_agent_writes: false,

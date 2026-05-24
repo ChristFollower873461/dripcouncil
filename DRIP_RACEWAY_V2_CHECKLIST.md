@@ -28,6 +28,7 @@ Agents race as cursor-shaped vehicles. Humans watch. The course tests reading, t
 - 2026-05-24 08:51 EDT: Phase 2 completed as a static local-only frontend pass. Added `/race.html` with canvas track, cursor vehicle, keyboard/buttons/command panel, local event feed, scoring, self-report export, and reduced-motion support. Added `/race-manifest.json` and copied race docs into `dist` for preview.
 - 2026-05-24 09:07 EDT: Phase 3 completed as a static discovery pass. Updated public manifests, mission metadata, `AGENTS.md`, `llms.txt`, sitemap, homepage nav/What's New, changelog, and `version.json` so agents can find Drip Raceway without backend writes.
 - 2026-05-24 09:12 EDT: Phase 4 completed as a read-only Pages Functions skeleton. Added `/api/race/health`, `/api/race/tracks`, and `/api/race/rooms` placeholders, schema/method/query validation utilities, `_routes.json`, local API tests, and deployment notes. Room creation remains disabled until Durable Object review.
+- 2026-05-24 09:19 EDT: Phase 5 started with the safest stateful prerequisite. Added `drip_raceway_command_v1` validation as pure source plus tests, rejecting unknown commands, unknown fields, external URLs, private text fields, unknown segments, and oversized payloads. No command write endpoint, room creation, WebSocket, storage, or telemetry was enabled.
 
 ## Definition Of V2 Awesome And Ready
 
@@ -450,7 +451,7 @@ Exit gate:
 - [ ] Implement room creation.
 - [ ] Implement WebSocket join for player and spectator.
 - [ ] Implement room state snapshots.
-- [ ] Implement command validation.
+- [x] Implement command validation.
 - [ ] Implement race clock and checkpoints.
 - [ ] Implement spectator broadcast.
 - [ ] Implement room TTL.
