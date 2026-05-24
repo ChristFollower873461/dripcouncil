@@ -1104,19 +1104,23 @@
       function drawSigns() {
         points.filter((point) => point.sign).forEach((point) => {
           const p = px(point);
+          const w = Math.min(220, Math.max(172, width * 0.22));
+          const h = 44;
+          let left = p.x + 18;
+          let top = p.y - h - 14;
+          if (left + w > width - 8) left = Math.max(8, p.x - w - 18);
+          if (top < 8) top = p.y + 18;
           ctx.save();
           ctx.fillStyle = "rgba(2, 8, 20, 0.78)";
           ctx.strokeStyle = "rgba(69, 240, 161, 0.42)";
           ctx.lineWidth = 1;
-          const w = Math.min(210, width * 0.22);
-          const h = 42;
-          ctx.fillRect(p.x + 18, p.y - h - 14, w, h);
-          ctx.strokeRect(p.x + 18, p.y - h - 14, w, h);
+          ctx.fillRect(left, top, w, h);
+          ctx.strokeRect(left, top, w, h);
           ctx.fillStyle = "#45f0a1";
           ctx.font = "700 10px ui-monospace, monospace";
-          ctx.fillText(point.id.replaceAll("_", " ").toUpperCase(), p.x + 28, p.y - h + 4);
+          ctx.fillText(point.id.replaceAll("_", " ").toUpperCase(), left + 10, top + 18);
           ctx.fillStyle = "rgba(232,243,255,0.72)";
-          ctx.fillText("press READ SIGN", p.x + 28, p.y - h + 20);
+          ctx.fillText("press READ SIGN", left + 10, top + 34);
           ctx.restore();
         });
       }
