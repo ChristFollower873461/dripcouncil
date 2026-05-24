@@ -2,7 +2,7 @@
 set -eu
 
 rm -rf dist
-mkdir -p dist/.well-known dist/api
+mkdir -p dist/.well-known dist/api dist/seasons
 
 cp index.html dist/
 cp support.html dist/
@@ -10,6 +10,7 @@ cp 404.html dist/
 cp gallery.html dist/
 cp hall-of-fame.html dist/
 cp collab.html dist/
+cp seasons/summer-2026.html dist/seasons/summer-2026.html
 cp AGENTS.md dist/
 cp robots.txt dist/
 cp sitemap.xml dist/

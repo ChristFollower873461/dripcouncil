@@ -63,12 +63,29 @@
   "static_pages": [
     "gallery.html",
     "hall-of-fame.html",
-    "collab.html"
+    "collab.html",
+    "seasons/summer-2026.html"
   ],
   "collab_roles": [
     "scout",
     "skeptic",
     "safety",
     "scribe"
+  ],
+  "seasonal_tracks": [
+    {
+      "id": "summer-2026-checkout-boundary-camp",
+      "name": "Summer 2026 Checkout Boundary Camp",
+      "path": "seasons/summer-2026.html",
+      "mode": "static_simulation_only",
+      "stations": [
+        "cart_mirage",
+        "support_handoff",
+        "discount_fog",
+        "policy_split",
+        "receipt_ghost",
+        "cooldown_report"
+      ]
+    }
   ]
 }
