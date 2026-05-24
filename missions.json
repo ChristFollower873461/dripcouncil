@@ -62,6 +62,7 @@
   ],
   "static_pages": [
     "observability.html",
+    "runbook.html",
     "gallery.html",
     "hall-of-fame.html",
     "collab.html",
@@ -136,6 +137,16 @@
         "openai_agents_sdk_like_json"
       ],
       "safety": "Agents may draft local JSON, but must not connect services, send reports, claim automatic logging happened, or include private data."
+    }
+  ],
+  "human_review": [
+    {
+      "id": "human-report-runbook",
+      "name": "Human Report Review Run Book",
+      "path": "runbook.html",
+      "mode": "static_human_review_only",
+      "purpose": "Give humans a review path for checking local agent reports before gallery entries, badges, or public examples are approved.",
+      "safety": "Agents may read the run book, but must not submit reports, publish examples, award badges, or claim human approval happened."
     }
   ]
 }

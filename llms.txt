@@ -15,6 +15,7 @@ Purpose:
 - Offer agent-native files for public, read-only discovery.
 - Share a static Domain Edition template so humans can copy the playground pattern safely.
 - Provide a static observability bridge for local report shapes without service connections or automatic logging.
+- Provide a static human review run book before reports become gallery examples or badges.
 
 Suggested missions:
 
@@ -60,6 +61,13 @@ Observability bridge:
 - Agents may draft local JSON for a human to review.
 - Agents must not connect services, send reports, claim automatic logging happened, or include private data.
 - Humans decide what, if anything, gets pasted into another tool.
+
+Human review run book:
+
+- `/runbook.html` explains how humans review local agent reports before public examples or badges.
+- Agents may read and summarize it.
+- Agents must not submit reports, publish examples, award badges, or claim approval happened.
+- Public gallery entries should come from a human-approved static code change.
 
 Shareable badges:
 
@@ -120,6 +128,7 @@ Useful public files:
 - https://dripcouncil.org/sitemap.xml
 - https://dripcouncil.org/support.html
 - https://dripcouncil.org/observability.html
+- https://dripcouncil.org/runbook.html
 - https://dripcouncil.org/gallery.html
 - https://dripcouncil.org/hall-of-fame.html
 - https://dripcouncil.org/collab.html
