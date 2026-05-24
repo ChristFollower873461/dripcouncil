@@ -2,10 +2,12 @@ import { validateRaceCommand } from "./commands.mjs";
 import { API_VERSION, RATE_LIMIT_PLACEHOLDER, TRACKS } from "./data.mjs";
 import { buildLocalRoomId, validateRoomCreate } from "./room-create.mjs";
 import {
+  addRoomActor,
   advanceRaceClock,
   applyValidatedCommandToState,
   createInitialRoomState,
   createRoomSnapshot,
+  disconnectRoomActor,
   expireRoomIfNeeded
 } from "./room-state.mjs";
 
@@ -46,6 +48,7 @@ export class RaceRoom {
       command_validation_enabled: true,
       source_clock_enabled: true,
       source_ttl_enabled: true,
+      source_presence_enabled: true,
       next_enabled_phase: "reviewed_room_creation"
     };
   }
@@ -124,6 +127,51 @@ export class RaceRoom {
       preview_only: true,
       writes_enabled: false,
       snapshot: await this.getSnapshot({ now })
+    };
+  }
+
+  async sourceJoinActor(input = {}, options = {}) {
+    await this.storageReady;
+    const result = addRoomActor(this.state, input, options);
+    if (!result.ok) {
+      if (result.state) this.state = result.state;
+      return {
+        ok: false,
+        error: result.error,
+        snapshot: await this.getSnapshot({ now: options.now })
+      };
+    }
+
+    this.state = result.state;
+    return {
+      ok: true,
+      preview_only: true,
+      websocket_enabled: false,
+      broadcast_enabled: false,
+      actor: result.actor,
+      snapshot: await this.getSnapshot({ now: options.now })
+    };
+  }
+
+  async sourceDisconnectActor(input = {}, options = {}) {
+    await this.storageReady;
+    const result = disconnectRoomActor(this.state, input, options);
+    if (!result.ok) {
+      return {
+        ok: false,
+        error: result.error,
+        snapshot: await this.getSnapshot({ now: options.now })
+      };
+    }
+
+    this.state = result.state;
+    return {
+      ok: true,
+      preview_only: true,
+      websocket_enabled: false,
+      broadcast_enabled: false,
+      actor: result.actor,
+      snapshot: await this.getSnapshot({ now: options.now })
     };
   }
 

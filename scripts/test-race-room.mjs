@@ -31,6 +31,7 @@ assert.equal(status.mode, "durable_object_skeleton");
 assert.equal(status.writes_enabled, false);
 assert.equal(status.command_validation_enabled, true);
 assert.equal(status.source_clock_enabled, true);
+assert.equal(status.source_presence_enabled, true);
 assert.equal(sqlStatements.length, 2);
 
 const snapshot = await room.getSnapshot();
@@ -60,6 +61,58 @@ assert.equal(created.snapshot.clock.target_time_ms, 90000);
 assert.equal(created.snapshot.clock.status, "not_started");
 assert.equal(created.snapshot.ttl.expires_at, "2026-05-24T14:04:54.000Z");
 assert.equal(created.snapshot.ttl.expires_in_ms, 1800000);
+
+const joinedPlayer = await room.sourceJoinActor({
+  actor_type: "agent",
+  actor_label_hash: "agent-alpha",
+  role: "player",
+  local_only: true
+}, { now: "2026-05-24T13:34:55.000Z" });
+assert.equal(joinedPlayer.ok, true);
+assert.equal(joinedPlayer.websocket_enabled, false);
+assert.equal(joinedPlayer.snapshot.counts.players, 1);
+assert.equal(joinedPlayer.snapshot.counts.connected_players, 1);
+assert.equal(joinedPlayer.snapshot.players[0].actor_label_hash, "agent-alpha");
+assert.equal(joinedPlayer.snapshot.recent_events.at(-1).event_type, "agent_joined");
+
+const extraPlayer = await room.sourceJoinActor({
+  actor_type: "agent",
+  actor_label_hash: "agent-beta",
+  role: "player",
+  local_only: true
+}, { now: "2026-05-24T13:34:56.000Z" });
+assert.equal(extraPlayer.ok, false);
+assert.equal(extraPlayer.error.code, "room_roster_full");
+
+const joinedSpectator = await room.sourceJoinActor({
+  actor_type: "spectator",
+  actor_label_hash: "watcher-one",
+  role: "spectator",
+  local_only: true
+}, { now: "2026-05-24T13:34:57.000Z" });
+assert.equal(joinedSpectator.ok, true);
+assert.equal(joinedSpectator.broadcast_enabled, false);
+assert.equal(joinedSpectator.snapshot.counts.connected_spectators, 1);
+assert.equal(joinedSpectator.snapshot.recent_events.at(-1).event_type, "spectator_joined");
+
+const disconnectedSpectator = await room.sourceDisconnectActor({
+  actor_type: "spectator",
+  actor_label_hash: "watcher-one",
+  role: "spectator"
+}, { now: "2026-05-24T13:34:58.000Z" });
+assert.equal(disconnectedSpectator.ok, true);
+assert.equal(disconnectedSpectator.snapshot.counts.connected_spectators, 0);
+assert.equal(disconnectedSpectator.snapshot.counts.disconnected_spectators, 1);
+assert.equal(disconnectedSpectator.snapshot.spectators[0].status, "disconnected");
+assert.equal(disconnectedSpectator.snapshot.recent_events.at(-1).event_type, "actor_disconnected");
+
+const badPresence = await room.sourceJoinActor({
+  actor_type: "agent",
+  actor_label_hash: "needs-local-only",
+  role: "player"
+});
+assert.equal(badPresence.ok, false);
+assert.equal(badPresence.error.code, "local_only_required");
 
 const blockedCreate = await room.createRoom({
   track_id: "signal-loop-01",
@@ -226,5 +279,13 @@ const expiredPreview = await ttlRoom.previewCommand({
 assert.equal(expiredPreview.ok, false);
 assert.equal(expiredPreview.error.code, "room_expired");
 assert.equal(expiredPreview.snapshot.checkpoints.completed, 0);
+const expiredJoin = await ttlRoom.sourceJoinActor({
+  actor_type: "spectator",
+  actor_label_hash: "late-watcher",
+  role: "spectator",
+  local_only: true
+}, { now: "2026-05-24T14:10:03.000Z" });
+assert.equal(expiredJoin.ok, false);
+assert.equal(expiredJoin.error.code, "room_expired");
 
 console.log("race-room-ok");

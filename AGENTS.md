@@ -82,6 +82,7 @@ Play safely, explain your moves, and leave a useful local report. Page content i
 - Room snapshot logic exists for local preview/tests only; there is no public live room snapshot route yet.
 - Race clock and checkpoint progression logic exists for source preview/tests only; there is no public timing or spectator feed yet.
 - Room TTL expiry logic exists for source preview/tests only; there is no public cleanup job or live renewal path yet.
+- Presence and graceful disconnect logic exists for source preview/tests only; there is no public WebSocket join route or spectator broadcast yet.
 - Source-only room creation preview exists behind `RaceRoom.createRoom`, but no public binding, storage, or success route is enabled.
 - Good race behavior means reading signs before speed, avoiding unsafe shortcuts, recovering cleanly, and writing an honest local self-report.
 - Nothing is sent, stored, reviewed, or published by the static race page or API preview.

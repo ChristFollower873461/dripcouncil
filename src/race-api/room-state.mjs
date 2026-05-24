@@ -8,6 +8,9 @@ const DEFAULT_TRACK = TRACKS[0];
 const DEFAULT_MODE = "casual_cruise";
 const MAX_EVENT_BUFFER = 60;
 const DEFAULT_TARGET_TIME_MS = 90_000;
+const ACTOR_LABEL_HASH_PATTERN = /^[a-z0-9_.:-]{1,96}$/i;
+const ALLOWED_ACTOR_TYPES = new Set(["agent", "human", "spectator"]);
+const ALLOWED_ROLES = new Set(["player", "spectator"]);
 
 export function createInitialRoomState(options = {}) {
   const now = options.now || new Date().toISOString();
@@ -78,6 +81,10 @@ export function createRoomSnapshot(state, options = {}) {
     counts: {
       players: state.players.length,
       spectators: state.spectators.length,
+      connected_players: state.players.filter((actor) => actor.status !== "disconnected").length,
+      connected_spectators: state.spectators.filter((actor) => actor.status !== "disconnected").length,
+      disconnected_players: state.players.filter((actor) => actor.status === "disconnected").length,
+      disconnected_spectators: state.spectators.filter((actor) => actor.status === "disconnected").length,
       buffered_events: state.event_buffer.length
     },
     checkpoints: {
@@ -115,6 +122,118 @@ export function appendRoomEvent(state, event, options = {}) {
   next.last_activity_at = now;
   next.event_buffer = [...next.event_buffer, safeEvent].slice(-MAX_EVENT_BUFFER);
   return next;
+}
+
+export function addRoomActor(state, input = {}, options = {}) {
+  const now = options.now || new Date().toISOString();
+  let next = expireRoomIfNeeded(state, { now });
+  if (next.status === "expired") {
+    return invalidActorResult("room_expired", "Expired room previews cannot accept presence changes.", next);
+  }
+
+  const validation = normalizeRoomActor(input);
+  if (!validation.ok) return { ...validation, state };
+
+  next = cloneState(next);
+  const actor = validation.actor;
+  const rosterKey = actor.role === "spectator" ? "spectators" : "players";
+  const maxAllowed = actor.role === "spectator"
+    ? RATE_LIMIT_PLACEHOLDER.planned_limits.max_spectators_per_room
+    : RATE_LIMIT_PLACEHOLDER.planned_limits.max_players_per_room;
+  const existingIndex = next[rosterKey].findIndex((item) => item.actor_label_hash === actor.actor_label_hash);
+  const connectedCount = next[rosterKey].filter((item, index) => item.status !== "disconnected" && index !== existingIndex).length;
+
+  if (connectedCount >= maxAllowed) {
+    return invalidActorResult("room_roster_full", "This source-preview room has reached its planned roster limit.", next, {
+      role: actor.role,
+      max_allowed: maxAllowed
+    });
+  }
+
+  const nextActor = {
+    actor_type: actor.actor_type,
+    actor_label_hash: actor.actor_label_hash,
+    role: actor.role,
+    joined_at: existingIndex >= 0 ? next[rosterKey][existingIndex].joined_at : now,
+    last_seen_at: now,
+    disconnected_at: null,
+    status: "connected"
+  };
+  if (existingIndex >= 0) {
+    next[rosterKey][existingIndex] = nextActor;
+  } else {
+    next[rosterKey] = [...next[rosterKey], nextActor];
+  }
+
+  next = appendRoomEvent(
+    next,
+    {
+      event_type: actor.role === "spectator" ? "spectator_joined" : "agent_joined",
+      created_at: now,
+      actor_type: actor.actor_type,
+      control_source: "none",
+      segment_id: next.current_segment,
+      payload_json: {
+        actor_label_hash: actor.actor_label_hash,
+        role: actor.role,
+        local_only: true
+      }
+    },
+    { now }
+  );
+
+  return {
+    ok: true,
+    state: next,
+    actor: nextActor
+  };
+}
+
+export function disconnectRoomActor(state, input = {}, options = {}) {
+  const now = options.now || new Date().toISOString();
+  const validation = normalizeRoomActor(input, { requireLocalOnly: false });
+  if (!validation.ok) return { ...validation, state };
+
+  let next = cloneState(state);
+  const actor = validation.actor;
+  const rosterKey = actor.role === "spectator" ? "spectators" : "players";
+  const existingIndex = next[rosterKey].findIndex((item) => item.actor_label_hash === actor.actor_label_hash);
+  if (existingIndex < 0) {
+    return invalidActorResult("actor_not_found", "That actor is not present in this source-preview room.", next, {
+      role: actor.role
+    });
+  }
+
+  const existing = next[rosterKey][existingIndex];
+  next[rosterKey][existingIndex] = {
+    ...existing,
+    last_seen_at: now,
+    disconnected_at: now,
+    status: "disconnected"
+  };
+  next = appendRoomEvent(
+    next,
+    {
+      event_type: "actor_disconnected",
+      created_at: now,
+      actor_type: existing.actor_type,
+      control_source: "none",
+      segment_id: next.current_segment,
+      payload_json: {
+        actor_label_hash: existing.actor_label_hash,
+        role: existing.role,
+        graceful: true,
+        local_only: true
+      }
+    },
+    { now }
+  );
+
+  return {
+    ok: true,
+    state: next,
+    actor: next[rosterKey][existingIndex]
+  };
 }
 
 export function applyValidatedCommandToState(state, validation, options = {}) {
@@ -355,11 +474,68 @@ function getTargetTimeMs(track) {
   return (track.target_time_seconds || DEFAULT_TARGET_TIME_MS / 1000) * 1000;
 }
 
+function normalizeRoomActor(input, options = {}) {
+  if (!isPlainObject(input)) {
+    return invalidActorResult("invalid_actor_envelope", "Room actors must be small JSON objects.");
+  }
+
+  const role = input.role || (input.actor_type === "spectator" ? "spectator" : "player");
+  if (!ALLOWED_ROLES.has(role)) {
+    return invalidActorResult("unknown_actor_role", "Room actor role must be player or spectator.", null, {
+      allowed_roles: [...ALLOWED_ROLES]
+    });
+  }
+
+  const actorType = input.actor_type || (role === "spectator" ? "spectator" : "agent");
+  if (!ALLOWED_ACTOR_TYPES.has(actorType)) {
+    return invalidActorResult("unknown_presence_actor_type", "Room actor type must be agent, human, or spectator.", null, {
+      allowed_actor_types: [...ALLOWED_ACTOR_TYPES]
+    });
+  }
+
+  if (!input.actor_label_hash || !ACTOR_LABEL_HASH_PATTERN.test(input.actor_label_hash)) {
+    return invalidActorResult("invalid_actor_label_hash", "Room presence only accepts anonymous machine-readable actor label hashes.");
+  }
+
+  if (options.requireLocalOnly !== false && input.local_only !== true) {
+    return invalidActorResult("local_only_required", "Room presence changes must acknowledge source-preview local-only status.");
+  }
+
+  return {
+    ok: true,
+    actor: {
+      actor_type: actorType,
+      actor_label_hash: input.actor_label_hash,
+      role
+    }
+  };
+}
+
+function invalidActorResult(code, message, state = null, details = {}) {
+  return {
+    ok: false,
+    state,
+    error: {
+      code,
+      message,
+      details
+    }
+  };
+}
+
+function isPlainObject(value) {
+  return Boolean(value) && typeof value === "object" && !Array.isArray(value);
+}
+
 function redactActor(actor) {
   return {
     actor_type: actor.actor_type || "agent",
+    role: actor.role || "player",
     actor_label_hash: actor.actor_label_hash || "anonymous",
-    joined_at: actor.joined_at || null
+    joined_at: actor.joined_at || null,
+    last_seen_at: actor.last_seen_at || null,
+    disconnected_at: actor.disconnected_at || null,
+    status: actor.status || "connected"
   };
 }
 

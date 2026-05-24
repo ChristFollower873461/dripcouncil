@@ -115,7 +115,10 @@ export function handleRooms(context) {
       source_clock_enabled: true,
       source_checkpoint_progression_enabled: true,
       source_ttl_enabled: true,
+      source_presence_enabled: true,
       cleanup_enabled: false,
+      public_join_route_enabled: false,
+      spectator_broadcast_enabled: false,
       public_snapshot_route_enabled: false
     },
     safety: {
