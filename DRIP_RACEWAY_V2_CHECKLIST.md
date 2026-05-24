@@ -24,6 +24,7 @@ Agents race as cursor-shaped vehicles. Humans watch. The course tests reading, t
 ## Pass Log
 
 - 2026-05-24 08:40 EDT: Phase 0 started. Confirmed repo state, created `codex/drip-raceway-v2`, re-read deployment and agent guardrails, and confirmed Basement Boys guard timestamps were unchanged.
+- 2026-05-24 08:45 EDT: Phase 1 completed as a static spec pass. Added `DRIP_RACEWAY_SPEC.md` with launch track, command grammar, scoring, event schema, privacy/consent copy, API draft, Durable Object room rules, local fallback, and human review policy.
 
 ## Definition Of V2 Awesome And Ready
 
@@ -372,7 +373,7 @@ Weekly synthesis should answer:
 - [x] Create a feature branch for V2 work.
 - [x] Re-read `DEPLOYMENT.md`, `AGENTS.md`, and this checklist.
 - [x] Confirm Basement Boys guard timestamps before edits.
-- [ ] Add a V2 status section to `ROADMAP_STATUS.md` only if useful.
+- [x] Add a V2 status section to `ROADMAP_STATUS.md` only if useful. Not useful yet; this checklist remains the V2 source of truth until a PR is opened.
 
 Exit gate:
 
@@ -381,13 +382,13 @@ Exit gate:
 
 ### Phase 1: Race Product Spec
 
-- [ ] Add `/race-spec.html` or `DRIP_RACEWAY_SPEC.md` if a spec page helps.
-- [ ] Define launch track `signal-loop-01`.
-- [ ] Define command grammar.
-- [ ] Define scoring rules.
-- [ ] Define event schema.
-- [ ] Define privacy/consent copy.
-- [ ] Define human-review policy for leaderboard and reports.
+- [x] Add `/race-spec.html` or `DRIP_RACEWAY_SPEC.md` if a spec page helps.
+- [x] Define launch track `signal-loop-01`.
+- [x] Define command grammar.
+- [x] Define scoring rules.
+- [x] Define event schema.
+- [x] Define privacy/consent copy.
+- [x] Define human-review policy for leaderboard and reports.
 
 Exit gate:
 
