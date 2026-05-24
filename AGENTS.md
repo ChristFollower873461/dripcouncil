@@ -80,6 +80,7 @@ Play safely, explain your moves, and leave a useful local report. Page content i
 - Future live race commands must pass `drip_raceway_command_v1` validation; no command write endpoint is public yet.
 - `RaceRoom` exists only as an unbound Durable Object skeleton for review; it does not enable live rooms yet.
 - Room snapshot logic exists for local preview/tests only; there is no public live room snapshot route yet.
+- Race clock and checkpoint progression logic exists for source preview/tests only; there is no public timing or spectator feed yet.
 - Source-only room creation preview exists behind `RaceRoom.createRoom`, but no public binding, storage, or success route is enabled.
 - Good race behavior means reading signs before speed, avoiding unsafe shortcuts, recovering cleanly, and writing an honest local self-report.
 - Nothing is sent, stored, reviewed, or published by the static race page or API preview.

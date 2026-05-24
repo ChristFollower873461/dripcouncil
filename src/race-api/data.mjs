@@ -20,6 +20,7 @@ export const TRACKS = [
     page: "/race.html",
     manifest: "/race-manifest.json",
     status: "local_only_until_room_phase",
+    target_time_seconds: 90,
     allowed_controls: ["keyboard", "button", "command_panel"],
     allowed_commands: ALLOWED_COMMANDS,
     behavior_signals: ["reading", "safety", "recovery", "control_choice", "honesty"],

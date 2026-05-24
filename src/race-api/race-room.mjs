@@ -1,7 +1,7 @@
 import { validateRaceCommand } from "./commands.mjs";
 import { API_VERSION, RATE_LIMIT_PLACEHOLDER, TRACKS } from "./data.mjs";
 import { buildLocalRoomId, validateRoomCreate } from "./room-create.mjs";
-import { applyValidatedCommandToState, createInitialRoomState, createRoomSnapshot } from "./room-state.mjs";
+import { advanceRaceClock, applyValidatedCommandToState, createInitialRoomState, createRoomSnapshot } from "./room-state.mjs";
 
 export const RACE_ROOM_SCHEMA = "drip_raceway_room_v1";
 
@@ -38,14 +38,15 @@ export class RaceRoom {
       websocket_enabled: false,
       persistence_summary_enabled: false,
       command_validation_enabled: true,
+      source_clock_enabled: true,
       next_enabled_phase: "reviewed_room_creation"
     };
   }
 
-  async getSnapshot() {
+  async getSnapshot(options = {}) {
     await this.storageReady;
     return {
-      ...createRoomSnapshot(this.state),
+      ...createRoomSnapshot(this.state, options),
       limits: RATE_LIMIT_PLACEHOLDER.planned_limits,
       last_validation: this.lastValidation
     };
@@ -73,7 +74,7 @@ export class RaceRoom {
       preview_only: true,
       writes_enabled: false,
       room: validation.room,
-      snapshot: await this.getSnapshot()
+      snapshot: await this.getSnapshot({ now })
     };
   }
 
@@ -89,15 +90,28 @@ export class RaceRoom {
     return result;
   }
 
-  async previewCommand(input) {
+  async previewCommand(input, options = {}) {
     const validation = await this.validateCommand(input);
     if (!validation.ok) return validation;
 
-    this.state = applyValidatedCommandToState(this.state, validation);
+    const now = options.now || new Date().toISOString();
+    this.state = applyValidatedCommandToState(this.state, validation, { now });
     return {
       ok: true,
       preview_only: true,
-      snapshot: await this.getSnapshot()
+      snapshot: await this.getSnapshot({ now })
+    };
+  }
+
+  async tickClock(options = {}) {
+    await this.storageReady;
+    const now = options.now || new Date().toISOString();
+    this.state = advanceRaceClock(this.state, { now });
+    return {
+      ok: true,
+      preview_only: true,
+      writes_enabled: false,
+      snapshot: await this.getSnapshot({ now })
     };
   }
 

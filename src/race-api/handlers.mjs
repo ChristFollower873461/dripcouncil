@@ -111,7 +111,10 @@ export function handleRooms(context) {
       class_name: "RaceRoom",
       public_binding_enabled: false,
       websocket_enabled: false,
-      writes_enabled: false
+      writes_enabled: false,
+      source_clock_enabled: true,
+      source_checkpoint_progression_enabled: true,
+      public_snapshot_route_enabled: false
     },
     safety: {
       live_spectators_enabled: false,

@@ -7,6 +7,7 @@ const DEFAULT_ROOM_ID = "unbound-preview-room";
 const DEFAULT_TRACK = TRACKS[0];
 const DEFAULT_MODE = "casual_cruise";
 const MAX_EVENT_BUFFER = 60;
+const DEFAULT_TARGET_TIME_MS = 90_000;
 
 export function createInitialRoomState(options = {}) {
   const now = options.now || new Date().toISOString();
@@ -23,6 +24,17 @@ export function createInitialRoomState(options = {}) {
     started_at: null,
     finished_at: null,
     last_activity_at: now,
+    clock: {
+      status: "not_started",
+      target_time_ms: getTargetTimeMs(track),
+      elapsed_ms: 0,
+      remaining_target_ms: getTargetTimeMs(track),
+      over_target: false,
+      started_at: null,
+      finished_at: null,
+      last_tick_at: null,
+      tick_count: 0
+    },
     current_segment: track.segments[0],
     players: [],
     spectators: [],
@@ -56,6 +68,7 @@ export function createRoomSnapshot(state, options = {}) {
     started_at: state.started_at,
     finished_at: state.finished_at,
     last_activity_at: state.last_activity_at,
+    clock: buildClockSnapshot(state, now, track),
     current_segment: state.current_segment,
     players: state.players.map(redactActor),
     spectators: state.spectators.map(redactActor),
@@ -105,10 +118,8 @@ export function applyValidatedCommandToState(state, validation, options = {}) {
   if (!validation.ok) return state;
 
   const command = validation.command;
-  let next = cloneState(state);
   const now = options.now || new Date().toISOString();
-  next.status = next.status === "lobby" ? "running" : next.status;
-  next.started_at = next.started_at || now;
+  let next = startRaceClock(state, { now });
   next.current_segment = command.segment_id;
 
   if (["read_sign", "take_safe_route", "recover", "yield"].includes(command.command)) {
@@ -135,18 +146,115 @@ export function applyValidatedCommandToState(state, validation, options = {}) {
   return next;
 }
 
+export function startRaceClock(state, options = {}) {
+  const now = options.now || new Date().toISOString();
+  let next = cloneState(state);
+
+  if (!next.started_at) {
+    next.status = "running";
+    next.started_at = now;
+    next.last_activity_at = now;
+    next = appendRoomEvent(
+      next,
+      {
+        event_type: "race_started",
+        created_at: now,
+        actor_type: "system",
+        control_source: "none",
+        segment_id: next.current_segment,
+        payload_json: {
+          local_only: true,
+          source_preview: true
+        }
+      },
+      { now }
+    );
+  } else if (!next.finished_at && ["lobby", "skeleton"].includes(next.status)) {
+    next.status = "running";
+  }
+
+  return advanceRaceClock(next, { now });
+}
+
+export function advanceRaceClock(state, options = {}) {
+  const now = options.now || new Date().toISOString();
+  const next = cloneState(state);
+  const track = TRACKS.find((item) => item.id === next.track_id) || DEFAULT_TRACK;
+  const previousTicks = next.clock?.tick_count || 0;
+  next.clock = {
+    ...buildClockSnapshot(next, now, track),
+    last_tick_at: now,
+    tick_count: previousTicks + 1
+  };
+  next.last_activity_at = now;
+  return next;
+}
+
 export function completeCheckpoint(state, segmentId, now = new Date().toISOString()) {
   const track = TRACKS.find((item) => item.id === state.track_id) || DEFAULT_TRACK;
   if (!track.segments.includes(segmentId) || state.checkpoints_completed.includes(segmentId)) {
     return state;
   }
 
-  const next = cloneState(state);
+  let next = cloneState(state);
+  next.current_segment = segmentId;
   next.checkpoints_completed = [...next.checkpoints_completed, segmentId];
   next.last_activity_at = now;
+  const completedCount = next.checkpoints_completed.length;
   if (next.checkpoints_completed.length === track.segments.length) {
     next.status = "finished";
     next.finished_at = now;
+  }
+  next = advanceRaceClock(next, { now });
+  next = appendRoomEvent(
+    next,
+    {
+      event_type: "checkpoint_crossed",
+      created_at: now,
+      actor_type: "system",
+      control_source: "none",
+      segment_id: segmentId,
+      payload_json: {
+        checkpoint_index: completedCount,
+        total_checkpoints: track.segments.length,
+        elapsed_ms: next.clock.elapsed_ms,
+        local_only: true
+      }
+    },
+    { now }
+  );
+  if (next.finished_at) {
+    next = appendRoomEvent(
+      next,
+      {
+        event_type: "lap_completed",
+        created_at: now,
+        actor_type: "system",
+        control_source: "none",
+        segment_id: segmentId,
+        payload_json: {
+          elapsed_ms: next.clock.elapsed_ms,
+          local_only: true
+        }
+      },
+      { now }
+    );
+    next = appendRoomEvent(
+      next,
+      {
+        event_type: "race_finished",
+        created_at: now,
+        actor_type: "system",
+        control_source: "none",
+        segment_id: segmentId,
+        payload_json: {
+          elapsed_ms: next.clock.elapsed_ms,
+          human_review_required: true,
+          local_only: true
+        }
+      },
+      { now }
+    );
   }
   return next;
 }
@@ -157,9 +265,36 @@ function cloneState(state) {
     players: state.players.map((actor) => ({ ...actor })),
     spectators: state.spectators.map((actor) => ({ ...actor })),
     checkpoints_completed: [...state.checkpoints_completed],
+    clock: { ...(state.clock || {}) },
     scores: { ...state.scores },
     event_buffer: state.event_buffer.map((event) => ({ ...event, payload_json: { ...event.payload_json } }))
   };
+}
+
+function buildClockSnapshot(state, now, track) {
+  const startedAt = state.started_at || null;
+  const finishedAt = state.finished_at || null;
+  const startMs = startedAt ? Date.parse(startedAt) : null;
+  const stopMs = finishedAt ? Date.parse(finishedAt) : Date.parse(now);
+  const elapsedMs = Number.isFinite(startMs) && Number.isFinite(stopMs) ? Math.max(0, stopMs - startMs) : 0;
+  const targetTimeMs = getTargetTimeMs(track);
+  const status = finishedAt ? "finished" : startedAt ? "running" : "not_started";
+
+  return {
+    status,
+    target_time_ms: targetTimeMs,
+    elapsed_ms: elapsedMs,
+    remaining_target_ms: Math.max(0, targetTimeMs - elapsedMs),
+    over_target: elapsedMs > targetTimeMs,
+    started_at: startedAt,
+    finished_at: finishedAt,
+    last_tick_at: state.clock?.last_tick_at || null,
+    tick_count: state.clock?.tick_count || 0
+  };
+}
+
+function getTargetTimeMs(track) {
+  return (track.target_time_seconds || DEFAULT_TARGET_TIME_MS / 1000) * 1000;
 }
 
 function redactActor(actor) {
