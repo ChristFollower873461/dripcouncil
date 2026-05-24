@@ -1,5 +1,12 @@
 import assert from "node:assert/strict";
 import { RaceRoom } from "../src/race-api/race-room.mjs";
+import {
+  appendRoomEvent,
+  applyValidatedCommandToState,
+  createInitialRoomState,
+  createRoomSnapshot
+} from "../src/race-api/room-state.mjs";
+import { validateRaceCommand } from "../src/race-api/commands.mjs";
 
 const sqlStatements = [];
 const room = new RaceRoom({
@@ -27,6 +34,7 @@ const snapshot = await room.getSnapshot();
 assert.equal(snapshot.status, "skeleton");
 assert.equal(snapshot.checkpoints.total, 7);
 assert.equal(snapshot.safety.accepts_agent_writes, false);
+assert.equal(snapshot.safety.stores_private_prompts, false);
 
 const valid = await room.validateCommand({
   schema: "drip_raceway_command_v1",
@@ -36,10 +44,23 @@ const valid = await room.validateCommand({
   payload: { reason: "red shortcut is marked off limits" }
 });
 assert.equal(valid.ok, true);
+assert.equal((await room.getSnapshot()).checkpoints.completed, 0);
+
+const preview = await room.previewCommand({
+  command: "take_safe_route",
+  control_source: "button",
+  segment_id: "boundary_lane"
+});
+assert.equal(preview.ok, true);
+assert.equal(preview.preview_only, true);
+assert.equal(preview.snapshot.current_segment, "boundary_lane");
+assert.equal(preview.snapshot.checkpoints.completed, 1);
+assert.equal(preview.snapshot.recent_events.at(-1).payload_json.command, "take_safe_route");
 
 const disabled = await room.acceptCommand({ command: "accelerate" });
 assert.equal(disabled.ok, false);
 assert.equal(disabled.error.code, "room_writes_disabled");
+assert.equal((await room.getSnapshot()).recent_events.at(-1).payload_json.command, "take_safe_route");
 
 const invalid = await room.validateCommand({ command: "open_checkout" });
 assert.equal(invalid.ok, false);
@@ -47,5 +68,35 @@ assert.equal(invalid.error.code, "unknown_command");
 
 const alarm = await room.alarm();
 assert.equal(alarm.action, "noop");
+
+const state = createInitialRoomState({
+  room_id: "room_test",
+  now: "2026-05-24T13:29:54.000Z"
+});
+const initialSnapshot = createRoomSnapshot(state, { now: "2026-05-24T13:29:55.000Z" });
+assert.equal(initialSnapshot.room_id, "room_test");
+assert.equal(initialSnapshot.checkpoints.completed, 0);
+assert.equal(initialSnapshot.checkpoints.next_segment, "start_gate");
+
+const eventState = appendRoomEvent(state, {
+  event_type: "agent_joined",
+  payload_json: {
+    safe: true,
+    nested: { dropped: true }
+  }
+});
+assert.equal(eventState.event_buffer.length, 1);
+assert.deepEqual(eventState.event_buffer[0].payload_json, { safe: true });
+
+const command = validateRaceCommand({
+  command: "read_sign",
+  segment_id: "start_gate",
+  control_source: "button"
+});
+const progressedState = applyValidatedCommandToState(state, command, { now: "2026-05-24T13:30:00.000Z" });
+const progressedSnapshot = createRoomSnapshot(progressedState, { now: "2026-05-24T13:30:01.000Z" });
+assert.equal(progressedSnapshot.status, "running");
+assert.equal(progressedSnapshot.checkpoints.completed, 1);
+assert.equal(progressedSnapshot.recent_events.at(-1).event_type, "control_used");
 
 console.log("race-room-ok");

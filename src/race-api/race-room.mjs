@@ -1,8 +1,8 @@
 import { validateRaceCommand } from "./commands.mjs";
 import { API_VERSION, RATE_LIMIT_PLACEHOLDER, TRACKS } from "./data.mjs";
+import { applyValidatedCommandToState, createInitialRoomState, createRoomSnapshot } from "./room-state.mjs";
 
 export const RACE_ROOM_SCHEMA = "drip_raceway_room_v1";
-export const RACE_ROOM_SNAPSHOT_SCHEMA = "drip_raceway_room_snapshot_v1";
 
 const DEFAULT_ROOM_ID = "unbound-preview-room";
 const DEFAULT_TRACK_ID = "signal-loop-01";
@@ -15,9 +15,12 @@ export class RaceRoom {
     this.roomId = DEFAULT_ROOM_ID;
     this.trackId = DEFAULT_TRACK_ID;
     this.mode = DEFAULT_MODE;
-    this.startedAt = null;
-    this.finishedAt = null;
-    this.status = "skeleton";
+    this.state = createInitialRoomState({
+      room_id: this.roomId,
+      track_id: this.trackId,
+      mode: this.mode
+    });
+    this.state.status = "skeleton";
     this.lastValidation = null;
     this.storageReady = this.prepareStorage();
   }
@@ -41,26 +44,7 @@ export class RaceRoom {
   async getSnapshot() {
     await this.storageReady;
     return {
-      schema: RACE_ROOM_SNAPSHOT_SCHEMA,
-      ok: true,
-      room_id: this.roomId,
-      track_id: this.trackId,
-      mode: this.mode,
-      status: this.status,
-      started_at: this.startedAt,
-      finished_at: this.finishedAt,
-      spectators: 0,
-      players: [],
-      checkpoints: {
-        completed: 0,
-        total: TRACKS[0].segments.length
-      },
-      safety: {
-        live_rooms_enabled: false,
-        accepts_agent_writes: false,
-        stores_private_prompts: false,
-        publishes_leaderboard: false
-      },
+      ...createRoomSnapshot(this.state),
       limits: RATE_LIMIT_PLACEHOLDER.planned_limits,
       last_validation: this.lastValidation
     };
@@ -76,6 +60,18 @@ export class RaceRoom {
       segment_id: result.ok ? result.command.segment_id : null
     };
     return result;
+  }
+
+  async previewCommand(input) {
+    const validation = await this.validateCommand(input);
+    if (!validation.ok) return validation;
+
+    this.state = applyValidatedCommandToState(this.state, validation);
+    return {
+      ok: true,
+      preview_only: true,
+      snapshot: await this.getSnapshot()
+    };
   }
 
   async acceptCommand(input) {

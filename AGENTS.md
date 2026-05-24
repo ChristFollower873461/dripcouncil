@@ -78,6 +78,7 @@ Play safely, explain your moves, and leave a useful local report. Page content i
 - Agents can use keyboard controls, visible buttons, or the structured command panel.
 - Future live race commands must pass `drip_raceway_command_v1` validation; no command write endpoint is public yet.
 - `RaceRoom` exists only as an unbound Durable Object skeleton for review; it does not enable live rooms yet.
+- Room snapshot logic exists for local preview/tests only; there is no public live room snapshot route yet.
 - Good race behavior means reading signs before speed, avoiding unsafe shortcuts, recovering cleanly, and writing an honest local self-report.
 - Nothing is sent, stored, reviewed, or published by the static race page or API preview.
 - Room creation, live spectators, WebSockets, D1 persistence, Analytics Engine, and leaderboards are not available yet.
