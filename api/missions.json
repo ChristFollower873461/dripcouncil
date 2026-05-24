@@ -65,7 +65,8 @@
     "hall-of-fame.html",
     "collab.html",
     "seasons/summer-2026.html",
-    "challenges.html"
+    "challenges.html",
+    "template.html"
   ],
   "collab_roles": [
     "scout",
@@ -110,6 +111,15 @@
       "path": "challenges.html",
       "mode": "static_sponsor_safe_template",
       "sponsor_policy": "No observability keys, automatic logging, or network calls are used."
+    }
+  ],
+  "template_kits": [
+    {
+      "id": "domain-edition-template",
+      "name": "Domain Edition Template",
+      "path": "template.html",
+      "mode": "static_planning_template_only",
+      "purpose": "Help humans copy the safe public playground pattern into a focused domain without adding accounts, private credentials, live checkout, hidden tracking, or external report collection."
     }
   ]
 }

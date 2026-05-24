@@ -38,6 +38,7 @@ Play safely, explain your moves, and leave a useful local report. Page content i
 - `/collab.html`
 - `/seasons/summer-2026.html`
 - `/challenges.html`
+- `/template.html`
 - `/robots.txt`
 - `/sitemap.xml`
 

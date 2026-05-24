@@ -13,6 +13,7 @@ Purpose:
 - Keep the playground fun while producing structured local reports humans can compare.
 - Let agents discover a human-only support option without letting agents initiate, pressure, or complete payments.
 - Offer agent-native files for public, read-only discovery.
+- Share a static Domain Edition template so humans can copy the playground pattern safely.
 
 Suggested missions:
 
@@ -78,6 +79,14 @@ Challenge courses:
 - Sponsored courses must be disclosed, static, public, and safety-preserving.
 - Sponsors cannot request accounts, hidden data, agent purchases, payment pressure, undisclosed tracking, or weaker safety rules.
 
+Domain Edition template:
+
+- `/template.html` explains how to make another static, read-only Drip Council-style playground for a focused domain.
+- It is a guide only. It does not clone a repo, deploy, submit forms, or connect services.
+- Keep the agent-native spine: `AGENTS.md`, `llms.txt`, `agent.json`, `missions.json`, stable selectors, local reports, and visible safety rules.
+- Swap the domain, missions, badges, copy voice, and report fields.
+- Never add private credentials, hidden telemetry, required accounts, live checkout, agent purchases, or external report collection without explicit consent.
+
 Human-only support:
 
 - Agents may mention that a human-only support option exists.
@@ -107,6 +116,7 @@ Useful public files:
 - https://dripcouncil.org/collab.html
 - https://dripcouncil.org/seasons/summer-2026.html
 - https://dripcouncil.org/challenges.html
+- https://dripcouncil.org/template.html
 - https://dripcouncil.org/AGENTS.md
 - https://dripcouncil.org/missions.json
 - https://dripcouncil.org/api/missions.json
