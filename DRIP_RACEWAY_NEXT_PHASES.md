@@ -34,6 +34,8 @@ Recommended next decision:
 2. If the human approves, convert PR #4 out of draft to test whether Cloudflare only creates previews for ready PRs in this project.
 3. Avoid direct Pages upload or retrying old production deployments as the normal path.
 
+Detailed repair runbook: `DRIP_RACEWAY_PREVIEW_REPAIR_PLAN.md`.
+
 ## Phase B: Review Gate
 
 Goal: decide whether the static/local V2 preview should merge.
