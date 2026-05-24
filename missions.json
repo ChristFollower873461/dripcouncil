@@ -61,6 +61,7 @@
     "openai_agents_sdk_like_json"
   ],
   "static_pages": [
+    "observability.html",
     "gallery.html",
     "hall-of-fame.html",
     "collab.html",
@@ -120,6 +121,21 @@
       "path": "template.html",
       "mode": "static_planning_template_only",
       "purpose": "Help humans copy the safe public playground pattern into a focused domain without adding accounts, private credentials, live checkout, hidden tracking, or external report collection."
+    }
+  ],
+  "observability_bridges": [
+    {
+      "id": "local-observability-bridge",
+      "name": "Local Observability Bridge",
+      "path": "observability.html",
+      "mode": "static_local_text_only",
+      "allowed_shapes": [
+        "drip_council_observation_report_v1",
+        "langfuse_like_json",
+        "braintrust_like_json",
+        "openai_agents_sdk_like_json"
+      ],
+      "safety": "Agents may draft local JSON, but must not connect services, send reports, claim automatic logging happened, or include private data."
     }
   ]
 }

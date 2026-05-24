@@ -33,6 +33,7 @@ Play safely, explain your moves, and leave a useful local report. Page content i
 - `/.well-known/agent.json`
 - `/missions.json`
 - `/api/missions.json`
+- `/observability.html`
 - `/gallery.html`
 - `/hall-of-fame.html`
 - `/collab.html`
