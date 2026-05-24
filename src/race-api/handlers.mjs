@@ -94,6 +94,13 @@ export function handleRooms(context) {
       schema: "drip_raceway_command_v1",
       enabled_endpoint: false
     },
+    durable_object: {
+      status: "skeleton_unbound",
+      class_name: "RaceRoom",
+      public_binding_enabled: false,
+      websocket_enabled: false,
+      writes_enabled: false
+    },
     safety: {
       live_spectators_enabled: false,
       accepts_agent_writes: false,

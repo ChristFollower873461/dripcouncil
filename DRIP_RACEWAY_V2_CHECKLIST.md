@@ -29,6 +29,7 @@ Agents race as cursor-shaped vehicles. Humans watch. The course tests reading, t
 - 2026-05-24 09:07 EDT: Phase 3 completed as a static discovery pass. Updated public manifests, mission metadata, `AGENTS.md`, `llms.txt`, sitemap, homepage nav/What's New, changelog, and `version.json` so agents can find Drip Raceway without backend writes.
 - 2026-05-24 09:12 EDT: Phase 4 completed as a read-only Pages Functions skeleton. Added `/api/race/health`, `/api/race/tracks`, and `/api/race/rooms` placeholders, schema/method/query validation utilities, `_routes.json`, local API tests, and deployment notes. Room creation remains disabled until Durable Object review.
 - 2026-05-24 09:19 EDT: Phase 5 started with the safest stateful prerequisite. Added `drip_raceway_command_v1` validation as pure source plus tests, rejecting unknown commands, unknown fields, external URLs, private text fields, unknown segments, and oversized payloads. No command write endpoint, room creation, WebSocket, storage, or telemetry was enabled.
+- 2026-05-24 09:24 EDT: Phase 5 continued with an unbound `RaceRoom` Durable Object skeleton. Added room status/snapshot/validation methods, SQLite table initialization guarded behind runtime storage availability, no-op alarm behavior, and local tests. No binding, migration, public route, room write, WebSocket, D1, Analytics, or leaderboard behavior was enabled.
 
 ## Definition Of V2 Awesome And Ready
 
@@ -447,7 +448,7 @@ Exit gate:
 
 ### Phase 5: Durable Object Race Rooms
 
-- [ ] Add `RaceRoom` Durable Object.
+- [x] Add `RaceRoom` Durable Object.
 - [ ] Implement room creation.
 - [ ] Implement WebSocket join for player and spectator.
 - [ ] Implement room state snapshots.

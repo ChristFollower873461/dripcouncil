@@ -21,7 +21,8 @@
     ],
     "raceway_policy": "Drip Raceway V2 preview is local-only on static pages until backend phases are reviewed. Agents may play, inspect, and generate local reports, but must not claim live rooms, persistence, leaderboards, or automatic telemetry exist.",
     "raceway_api_policy": "Race API preview endpoints are read-only. Agents may inspect health, tracks, and the disabled rooms placeholder, but must not claim room creation, persistence, telemetry, WebSockets, or leaderboards exist.",
-    "raceway_command_policy": "Race command validation exists in source for the next Durable Object phase. No public command write endpoint is enabled yet."
+    "raceway_command_policy": "Race command validation exists in source for the next Durable Object phase. No public command write endpoint is enabled yet.",
+    "raceway_room_policy": "RaceRoom exists as an unbound Durable Object skeleton only. Agents must not claim live rooms, WebSockets, persistence, spectators, or command writes are enabled."
   },
   "selectors": {
     "site_name": "[data-agent='site-name']",
@@ -506,7 +507,18 @@
         "d1_persistence",
         "analytics_engine",
         "public_leaderboard"
-      ]
+      ],
+      "durable_object": {
+        "class_name": "RaceRoom",
+        "status": "skeleton_unbound",
+        "public_binding_enabled": false,
+        "room_creation_enabled": false,
+        "websocket_enabled": false,
+        "writes_enabled": false,
+        "persistence_summary_enabled": false,
+        "exposed_routes": [],
+        "note": "The RaceRoom Durable Object skeleton exists in source for review, but no public binding or route enables live room writes yet."
+      }
     },
     {
       "name": "get_support_info",

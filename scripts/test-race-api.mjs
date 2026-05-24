@@ -37,6 +37,7 @@ assert.equal(rooms.status, 200);
 const roomsJson = await readJson(rooms);
 assert.equal(roomsJson.create_room.enabled, false);
 assert.equal(roomsJson.safety.accepts_agent_writes, false);
+assert.equal(roomsJson.durable_object.status, "skeleton_unbound");
 
 const postRoom = await handleRooms(context("/api/race/rooms", { method: "POST", body: "{}" }));
 assert.equal(postRoom.status, 405);

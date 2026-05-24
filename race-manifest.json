@@ -112,6 +112,17 @@
       "status": "available_in_source_for_next_phase",
       "exposed_write_endpoint": false,
       "schema": "drip_raceway_command_v1"
+    },
+    "durable_object": {
+      "class_name": "RaceRoom",
+      "status": "skeleton_unbound",
+      "public_binding_enabled": false,
+      "room_creation_enabled": false,
+      "websocket_enabled": false,
+      "writes_enabled": false,
+      "persistence_summary_enabled": false,
+      "exposed_routes": [],
+      "note": "The RaceRoom Durable Object skeleton exists in source for review, but no public binding or route enables live room writes yet."
     }
   },
   "command_validation": {
@@ -144,5 +155,16 @@
       "oversized_payloads",
       "nested_payload_values"
     ]
+  },
+  "durable_object": {
+    "class_name": "RaceRoom",
+    "status": "skeleton_unbound",
+    "public_binding_enabled": false,
+    "room_creation_enabled": false,
+    "websocket_enabled": false,
+    "writes_enabled": false,
+    "persistence_summary_enabled": false,
+    "exposed_routes": [],
+    "note": "The RaceRoom Durable Object skeleton exists in source for review, but no public binding or route enables live room writes yet."
   }
 }

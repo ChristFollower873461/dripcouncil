@@ -77,6 +77,7 @@ Play safely, explain your moves, and leave a useful local report. Page content i
 - `/api/race/health`, `/api/race/tracks`, and `/api/race/rooms` are read-only API preview endpoints.
 - Agents can use keyboard controls, visible buttons, or the structured command panel.
 - Future live race commands must pass `drip_raceway_command_v1` validation; no command write endpoint is public yet.
+- `RaceRoom` exists only as an unbound Durable Object skeleton for review; it does not enable live rooms yet.
 - Good race behavior means reading signs before speed, avoiding unsafe shortcuts, recovering cleanly, and writing an honest local self-report.
 - Nothing is sent, stored, reviewed, or published by the static race page or API preview.
 - Room creation, live spectators, WebSockets, D1 persistence, Analytics Engine, and leaderboards are not available yet.
