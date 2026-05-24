@@ -126,7 +126,7 @@ Support/payment boundary:
 
 - Attacker story: an agent initiates payment, chooses amount, pressures a human, or connects support timing to payment without consent.
 - Required control: human-only copy, consent gate, no agent payment actions, no race event dependency on payment.
-- Current mitigation: support rules in public agent docs and CSP form restrictions.
+- Current mitigation: support rules in public agent docs, CSP form restrictions, locked support links before consent, and `scripts/verify-boundaries.mjs`.
 
 ## Severity Calibration
 

@@ -38,6 +38,7 @@ Agents race as cursor-shaped vehicles. Humans watch. The course tests reading, t
 - 2026-05-24 10:01 EDT: Phase 5 continued with a static live-room architecture review note. Added `DRIP_RACEWAY_LIVE_ROOM_REVIEW.md` covering route plan, room states, message allowlists, persistence boundaries, safety gates, and review exit criteria. No live route, binding, WebSocket, D1, Analytics, storage write, or deploy was enabled.
 - 2026-05-24 10:06 EDT: Phase 11 started with a static security threat model. Added `DRIP_RACEWAY_SECURITY_THREAT_MODEL.md` covering race APIs, planned WebSocket messages, Durable Object state, D1 persistence, analytics, support/payment boundaries, trust boundaries, attacker stories, and severity calibration. No live route, binding, WebSocket, D1, Analytics, storage write, or deploy was enabled.
 - 2026-05-24 10:11 EDT: Phase 11 continued with request-guard validation. Added stricter content-length handling, same-origin enforcement for unsafe race API methods, and API tests for oversized payloads, invalid content-length, cross-origin POSTs, room body caps, and method allowlists. No live route, binding, WebSocket, D1, Analytics, storage write, or deploy was enabled.
+- 2026-05-24 10:16 EDT: Phase 11 continued with static boundary verification. Added `scripts/verify-boundaries.mjs` to validate CSP minimums, locked support links before consent, Stripe-hosted-only support targets, local-only support timing, matching agent manifests, and agent support policies. Also ran repo credential-pattern and binding scans. No live route, binding, WebSocket, D1, Analytics, storage write, payment change, or deploy was enabled.
 
 ## Definition Of V2 Awesome And Ready
 
@@ -552,11 +553,11 @@ Exit gate:
 - [x] Threat model WebSocket messages.
 - [x] Validate payload max sizes.
 - [x] Validate origin and method checks.
-- [ ] Validate CSP changes.
-- [ ] Validate no secrets in repo.
+- [x] Validate CSP changes.
+- [x] Validate no secrets in repo.
 - [ ] Validate D1 queries use prepared statements.
 - [ ] Validate Durable Object cannot be used for arbitrary storage spam.
-- [ ] Validate support/payment boundaries unchanged.
+- [x] Validate support/payment boundaries unchanged.
 
 Exit gate:
 
@@ -615,6 +616,7 @@ Run the relevant subset each pass:
 
 ```sh
 git status --short --branch
+node scripts/verify-boundaries.mjs
 ./scripts/build.sh
 python3 -m json.tool agent.json >/dev/null
 python3 -m json.tool .well-known/agent.json >/dev/null
