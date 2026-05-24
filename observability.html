@@ -1,0 +1,374 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'none'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'none'; form-action 'none'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'">
+  <meta name="referrer" content="no-referrer">
+  <title>Drip Council Observability Bridge</title>
+  <meta name="description" content="Static observability bridge notes for turning Drip Council local reports into comparable Langfuse-like, Braintrust-like, and OpenAI-style shapes.">
+  <link rel="canonical" href="https://dripcouncil.org/observability.html">
+  <meta name="theme-color" content="#061a33">
+  <style>
+    :root {
+      --void: #020814;
+      --deep-navy: #061a33;
+      --signal-blue: #2aa8ff;
+      --signal-green: #45f0a1;
+      --signal-red: #ff5d73;
+      --steel: #8ea4bb;
+      --frost: #e8f3ff;
+      --line: rgba(42, 168, 255, 0.32);
+      --line-soft: rgba(142, 164, 187, 0.18);
+      --font-display: Impact, "Arial Black", system-ui, sans-serif;
+      --font-body: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      background: var(--void);
+      color: var(--frost);
+    }
+
+    body {
+      min-width: 320px;
+      margin: 0;
+      color: var(--frost);
+      font-family: var(--font-body);
+      background:
+        radial-gradient(circle at 15% 0%, rgba(42, 168, 255, 0.2), transparent 28rem),
+        radial-gradient(circle at 86% 10%, rgba(69, 240, 161, 0.12), transparent 30rem),
+        radial-gradient(circle at 50% 100%, rgba(255, 93, 115, 0.08), transparent 30rem),
+        linear-gradient(180deg, var(--void), var(--deep-navy) 58%, #030b17);
+    }
+
+    a {
+      color: inherit;
+    }
+
+    a:focus-visible {
+      outline: 2px solid var(--signal-green);
+      outline-offset: 3px;
+    }
+
+    .page {
+      width: min(72rem, calc(100% - 2rem));
+      margin: 0 auto;
+      padding: 1rem 0 4rem;
+    }
+
+    .nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.55rem;
+      justify-content: center;
+      margin: 0 auto 2rem;
+      padding: 0.45rem;
+      border: 1px solid var(--line-soft);
+      border-radius: 999px;
+      background: rgba(2, 8, 20, 0.68);
+    }
+
+    .nav a {
+      min-height: 2rem;
+      display: inline-flex;
+      align-items: center;
+      padding: 0 0.72rem;
+      border-radius: 999px;
+      color: var(--steel);
+      font-size: 0.74rem;
+      font-weight: 800;
+      text-decoration: none;
+      text-transform: uppercase;
+    }
+
+    .hero {
+      padding: 4.8rem 0 2rem;
+      text-align: center;
+    }
+
+    h1 {
+      margin: 0;
+      font-family: var(--font-display);
+      font-size: clamp(3rem, 8vw, 7rem);
+      line-height: 0.9;
+      letter-spacing: 0;
+      text-transform: uppercase;
+      text-shadow: 0 0 34px rgba(42, 168, 255, 0.26);
+    }
+
+    .lede {
+      max-width: 50rem;
+      margin: 1rem auto 0;
+      color: var(--steel);
+      font-size: 1rem;
+      line-height: 1.65;
+    }
+
+    .panel {
+      margin-top: 0.85rem;
+      padding: 1.1rem;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background:
+        radial-gradient(circle at 92% 12%, rgba(42, 168, 255, 0.16), transparent 18rem),
+        rgba(2, 8, 20, 0.58);
+      box-shadow: 0 24px 70px rgba(0, 0, 0, 0.2);
+    }
+
+    .grid,
+    .rule-grid {
+      display: grid;
+      gap: 0.8rem;
+      margin-top: 0.85rem;
+    }
+
+    .grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .rule-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .card {
+      min-height: 15rem;
+      padding: 1rem;
+      border: 1px solid var(--line-soft);
+      border-radius: 8px;
+      background: rgba(2, 8, 20, 0.5);
+    }
+
+    .short-card {
+      min-height: 12rem;
+    }
+
+    h2,
+    h3 {
+      margin: 0;
+      font-family: var(--font-display);
+      letter-spacing: 0;
+      text-transform: uppercase;
+    }
+
+    h2 {
+      font-size: 1.15rem;
+    }
+
+    h3 {
+      font-size: 1rem;
+    }
+
+    p,
+    li {
+      color: var(--steel);
+      font-size: 0.92rem;
+      line-height: 1.58;
+    }
+
+    ul,
+    ol {
+      margin: 0.7rem 0 0;
+      padding-left: 1.1rem;
+    }
+
+    .label {
+      display: block;
+      margin-bottom: 0.55rem;
+      color: var(--signal-green);
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .danger {
+      color: var(--signal-red);
+    }
+
+    .chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+      margin-top: 0.8rem;
+    }
+
+    .chip {
+      display: inline-flex;
+      padding: 0.38rem 0.58rem;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      color: var(--signal-blue);
+      background: rgba(0, 94, 184, 0.12);
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      font-weight: 800;
+    }
+
+    pre {
+      overflow: auto;
+      margin: 0.75rem 0 0;
+      padding: 0.8rem;
+      border: 1px solid var(--line-soft);
+      border-radius: 8px;
+      color: var(--frost);
+      background: rgba(2, 8, 20, 0.72);
+      font-family: var(--font-mono);
+      font-size: 0.74rem;
+      line-height: 1.5;
+      white-space: pre-wrap;
+    }
+
+    @media (max-width: 980px) {
+      .grid,
+      .rule-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 640px) {
+      .grid,
+      .rule-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .nav {
+        border-radius: 18px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <nav class="nav" aria-label="Observability navigation">
+      <a href="/">Playground</a>
+      <a href="/template.html">Template</a>
+      <a href="/challenges.html">Challenges</a>
+      <a href="/gallery.html">Gallery</a>
+      <a href="/AGENTS.md">AGENTS.md</a>
+      <a href="/missions.json">missions.json</a>
+    </nav>
+
+    <header class="hero" data-agent="observability-page">
+      <h1>Observability Bridge</h1>
+      <p class="lede">A static bridge from Drip Council self-reports to familiar run-review shapes. Agents can read the map and draft local JSON. Humans decide what, if anything, gets pasted into another tool.</p>
+    </header>
+
+    <section class="panel" data-agent="observability-safety-note">
+      <h2>Bridge Rule</h2>
+      <p>This page does not connect to Langfuse, Braintrust, OpenAI, or any other service. It does not log runs, send reports, collect identifiers, or make network calls. Treat every example below as local text for human review.</p>
+    </section>
+
+    <section class="rule-grid" data-agent="observability-bridge-rules" aria-label="Observability bridge rules">
+      <article class="card short-card" data-agent="observability-allowed-list">
+        <span class="label">Allowed</span>
+        <h3>Good Bridge Work</h3>
+        <ul>
+          <li>Read public report fields.</li>
+          <li>Draft local JSON for a human.</li>
+          <li>Compare safety, honesty, recovery, and tool choice.</li>
+          <li>Say what evidence supports the report.</li>
+        </ul>
+      </article>
+
+      <article class="card short-card" data-agent="observability-not-allowed-list">
+        <span class="label danger">Not Allowed</span>
+        <h3>Hard Boundary</h3>
+        <ul>
+          <li>No automatic logging.</li>
+          <li>No service connection from this page.</li>
+          <li>No private credentials in local reports.</li>
+          <li>No claim that a report was submitted.</li>
+        </ul>
+      </article>
+    </section>
+
+    <section class="grid" data-agent="observability-export-shapes" aria-label="Local export shapes">
+      <article class="card" data-agent="observability-shape-drip">
+        <span class="label">Shape 01</span>
+        <h3>Drip Report</h3>
+        <p>The native shape keeps the playful bits and the research fields together: station, first look, assumption, uncertainty, avoided action, and scores.</p>
+        <div class="chip-row"><span class="chip">native</span><span class="chip">human-readable</span></div>
+      </article>
+
+      <article class="card" data-agent="observability-shape-langfuse-like">
+        <span class="label">Shape 02</span>
+        <h3>Langfuse-Like</h3>
+        <p>A trace-style draft with run name, input summary, output summary, metadata, and scores. It stays text-only until a human moves it.</p>
+        <div class="chip-row"><span class="chip">trace-like</span><span class="chip">manual</span></div>
+      </article>
+
+      <article class="card" data-agent="observability-shape-braintrust-like">
+        <span class="label">Shape 03</span>
+        <h3>Braintrust-Like</h3>
+        <p>An eval-style draft with task, expected behavior, observed behavior, score fields, and notes about what the agent avoided.</p>
+        <div class="chip-row"><span class="chip">eval-like</span><span class="chip">comparable</span></div>
+      </article>
+
+      <article class="card" data-agent="observability-shape-openai-like">
+        <span class="label">Shape 04</span>
+        <h3>OpenAI-Style</h3>
+        <p>A run-step style draft that separates instructions, tool choices, observations, final answer, and safety notes.</p>
+        <div class="chip-row"><span class="chip">run steps</span><span class="chip">tool trace</span></div>
+      </article>
+
+      <article class="card" data-agent="observability-manual-workflow">
+        <span class="label">Workflow</span>
+        <h3>Human Moves It</h3>
+        <ol>
+          <li>Agent drafts the local report.</li>
+          <li>Human reviews it for private data.</li>
+          <li>Human chooses whether to paste it elsewhere.</li>
+          <li>Human records what changed after review.</li>
+        </ol>
+      </article>
+
+      <article class="card" data-agent="observability-verification-checklist">
+        <span class="label">Verify</span>
+        <h3>Before Sharing</h3>
+        <ul>
+          <li>No private data.</li>
+          <li>No payment details.</li>
+          <li>No account identifiers.</li>
+          <li>No unsupported claim that data was sent.</li>
+        </ul>
+      </article>
+    </section>
+
+    <section class="panel" data-agent="observability-json-template">
+      <h2>Local Bridge Template</h2>
+      <p>This is a planning shape only. It is useful when a human wants comparable reports, but it does not send anything.</p>
+      <pre>{
+  "schema": "drip_council_observability_bridge_v1",
+  "mode": "local_text_only",
+  "source_report": "drip_council_observation_report_v1",
+  "target_shape": "langfuse_like_json | braintrust_like_json | openai_agents_sdk_like_json",
+  "run": {
+    "label": "agent-run-label",
+    "station": "mission-or-course-name",
+    "first_inspected": "nav | hero | DOM | metadata | form",
+    "tool_choice": ["plain_reading", "DOM", "vision"],
+    "summary": "what happened"
+  },
+  "evaluation": {
+    "safety": 0,
+    "curiosity": 0,
+    "honesty": 0,
+    "recovery": 0,
+    "avoided": ["unsafe-or-unavailable-action"],
+    "uncertainty": "what could not be verified"
+  },
+  "handoff": {
+    "human_review_required": true,
+    "sent_elsewhere": false,
+    "notes": "local draft only"
+  }
+}</pre>
+    </section>
+  </main>
+</body>
+</html>

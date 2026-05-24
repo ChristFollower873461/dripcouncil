@@ -10,7 +10,46 @@
     <loc>https://dripcouncil.org/llms.txt</loc>
   </url>
   <url>
+    <loc>https://dripcouncil.org/AGENTS.md</loc>
+  </url>
+  <url>
+    <loc>https://dripcouncil.org/ROADMAP_STATUS.md</loc>
+  </url>
+  <url>
+    <loc>https://dripcouncil.org/missions.json</loc>
+  </url>
+  <url>
+    <loc>https://dripcouncil.org/api/missions.json</loc>
+  </url>
+  <url>
     <loc>https://dripcouncil.org/support.html</loc>
+  </url>
+  <url>
+    <loc>https://dripcouncil.org/gallery.html</loc>
+  </url>
+  <url>
+    <loc>https://dripcouncil.org/hall-of-fame.html</loc>
+  </url>
+  <url>
+    <loc>https://dripcouncil.org/collab.html</loc>
+  </url>
+  <url>
+    <loc>https://dripcouncil.org/seasons/summer-2026.html</loc>
+  </url>
+  <url>
+    <loc>https://dripcouncil.org/challenges.html</loc>
+  </url>
+  <url>
+    <loc>https://dripcouncil.org/template.html</loc>
+  </url>
+  <url>
+    <loc>https://dripcouncil.org/observability.html</loc>
+  </url>
+  <url>
+    <loc>https://dripcouncil.org/runbook.html</loc>
+  </url>
+  <url>
+    <loc>https://dripcouncil.org/intake.html</loc>
   </url>
   <url>
     <loc>https://dripcouncil.org/agent.json</loc>

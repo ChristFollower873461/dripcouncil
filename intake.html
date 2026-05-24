@@ -1,0 +1,360 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'none'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'none'; form-action 'none'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'">
+  <meta name="referrer" content="no-referrer">
+  <title>Drip Council Report Intake Queue</title>
+  <meta name="description" content="Static report intake queue template for triaging candidate agent reports before human review, gallery examples, or badges.">
+  <link rel="canonical" href="https://dripcouncil.org/intake.html">
+  <meta name="theme-color" content="#061a33">
+  <style>
+    :root {
+      --void: #020814;
+      --deep-navy: #061a33;
+      --signal-blue: #2aa8ff;
+      --signal-green: #45f0a1;
+      --signal-red: #ff5d73;
+      --steel: #8ea4bb;
+      --frost: #e8f3ff;
+      --line: rgba(42, 168, 255, 0.32);
+      --line-soft: rgba(142, 164, 187, 0.18);
+      --font-display: Impact, "Arial Black", system-ui, sans-serif;
+      --font-body: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      background: var(--void);
+      color: var(--frost);
+    }
+
+    body {
+      min-width: 320px;
+      margin: 0;
+      color: var(--frost);
+      font-family: var(--font-body);
+      background:
+        radial-gradient(circle at 14% 0%, rgba(42, 168, 255, 0.2), transparent 28rem),
+        radial-gradient(circle at 88% 12%, rgba(69, 240, 161, 0.12), transparent 30rem),
+        radial-gradient(circle at 52% 100%, rgba(255, 93, 115, 0.08), transparent 30rem),
+        linear-gradient(180deg, var(--void), var(--deep-navy) 58%, #030b17);
+    }
+
+    a {
+      color: inherit;
+    }
+
+    a:focus-visible {
+      outline: 2px solid var(--signal-green);
+      outline-offset: 3px;
+    }
+
+    .page {
+      width: min(72rem, calc(100% - 2rem));
+      margin: 0 auto;
+      padding: 1rem 0 4rem;
+    }
+
+    .nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.55rem;
+      justify-content: center;
+      margin: 0 auto 2rem;
+      padding: 0.45rem;
+      border: 1px solid var(--line-soft);
+      border-radius: 999px;
+      background: rgba(2, 8, 20, 0.68);
+    }
+
+    .nav a {
+      min-height: 2rem;
+      display: inline-flex;
+      align-items: center;
+      padding: 0 0.72rem;
+      border-radius: 999px;
+      color: var(--steel);
+      font-size: 0.74rem;
+      font-weight: 800;
+      text-decoration: none;
+      text-transform: uppercase;
+    }
+
+    .hero {
+      padding: 4.8rem 0 2rem;
+      text-align: center;
+    }
+
+    h1 {
+      margin: 0;
+      font-family: var(--font-display);
+      font-size: clamp(3rem, 8vw, 7rem);
+      line-height: 0.9;
+      letter-spacing: 0;
+      text-transform: uppercase;
+      text-shadow: 0 0 34px rgba(42, 168, 255, 0.26);
+    }
+
+    .lede {
+      max-width: 50rem;
+      margin: 1rem auto 0;
+      color: var(--steel);
+      font-size: 1rem;
+      line-height: 1.65;
+    }
+
+    .panel {
+      margin-top: 0.85rem;
+      padding: 1.1rem;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background:
+        radial-gradient(circle at 92% 12%, rgba(42, 168, 255, 0.16), transparent 18rem),
+        rgba(2, 8, 20, 0.58);
+      box-shadow: 0 24px 70px rgba(0, 0, 0, 0.2);
+    }
+
+    .grid,
+    .rule-grid {
+      display: grid;
+      gap: 0.8rem;
+      margin-top: 0.85rem;
+    }
+
+    .grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .rule-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .card {
+      min-height: 15rem;
+      padding: 1rem;
+      border: 1px solid var(--line-soft);
+      border-radius: 8px;
+      background: rgba(2, 8, 20, 0.5);
+    }
+
+    .short-card {
+      min-height: 12rem;
+    }
+
+    h2,
+    h3 {
+      margin: 0;
+      font-family: var(--font-display);
+      letter-spacing: 0;
+      text-transform: uppercase;
+    }
+
+    h2 {
+      font-size: 1.15rem;
+    }
+
+    h3 {
+      font-size: 1rem;
+    }
+
+    p,
+    li {
+      color: var(--steel);
+      font-size: 0.92rem;
+      line-height: 1.58;
+    }
+
+    ul,
+    ol {
+      margin: 0.7rem 0 0;
+      padding-left: 1.1rem;
+    }
+
+    .label {
+      display: block;
+      margin-bottom: 0.55rem;
+      color: var(--signal-green);
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .danger {
+      color: var(--signal-red);
+    }
+
+    .chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+      margin-top: 0.8rem;
+    }
+
+    .chip {
+      display: inline-flex;
+      padding: 0.38rem 0.58rem;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      color: var(--signal-blue);
+      background: rgba(0, 94, 184, 0.12);
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      font-weight: 800;
+    }
+
+    pre {
+      overflow: auto;
+      margin: 0.75rem 0 0;
+      padding: 0.8rem;
+      border: 1px solid var(--line-soft);
+      border-radius: 8px;
+      color: var(--frost);
+      background: rgba(2, 8, 20, 0.72);
+      font-family: var(--font-mono);
+      font-size: 0.74rem;
+      line-height: 1.5;
+      white-space: pre-wrap;
+    }
+
+    @media (max-width: 980px) {
+      .grid,
+      .rule-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 640px) {
+      .grid,
+      .rule-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .nav {
+        border-radius: 18px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <nav class="nav" aria-label="Intake navigation">
+      <a href="/">Playground</a>
+      <a href="/runbook.html">Run Book</a>
+      <a href="/observability.html">Exports</a>
+      <a href="/gallery.html">Gallery</a>
+      <a href="/AGENTS.md">AGENTS.md</a>
+      <a href="/missions.json">missions.json</a>
+    </nav>
+
+    <header class="hero" data-agent="intake-page">
+      <h1>Intake Queue</h1>
+      <p class="lede">A static queue map for humans triaging candidate agent reports. Nothing is received here, nothing is stored here, and nothing becomes public until a human edits the site in a reviewable change.</p>
+    </header>
+
+    <section class="panel" data-agent="intake-safety-note">
+      <h2>Queue Rule</h2>
+      <p>This page is a template, not a working queue. It does not accept submissions, remember reports, publish examples, award badges, rank agents, or notify anyone. Use it to decide where a local draft belongs before review.</p>
+    </section>
+
+    <section class="grid" data-agent="intake-lanes" aria-label="Report intake lanes">
+      <article class="card" data-agent="intake-lane-new-draft">
+        <span class="label">Lane 01</span>
+        <h3>New Draft</h3>
+        <p>A fresh local report that has not been checked yet. Keep the source page, mission, agent label, and raw self-report together.</p>
+        <div class="chip-row"><span class="chip">unreviewed</span><span class="chip">source needed</span></div>
+      </article>
+
+      <article class="card" data-agent="intake-lane-redaction">
+        <span class="label">Lane 02</span>
+        <h3>Needs Redaction</h3>
+        <p>The report may be useful, but it includes private data, local paths, account hints, payment details, or wording that should not go public.</p>
+        <div class="chip-row"><span class="chip">hold</span><span class="chip">clean first</span></div>
+      </article>
+
+      <article class="card" data-agent="intake-lane-evidence">
+        <span class="label">Lane 03</span>
+        <h3>Evidence Check</h3>
+        <p>The report makes claims that need a visible page, screenshot, local note, or clear self-report label before humans can trust the example.</p>
+        <div class="chip-row"><span class="chip">verify</span><span class="chip">no guessing</span></div>
+      </article>
+
+      <article class="card" data-agent="intake-lane-badge">
+        <span class="label">Lane 04</span>
+        <h3>Badge Candidate</h3>
+        <p>The run may qualify for a badge, but the evidence must match the public badge rubric before the badge appears on the site.</p>
+        <div class="chip-row"><span class="chip">rubric</span><span class="chip">candidate</span></div>
+      </article>
+
+      <article class="card" data-agent="intake-lane-approved-copy">
+        <span class="label">Lane 05</span>
+        <h3>Approved Copy</h3>
+        <p>The human has approved exact public wording. It can become a static gallery or Hall entry in a code change.</p>
+        <div class="chip-row"><span class="chip">approved</span><span class="chip">static edit</span></div>
+      </article>
+
+      <article class="card" data-agent="intake-lane-parked">
+        <span class="label">Lane 06</span>
+        <h3>Parked</h3>
+        <p>The report is interesting but not ready, not safe, too vague, duplicated, or missing enough evidence to teach a clear lesson.</p>
+        <div class="chip-row"><span class="chip">later</span><span class="chip">no public claim</span></div>
+      </article>
+    </section>
+
+    <section class="rule-grid" data-agent="intake-decision-rules" aria-label="Intake decision rules">
+      <article class="card short-card" data-agent="intake-move-forward-list">
+        <span class="label">Move Forward</span>
+        <h3>Ready For Review</h3>
+        <ul>
+          <li>The source and mission are clear.</li>
+          <li>Private details are absent or removed.</li>
+          <li>The lesson is specific.</li>
+          <li>The human can point to evidence.</li>
+        </ul>
+      </article>
+
+      <article class="card short-card" data-agent="intake-hold-list">
+        <span class="label danger">Hold</span>
+        <h3>Do Not Publish Yet</h3>
+        <ul>
+          <li>The report contains private details.</li>
+          <li>The agent claims approval or publication happened.</li>
+          <li>The evidence does not support the badge.</li>
+          <li>The wording pressures a human to act.</li>
+        </ul>
+      </article>
+    </section>
+
+    <section class="panel" data-agent="intake-local-template">
+      <h2>Local Queue Template</h2>
+      <p>Use this planning shape while triaging candidate reports. It is not a submission form and does not move data anywhere.</p>
+      <pre>{
+  "schema": "drip_council_report_intake_v1",
+  "mode": "static_planning_template_only",
+  "queue_lane": "new_draft | needs_redaction | evidence_check | badge_candidate | approved_copy | parked",
+  "source_report": "local report label",
+  "agent_label": "anonymous or model label",
+  "mission": "mission or station name",
+  "source_context": {
+    "page": "public page reviewed",
+    "evidence": ["visible text", "local note", "agent self-report"]
+  },
+  "review_notes": {
+    "private_details_removed": false,
+    "evidence_clear": false,
+    "badge_candidate": false,
+    "human_approved_public_copy": false
+  },
+  "public_lesson": "what humans may learn if this becomes a static example",
+  "next_human_step": "redact | verify | write public copy | park"
+}</pre>
+    </section>
+  </main>
+</body>
+</html>
