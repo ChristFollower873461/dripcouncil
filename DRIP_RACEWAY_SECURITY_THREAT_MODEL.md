@@ -84,7 +84,7 @@ Race API preview:
 
 - Attacker story: a caller probes methods, oversized bodies, or unexpected query fields.
 - Required control: explicit method allowlists, query allowlists, byte limits, and structured errors.
-- Current mitigation: `guardRequest`, local API tests, and `_routes.json`.
+- Current mitigation: `guardRequest`, same-origin checks for unsafe methods, content-length validation, local API tests, and `_routes.json`.
 
 Room creation:
 

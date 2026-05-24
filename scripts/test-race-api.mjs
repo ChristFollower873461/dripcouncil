@@ -49,22 +49,70 @@ assert.equal(roomsJson.durable_object.public_snapshot_route_enabled, false);
 assert.equal(roomsJson.create_room.request_schema, "drip_raceway_room_create_v1");
 assert.equal(roomsJson.create_room.review_gate.valid_request_response, "403 room_creation_disabled");
 
+const roomCreateBody = {
+  schema: "drip_raceway_room_create_v1",
+  track_id: "signal-loop-01",
+  mode: "casual_cruise",
+  created_by_type: "human",
+  room_label_hash: "local-review",
+  local_only: true,
+  human_review_ack: true
+};
+
 const postRoom = await handleRooms(context("/api/race/rooms", {
   method: "POST",
-  body: JSON.stringify({
-    schema: "drip_raceway_room_create_v1",
-    track_id: "signal-loop-01",
-    mode: "casual_cruise",
-    created_by_type: "human",
-    room_label_hash: "local-review",
-    local_only: true,
-    human_review_ack: true
-  })
+  headers: { origin: "https://dripcouncil.org" },
+  body: JSON.stringify(roomCreateBody)
 }));
 assert.equal(postRoom.status, 403);
 const postRoomJson = await readJson(postRoom);
 assert.equal(postRoomJson.error.code, "room_creation_disabled");
 assert.equal(postRoomJson.error.details.validated_request.track_id, "signal-loop-01");
+
+const crossOriginPost = await handleRooms(context("/api/race/rooms", {
+  method: "POST",
+  headers: { origin: "https://example.org" },
+  body: JSON.stringify(roomCreateBody)
+}));
+assert.equal(crossOriginPost.status, 403);
+assert.equal((await readJson(crossOriginPost)).error.code, "origin_not_allowed");
+
+const noOriginPost = await handleRooms(context("/api/race/rooms", {
+  method: "POST",
+  body: JSON.stringify(roomCreateBody)
+}));
+assert.equal(noOriginPost.status, 403);
+assert.equal((await readJson(noOriginPost)).error.code, "origin_not_allowed");
+
+const oversizedPost = await handleRooms(context("/api/race/rooms", {
+  method: "POST",
+  headers: {
+    "content-length": "4096",
+    origin: "https://dripcouncil.org"
+  },
+  body: JSON.stringify(roomCreateBody)
+}));
+assert.equal(oversizedPost.status, 413);
+assert.equal((await readJson(oversizedPost)).error.code, "payload_too_large");
+
+const invalidLengthPost = await handleRooms(context("/api/race/rooms", {
+  method: "POST",
+  headers: {
+    "content-length": "nope",
+    origin: "https://dripcouncil.org"
+  },
+  body: JSON.stringify(roomCreateBody)
+}));
+assert.equal(invalidLengthPost.status, 400);
+assert.equal((await readJson(invalidLengthPost)).error.code, "invalid_content_length");
+
+const tooLargeRoomBody = await handleRooms(context("/api/race/rooms", {
+  method: "POST",
+  headers: { origin: "https://dripcouncil.org" },
+  body: JSON.stringify({ ...roomCreateBody, room_label_hash: "x".repeat(1200) })
+}));
+assert.equal(tooLargeRoomBody.status, 400);
+assert.equal((await readJson(tooLargeRoomBody)).error.code, "room_create_too_large");
 
 const invalidPostRoom = await handleRoomCreateDisabled(context("/api/race/rooms", {
   method: "POST",
@@ -72,6 +120,11 @@ const invalidPostRoom = await handleRoomCreateDisabled(context("/api/race/rooms"
 }));
 assert.equal(invalidPostRoom.status, 400);
 assert.equal((await readJson(invalidPostRoom)).error.code, "human_review_required");
+
+const disallowedMethod = await handleRooms(context("/api/race/rooms", { method: "DELETE" }));
+assert.equal(disallowedMethod.status, 405);
+assert.equal(disallowedMethod.headers.get("allow"), "GET, HEAD, POST, OPTIONS");
+assert.equal((await readJson(disallowedMethod)).error.code, "method_not_allowed");
 
 const options = await handleRooms(context("/api/race/rooms", { method: "OPTIONS" }));
 assert.equal(options.status, 204);

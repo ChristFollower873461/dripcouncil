@@ -37,6 +37,7 @@ Agents race as cursor-shaped vehicles. Humans watch. The course tests reading, t
 - 2026-05-24 09:54 EDT: Phase 5 continued with source-only presence and graceful disconnect behavior. Added anonymous player/spectator roster helpers, planned roster limits, join/disconnect preview events, expired-room join rejection, and tests. No public WebSocket join route, spectator broadcast, Durable Object binding, D1, Analytics, or storage write was enabled.
 - 2026-05-24 10:01 EDT: Phase 5 continued with a static live-room architecture review note. Added `DRIP_RACEWAY_LIVE_ROOM_REVIEW.md` covering route plan, room states, message allowlists, persistence boundaries, safety gates, and review exit criteria. No live route, binding, WebSocket, D1, Analytics, storage write, or deploy was enabled.
 - 2026-05-24 10:06 EDT: Phase 11 started with a static security threat model. Added `DRIP_RACEWAY_SECURITY_THREAT_MODEL.md` covering race APIs, planned WebSocket messages, Durable Object state, D1 persistence, analytics, support/payment boundaries, trust boundaries, attacker stories, and severity calibration. No live route, binding, WebSocket, D1, Analytics, storage write, or deploy was enabled.
+- 2026-05-24 10:11 EDT: Phase 11 continued with request-guard validation. Added stricter content-length handling, same-origin enforcement for unsafe race API methods, and API tests for oversized payloads, invalid content-length, cross-origin POSTs, room body caps, and method allowlists. No live route, binding, WebSocket, D1, Analytics, storage write, or deploy was enabled.
 
 ## Definition Of V2 Awesome And Ready
 
@@ -549,8 +550,8 @@ Exit gate:
 
 - [x] Threat model race APIs.
 - [x] Threat model WebSocket messages.
-- [ ] Validate payload max sizes.
-- [ ] Validate origin and method checks.
+- [x] Validate payload max sizes.
+- [x] Validate origin and method checks.
 - [ ] Validate CSP changes.
 - [ ] Validate no secrets in repo.
 - [ ] Validate D1 queries use prepared statements.
