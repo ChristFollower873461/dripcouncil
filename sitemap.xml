@@ -16,10 +16,22 @@
     <loc>https://dripcouncil.org/ROADMAP_STATUS.md</loc>
   </url>
   <url>
+    <loc>https://dripcouncil.org/DRIP_RACEWAY_SPEC.md</loc>
+  </url>
+  <url>
+    <loc>https://dripcouncil.org/DRIP_RACEWAY_V2_CHECKLIST.md</loc>
+  </url>
+  <url>
     <loc>https://dripcouncil.org/missions.json</loc>
   </url>
   <url>
     <loc>https://dripcouncil.org/api/missions.json</loc>
+  </url>
+  <url>
+    <loc>https://dripcouncil.org/race.html</loc>
+  </url>
+  <url>
+    <loc>https://dripcouncil.org/race-manifest.json</loc>
   </url>
   <url>
     <loc>https://dripcouncil.org/support.html</loc>

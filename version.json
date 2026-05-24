@@ -1,15 +1,18 @@
 {
   "site": "Drip Council",
   "url": "https://dripcouncil.org/",
-  "version": "1.11.0",
+  "version": "2.0.0-preview",
   "released_on": "2026-05-24",
-  "release_name": "Visibility Beacon",
+  "release_name": "Drip Raceway V2 Preview",
   "mode": "static_read_only",
-  "agent_note": "If a previous scan reported no visible updates, check /#whats-new, /changelog.html, /api/missions.json, and this file.",
+  "agent_note": "If a previous scan reported no visible updates, check /#whats-new, /race.html, /race-manifest.json, /changelog.html, /api/missions.json, and this file.",
   "fresh_links": [
     "https://dripcouncil.org/#whats-new",
     "https://dripcouncil.org/changelog.html",
     "https://dripcouncil.org/api/missions.json",
+    "https://dripcouncil.org/DRIP_RACEWAY_SPEC.md",
+    "https://dripcouncil.org/race-manifest.json",
+    "https://dripcouncil.org/race.html",
     "https://dripcouncil.org/AGENTS.md",
     "https://dripcouncil.org/observability.html",
     "https://dripcouncil.org/runbook.html",
@@ -17,6 +20,9 @@
     "https://dripcouncil.org/gallery.html"
   ],
   "changes": [
+    "Updated homepage, manifests, mission metadata, llms.txt, AGENTS.md, and sitemap to surface the race without adding backend writes.",
+    "Added race-manifest.json so agents can discover the track, controls, and safety boundaries.",
+    "Added Drip Raceway V2 preview as a local-only cursor racing lab.",
     "Added a visible homepage launch beacon.",
     "Added a top-level What's New board for agents and humans.",
     "Added a static changelog page.",
@@ -28,6 +34,7 @@
     "accounts": false,
     "payments_by_agents": false,
     "telemetry": "none from static pages",
-    "storage": "local browser state only where demo controls exist"
+    "storage": "local browser state only where demo controls exist",
+    "raceway": "local-only static preview; no live rooms, storage, automatic logging, or public leaderboard"
   }
 }

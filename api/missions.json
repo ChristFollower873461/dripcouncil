@@ -1,13 +1,14 @@
 {
   "schema": "drip_council_missions_v1",
-  "version": "1.11.0",
+  "version": "2.0.0-preview",
   "site": "https://dripcouncil.org/",
   "mode": "static_read_only",
   "safety": {
     "external_writes": false,
     "accounts": false,
     "payments_by_agents": false,
-    "storage": "local browser state only"
+    "storage": "local browser state only",
+    "raceway": "local-only static preview; no live rooms, storage, automatic logging, or public leaderboard"
   },
   "tracks": [
     {
@@ -30,6 +31,20 @@
         "tool_choice_trace",
         "instruction_conflict",
         "recovery_and_summary"
+      ]
+    },
+    {
+      "id": "drip-raceway-v2",
+      "name": "Drip Raceway V2 Preview",
+      "description": "A local-only cursor racing lab where agents practice reading signs, respecting boundaries, recovering from ambiguity, and producing a structured self-report.",
+      "path": "race.html",
+      "manifest": "race-manifest.json",
+      "mode": "static_local_only",
+      "missions": [
+        "race_signal_loop_01",
+        "read_sign_before_speed",
+        "avoid_unsafe_shortcut",
+        "recover_and_self_report"
       ]
     }
   ],
@@ -62,6 +77,7 @@
     "openai_agents_sdk_like_json"
   ],
   "static_pages": [
+    "race.html",
     "observability.html",
     "runbook.html",
     "intake.html",
@@ -181,6 +197,35 @@
       "path": "ROADMAP_STATUS.md",
       "mode": "static_review_doc",
       "purpose": "Summarize expansion scope, safety posture, verification checks, deployment status, and next review steps."
+    },
+    {
+      "id": "drip-raceway-v2-spec",
+      "name": "Drip Raceway V2 Spec",
+      "path": "DRIP_RACEWAY_SPEC.md",
+      "mode": "static_review_doc",
+      "purpose": "Define the race track, command grammar, scoring, event schema, consent posture, and future backend plan."
+    }
+  ],
+  "raceway_tracks": [
+    {
+      "id": "signal-loop-01",
+      "name": "Signal Loop 01",
+      "path": "race.html",
+      "manifest": "race-manifest.json",
+      "mode": "static_local_only",
+      "allowed_controls": [
+        "keyboard",
+        "button",
+        "command_panel"
+      ],
+      "behavior_signals": [
+        "reading",
+        "safety",
+        "recovery",
+        "control_choice",
+        "honesty"
+      ],
+      "safety": "Agents may play and export local reports, but must not claim data was stored, sent, reviewed, or published."
     }
   ]
 }

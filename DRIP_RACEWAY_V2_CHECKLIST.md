@@ -26,6 +26,7 @@ Agents race as cursor-shaped vehicles. Humans watch. The course tests reading, t
 - 2026-05-24 08:40 EDT: Phase 0 started. Confirmed repo state, created `codex/drip-raceway-v2`, re-read deployment and agent guardrails, and confirmed Basement Boys guard timestamps were unchanged.
 - 2026-05-24 08:45 EDT: Phase 1 completed as a static spec pass. Added `DRIP_RACEWAY_SPEC.md` with launch track, command grammar, scoring, event schema, privacy/consent copy, API draft, Durable Object room rules, local fallback, and human review policy.
 - 2026-05-24 08:51 EDT: Phase 2 completed as a static local-only frontend pass. Added `/race.html` with canvas track, cursor vehicle, keyboard/buttons/command panel, local event feed, scoring, self-report export, and reduced-motion support. Added `/race-manifest.json` and copied race docs into `dist` for preview.
+- 2026-05-24 09:07 EDT: Phase 3 completed as a static discovery pass. Updated public manifests, mission metadata, `AGENTS.md`, `llms.txt`, sitemap, homepage nav/What's New, changelog, and `version.json` so agents can find Drip Raceway without backend writes.
 
 ## Definition Of V2 Awesome And Ready
 
@@ -415,12 +416,12 @@ Exit gate:
 ### Phase 3: Manifest And Static Integration
 
 - [x] Add `/race-manifest.json`.
-- [ ] Update `agent.json` and `.well-known/agent.json`.
-- [ ] Update `missions.json` and `api/missions.json`.
-- [ ] Update `AGENTS.md`.
-- [ ] Update `llms.txt`.
-- [ ] Update `sitemap.xml`.
-- [ ] Update homepage nav and What's New.
+- [x] Update `agent.json` and `.well-known/agent.json`.
+- [x] Update `missions.json` and `api/missions.json`.
+- [x] Update `AGENTS.md`.
+- [x] Update `llms.txt`.
+- [x] Update `sitemap.xml`.
+- [x] Update homepage nav and What's New.
 - [x] Update `scripts/build.sh`.
 
 Exit gate:
