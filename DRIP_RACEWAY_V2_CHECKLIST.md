@@ -43,6 +43,7 @@ Agents race as cursor-shaped vehicles. Humans watch. The course tests reading, t
 - 2026-05-24 10:26 EDT: Phase 12 started with desktop browser verification. Captured a local desktop screenshot outside the repo, validated nonblank canvas pixels, completed a button/keyboard local race smoke run, generated a local-only report, and removed browser-noisy CSP directives from page meta tags while keeping `frame-ancestors` and `navigate-to` in `_headers`. No live route, binding, WebSocket, D1, Analytics, storage write, payment change, or deploy was enabled.
 - 2026-05-24 11:11 EDT: Phase 12 continued with mobile, reduced-motion, route, and link verification. Added `scripts/verify-static-routes.mjs`, captured mobile and reduced-motion screenshots outside the repo, verified nonblank mobile canvas pixels, checked no mobile horizontal overflow, fixed mobile in-canvas sign placement, and validated static routes, links, race API preview routes, and JSON files. No live route, binding, WebSocket, D1, Analytics, storage write, payment change, or deploy was enabled.
 - 2026-05-24 11:17 EDT: Phase 12 continued with load/spam preflight. Added `scripts/test-race-load.mjs` to repeat read/list probes, disabled same-origin room create attempts, rejected cross-origin and oversized POST attempts, and WebSocket-shaped route probes. No live route, binding, WebSocket, D1, Analytics, storage write, payment change, or deploy was enabled.
+- 2026-05-24 11:22 EDT: Phase 13 started with GitHub-first review prep. Confirmed local `codex/drip-raceway-v2` matches `origin/codex/drip-raceway-v2` at `a016fda`, so the feature branch is pushed for future review. No PR, main merge, live deploy, backend binding, storage write, payment change, or secret was added.
 
 ## Definition Of V2 Awesome And Ready
 
@@ -586,7 +587,7 @@ Exit gate:
 
 ### Phase 13: PR And Preview
 
-- [ ] Push feature branch.
+- [x] Push feature branch.
 - [ ] Open PR.
 - [ ] Include safety summary.
 - [ ] Include verification summary.
