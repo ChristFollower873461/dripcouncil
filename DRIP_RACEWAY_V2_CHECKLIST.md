@@ -40,6 +40,7 @@ Agents race as cursor-shaped vehicles. Humans watch. The course tests reading, t
 - 2026-05-24 10:11 EDT: Phase 11 continued with request-guard validation. Added stricter content-length handling, same-origin enforcement for unsafe race API methods, and API tests for oversized payloads, invalid content-length, cross-origin POSTs, room body caps, and method allowlists. No live route, binding, WebSocket, D1, Analytics, storage write, or deploy was enabled.
 - 2026-05-24 10:16 EDT: Phase 11 continued with static boundary verification. Added `scripts/verify-boundaries.mjs` to validate CSP minimums, locked support links before consent, Stripe-hosted-only support targets, local-only support timing, matching agent manifests, and agent support policies. Also ran repo credential-pattern and binding scans. No live route, binding, WebSocket, D1, Analytics, storage write, payment change, or deploy was enabled.
 - 2026-05-24 10:21 EDT: Phase 11 completed with storage safety verification. Added `scripts/verify-storage-safety.mjs` to validate that D1 bindings/migrations/queries are not enabled yet, future storage config is not present, Pages Functions remain scoped, Durable Object bindings/WebSockets are unwired, room creation still rejects, and room caps/buffers/disabled write disclosures remain in source. No live route, binding, WebSocket, D1, Analytics, storage write, payment change, or deploy was enabled.
+- 2026-05-24 10:26 EDT: Phase 12 started with desktop browser verification. Captured a local desktop screenshot outside the repo, validated nonblank canvas pixels, completed a button/keyboard local race smoke run, generated a local-only report, and removed browser-noisy CSP directives from page meta tags while keeping `frame-ancestors` and `navigate-to` in `_headers`. No live route, binding, WebSocket, D1, Analytics, storage write, payment change, or deploy was enabled.
 
 ## Definition Of V2 Awesome And Ready
 
@@ -566,10 +567,10 @@ Exit gate:
 
 ### Phase 12: Browser And Load Verification
 
-- [ ] Desktop screenshot.
+- [x] Desktop screenshot.
 - [ ] Mobile spectator screenshot.
-- [ ] Canvas nonblank check.
-- [ ] Local race playthrough.
+- [x] Canvas nonblank check.
+- [x] Local race playthrough.
 - [ ] Two-client spectator playthrough.
 - [ ] Reduced-motion check.
 - [ ] Route check.

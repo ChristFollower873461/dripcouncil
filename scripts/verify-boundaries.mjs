@@ -49,6 +49,8 @@ for (const htmlPath of listHtmlFiles()) {
   const html = read(htmlPath);
   const csp = /http-equiv="Content-Security-Policy"\s+content="([^"]+)"/i.exec(html)?.[1]?.trim();
   assertCsp(htmlPath, csp);
+  assert.ok(!csp.includes("frame-ancestors"), `${htmlPath} must keep frame-ancestors in _headers, not meta CSP`);
+  assert.ok(!csp.includes("navigate-to"), `${htmlPath} must keep navigate-to in _headers, not meta CSP`);
   assert.ok(!/connect-src\s+(?!'none')/.test(csp), `${htmlPath} must not allow network connections`);
   assert.ok(!/form-action\s+(?!'none')/.test(csp), `${htmlPath} must not allow form posts`);
 }
