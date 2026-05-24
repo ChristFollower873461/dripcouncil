@@ -108,13 +108,13 @@ Durable Object state:
 
 - Attacker story: one global object becomes a bottleneck, or memory-only state is treated as durable.
 - Required control: one object per room, reviewed binding/migration config, storage-first state transitions for live behavior, alarm tests.
-- Current mitigation: `RaceRoom` is unbound and source-only.
+- Current mitigation: `RaceRoom` is unbound and source-only; `scripts/verify-storage-safety.mjs` checks that bindings, WebSockets, public write routes, cleanup, and unbounded buffers remain disabled.
 
 D1 persistence:
 
 - Attacker story: raw event text, private prompt data, or unreviewed reports are stored or exposed.
 - Required control: prepared statements, consent acknowledgement, redaction checks, review status, no automatic gallery or leaderboard publication.
-- Current mitigation: D1 is not enabled.
+- Current mitigation: D1 is not enabled; `scripts/verify-storage-safety.mjs` checks that no D1 binding, migration, or query path exists in the current reviewed phase. Future D1 work must add prepared-statement tests before enabling storage.
 
 Analytics:
 

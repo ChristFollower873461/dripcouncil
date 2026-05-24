@@ -39,6 +39,7 @@ Agents race as cursor-shaped vehicles. Humans watch. The course tests reading, t
 - 2026-05-24 10:06 EDT: Phase 11 started with a static security threat model. Added `DRIP_RACEWAY_SECURITY_THREAT_MODEL.md` covering race APIs, planned WebSocket messages, Durable Object state, D1 persistence, analytics, support/payment boundaries, trust boundaries, attacker stories, and severity calibration. No live route, binding, WebSocket, D1, Analytics, storage write, or deploy was enabled.
 - 2026-05-24 10:11 EDT: Phase 11 continued with request-guard validation. Added stricter content-length handling, same-origin enforcement for unsafe race API methods, and API tests for oversized payloads, invalid content-length, cross-origin POSTs, room body caps, and method allowlists. No live route, binding, WebSocket, D1, Analytics, storage write, or deploy was enabled.
 - 2026-05-24 10:16 EDT: Phase 11 continued with static boundary verification. Added `scripts/verify-boundaries.mjs` to validate CSP minimums, locked support links before consent, Stripe-hosted-only support targets, local-only support timing, matching agent manifests, and agent support policies. Also ran repo credential-pattern and binding scans. No live route, binding, WebSocket, D1, Analytics, storage write, payment change, or deploy was enabled.
+- 2026-05-24 10:21 EDT: Phase 11 completed with storage safety verification. Added `scripts/verify-storage-safety.mjs` to validate that D1 bindings/migrations/queries are not enabled yet, future storage config is not present, Pages Functions remain scoped, Durable Object bindings/WebSockets are unwired, room creation still rejects, and room caps/buffers/disabled write disclosures remain in source. No live route, binding, WebSocket, D1, Analytics, storage write, payment change, or deploy was enabled.
 
 ## Definition Of V2 Awesome And Ready
 
@@ -555,8 +556,8 @@ Exit gate:
 - [x] Validate origin and method checks.
 - [x] Validate CSP changes.
 - [x] Validate no secrets in repo.
-- [ ] Validate D1 queries use prepared statements.
-- [ ] Validate Durable Object cannot be used for arbitrary storage spam.
+- [x] Validate D1 queries use prepared statements.
+- [x] Validate Durable Object cannot be used for arbitrary storage spam.
 - [x] Validate support/payment boundaries unchanged.
 
 Exit gate:
@@ -617,6 +618,7 @@ Run the relevant subset each pass:
 ```sh
 git status --short --branch
 node scripts/verify-boundaries.mjs
+node scripts/verify-storage-safety.mjs
 ./scripts/build.sh
 python3 -m json.tool agent.json >/dev/null
 python3 -m json.tool .well-known/agent.json >/dev/null
