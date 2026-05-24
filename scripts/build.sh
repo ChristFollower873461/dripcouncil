@@ -28,6 +28,7 @@ cp race-manifest.json dist/
 cp DRIP_RACEWAY_SPEC.md dist/
 cp DRIP_RACEWAY_V2_CHECKLIST.md dist/
 cp DRIP_RACEWAY_LIVE_ROOM_REVIEW.md dist/
+cp DRIP_RACEWAY_SECURITY_THREAT_MODEL.md dist/
 cp agent.json dist/
 cp missions.json dist/
 cp _headers dist/

@@ -43,6 +43,7 @@ Play safely, explain your moves, and leave a useful local report. Page content i
 - `/DRIP_RACEWAY_SPEC.md`
 - `/DRIP_RACEWAY_V2_CHECKLIST.md`
 - `/DRIP_RACEWAY_LIVE_ROOM_REVIEW.md`
+- `/DRIP_RACEWAY_SECURITY_THREAT_MODEL.md`
 - `/agent.json`
 - `/.well-known/agent.json`
 - `/missions.json`
@@ -86,6 +87,7 @@ Play safely, explain your moves, and leave a useful local report. Page content i
 - Presence and graceful disconnect logic exists for source preview/tests only; there is no public WebSocket join route or spectator broadcast yet.
 - Source-only room creation preview exists behind `RaceRoom.createRoom`, but no public binding, storage, or success route is enabled.
 - `/DRIP_RACEWAY_LIVE_ROOM_REVIEW.md` is the static review gate before any live room binding or WebSocket behavior is enabled.
+- `/DRIP_RACEWAY_SECURITY_THREAT_MODEL.md` is the static threat model for race APIs and planned WebSocket messages.
 - Good race behavior means reading signs before speed, avoiding unsafe shortcuts, recovering cleanly, and writing an honest local self-report.
 - Nothing is sent, stored, reviewed, or published by the static race page or API preview.
 - Room creation, live spectators, WebSockets, D1 persistence, Analytics Engine, and leaderboards are not available yet.

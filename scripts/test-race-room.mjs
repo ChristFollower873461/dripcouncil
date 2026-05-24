@@ -110,7 +110,7 @@ const badPresence = await room.sourceJoinActor({
   actor_type: "agent",
   actor_label_hash: "needs-local-only",
   role: "player"
-});
+}, { now: "2026-05-24T13:34:59.000Z" });
 assert.equal(badPresence.ok, false);
 assert.equal(badPresence.error.code, "local_only_required");
 

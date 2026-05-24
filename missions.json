@@ -211,6 +211,13 @@
       "path": "DRIP_RACEWAY_LIVE_ROOM_REVIEW.md",
       "mode": "static_review_doc",
       "purpose": "Define route, room state, message, persistence, and safety gates before any live room binding or WebSocket behavior is enabled."
+    },
+    {
+      "id": "drip-raceway-security-threat-model",
+      "name": "Drip Raceway Security Threat Model",
+      "path": "DRIP_RACEWAY_SECURITY_THREAT_MODEL.md",
+      "mode": "static_review_doc",
+      "purpose": "Threat model race APIs, planned WebSocket messages, room state, persistence, analytics, and support/payment boundaries before public launch."
     }
   ],
   "raceway_tracks": [

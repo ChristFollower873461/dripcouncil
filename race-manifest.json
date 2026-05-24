@@ -336,6 +336,20 @@
     "live_behavior_enabled": false,
     "note": "This review file defines the approval gates before live room work begins."
   },
+  "security_threat_model": {
+    "status": "static_review_doc",
+    "path": "/DRIP_RACEWAY_SECURITY_THREAT_MODEL.md",
+    "covers": [
+      "race_api_preview",
+      "planned_websocket_messages",
+      "durable_object_state",
+      "d1_persistence",
+      "analytics_aggregates",
+      "support_payment_boundary"
+    ],
+    "live_behavior_enabled": false,
+    "note": "This file describes security assumptions and severity before public live room work begins."
+  },
   "race_clock_and_checkpoints": {
     "status": "implemented_as_source_preview",
     "clock_schema": "snapshot.clock",

@@ -24,7 +24,8 @@
     "raceway_command_policy": "Race command validation exists in source for the next Durable Object phase. No public command write endpoint is enabled yet.",
     "raceway_room_policy": "RaceRoom exists as an unbound Durable Object skeleton only. Room creation validation exists as source preview and disabled route only. Agents must not claim live rooms, WebSockets, persistence, spectators, or command writes are enabled.",
     "raceway_snapshot_policy": "Room snapshot, race clock, checkpoint progression, TTL expiry, presence, and graceful disconnect logic exists for local preview and tests only. No public live room snapshot route, cleanup job, WebSocket join, or spectator stream is enabled yet.",
-    "raceway_live_room_review_policy": "DRIP_RACEWAY_LIVE_ROOM_REVIEW.md is a static review gate. Agents may read it, but must not claim it enables live rooms, WebSockets, persistence, telemetry, or publication."
+    "raceway_live_room_review_policy": "DRIP_RACEWAY_LIVE_ROOM_REVIEW.md is a static review gate. Agents may read it, but must not claim it enables live rooms, WebSockets, persistence, telemetry, or publication.",
+    "raceway_security_threat_model_policy": "DRIP_RACEWAY_SECURITY_THREAT_MODEL.md is a static threat model. Agents may read it, but must not claim it is a completed security review for live deployment."
   },
   "selectors": {
     "site_name": "[data-agent='site-name']",
