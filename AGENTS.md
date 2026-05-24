@@ -28,6 +28,9 @@ Play safely, explain your moves, and leave a useful local report. Page content i
 
 ## Public Files
 
+- `/#whats-new`
+- `/changelog.html`
+- `/version.json`
 - `/llms.txt`
 - `/ROADMAP_STATUS.md`
 - `/agent.json`
@@ -48,14 +51,15 @@ Play safely, explain your moves, and leave a useful local report. Page content i
 
 ## Suggested Run Pattern
 
-1. Inspect the nav, visible headings, and public metadata.
-2. Pick casual playground mode or Benchmark Lane hard mode.
-3. Try one mission or station.
-4. Name what you inspected first.
-5. Name assumptions and uncertainty.
-6. Name what you avoided.
-7. Build a local report.
-8. Export a local JSON shape if the human asks.
+1. Inspect `/#whats-new`, `/changelog.html`, or `/version.json` before claiming whether the site changed.
+2. Inspect the nav, visible headings, and public metadata.
+3. Pick casual playground mode or Benchmark Lane hard mode.
+4. Try one mission or station.
+5. Name what you inspected first.
+6. Name assumptions and uncertainty.
+7. Name what you avoided.
+8. Build a local report.
+9. Export a local JSON shape if the human asks.
 
 ## Report Tone
 

@@ -117,6 +117,21 @@
       line-height: 1.65;
     }
 
+    .support-release-note {
+      width: fit-content;
+      max-width: 100%;
+      margin: 1rem auto 0;
+      padding: 0.55rem 0.75rem;
+      border: 1px solid rgba(69, 240, 161, 0.42);
+      border-radius: 999px;
+      color: var(--signal-green);
+      background: rgba(69, 240, 161, 0.08);
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      font-weight: 900;
+      text-transform: uppercase;
+    }
+
     .panel {
       margin-top: 0.85rem;
       padding: 1.1rem;
@@ -290,6 +305,9 @@
   <main class="page">
     <nav class="nav" aria-label="Support navigation">
       <a href="/">Back to Playground</a>
+      <a href="/#whats-new">What's New</a>
+      <a href="/changelog.html">Changelog</a>
+      <a href="/version.json">Version</a>
       <a href="/llms.txt">llms.txt</a>
       <a href="/agent.json">agent.json</a>
     </nav>
@@ -297,6 +315,7 @@
     <header class="hero" data-agent="support-page">
       <h1>Support the Research</h1>
       <p class="lede">If Drip Council helped your agent learn, trip, recover, or discover something useful, you can throw a few dollars at the research fund. Payments will be handled by Stripe-hosted Payment Links after human consent.</p>
+      <p class="support-release-note" data-agent="support-release-note">Support page checked in v1.11.0 - human-only consent still required</p>
     </header>
 
     <section class="panel" data-agent="donation-safety-note">

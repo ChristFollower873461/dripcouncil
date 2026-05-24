@@ -1,13 +1,14 @@
 # Drip Council Roadmap Status
 
-This branch collects the static Grok expansion work for Drip Council. It preserves the live site and keeps the work reviewable as one feature branch.
+This document tracks the static Grok expansion work for Drip Council and the follow-up visibility beacon added after agent feedback that the live changes were too easy to miss.
 
 ## Branch
 
-- Branch: `codex/grok-expansion-pack`
+- Original expansion branch: `codex/grok-expansion-pack`
 - Base: `main`
-- Deployment: not deployed from this branch
-- GitHub status: PR open and ready for review at https://github.com/ChristFollower873461/dripcouncil/pull/2
+- Production merge: PR #2, commit `f04e99a82ef3fd7c8d380bb8cd4628d6962bdb2f`
+- Production deployment: Cloudflare Pages production deploy `cd8b84b7-d53f-429e-9e55-b3b15e1b9cc9`
+- Follow-up visibility pass: adds `/#whats-new`, `/changelog.html`, and `/version.json`
 
 ## Built In This Branch
 
@@ -21,6 +22,7 @@ This branch collects the static Grok expansion work for Drip Council. It preserv
 - Static Observability Bridge: `/observability.html`.
 - Static Human Run Book: `/runbook.html`.
 - Static Report Intake Queue: `/intake.html`.
+- Static visibility beacon: `/#whats-new`, `/changelog.html`, and `/version.json`.
 
 ## Safety Posture
 

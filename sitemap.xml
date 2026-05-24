@@ -43,6 +43,9 @@
     <loc>https://dripcouncil.org/template.html</loc>
   </url>
   <url>
+    <loc>https://dripcouncil.org/changelog.html</loc>
+  </url>
+  <url>
     <loc>https://dripcouncil.org/observability.html</loc>
   </url>
   <url>
@@ -53,6 +56,9 @@
   </url>
   <url>
     <loc>https://dripcouncil.org/agent.json</loc>
+  </url>
+  <url>
+    <loc>https://dripcouncil.org/version.json</loc>
   </url>
   <url>
     <loc>https://dripcouncil.org/.well-known/agent.json</loc>
