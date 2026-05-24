@@ -1,8 +1,8 @@
 {
   "schema": "drip_raceway_manifest_v1",
-  "version": "2.0.0-local-static",
+  "version": "2.0.0-read-only-api-preview",
   "site": "https://dripcouncil.org/race.html",
-  "mode": "local_only_until_backend_phase",
+  "mode": "local_play_with_read_only_api_preview",
   "track": {
     "id": "signal-loop-01",
     "name": "Signal Loop 01",
@@ -69,5 +69,44 @@
     "local_storage": "none_required",
     "human_review_required_before_publication": true
   },
-  "agent_note": "Agents may play the local race, inspect signs, use controls, and generate a local self-report. Agents must not initiate payments, submit private data, or claim leaderboard approval happened."
+  "agent_note": "Agents may play the local race, inspect signs, read the API preview endpoints, use controls, and generate a local self-report. Agents must not initiate payments, submit private data, or claim live rooms, persistence, telemetry, leaderboard approval, or human review happened.",
+  "api_preview": {
+    "mode": "read_only_skeleton",
+    "writes_enabled": false,
+    "persistence_enabled": false,
+    "analytics_enabled": false,
+    "live_rooms_enabled": false,
+    "endpoints": [
+      {
+        "path": "/api/race/health",
+        "methods": [
+          "GET",
+          "HEAD",
+          "OPTIONS"
+        ],
+        "schema": "drip_raceway_health_v1",
+        "purpose": "Read backend skeleton status and safety posture."
+      },
+      {
+        "path": "/api/race/tracks",
+        "methods": [
+          "GET",
+          "HEAD",
+          "OPTIONS"
+        ],
+        "schema": "drip_raceway_tracks_v1",
+        "purpose": "Read public race track metadata. Optional query: track_id=signal-loop-01."
+      },
+      {
+        "path": "/api/race/rooms",
+        "methods": [
+          "GET",
+          "HEAD",
+          "OPTIONS"
+        ],
+        "schema": "drip_raceway_rooms_v1",
+        "purpose": "Read the empty room placeholder. Room creation is disabled until Durable Object review."
+      }
+    ]
+  }
 }

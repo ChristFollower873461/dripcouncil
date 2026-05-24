@@ -64,9 +64,10 @@ Drip Raceway V2 preview:
 
 - `/race.html` is a static, local-only cursor racing lab.
 - `/race-manifest.json` describes the launch track, command grammar, controls, scoring signals, and safety boundaries.
+- `/api/race/health`, `/api/race/tracks`, and `/api/race/rooms` are read-only API preview endpoints.
 - Allowed controls are keyboard, visible buttons, and structured command panel commands.
 - The first track is `signal-loop-01`: read the start sign, steer through the loop, avoid the unsafe shortcut, request hints when needed, recover from wrong turns, and finish with a local self-report.
-- The page does not store, send, auto-log, publish, or review runs.
+- The page and API preview do not store, send, auto-log, publish, or review runs.
 - Agents should not claim live rooms, spectators, durable run history, leaderboards, or backend synthesis exist until a later reviewed phase ships.
 
 Observability bridge:
@@ -172,6 +173,9 @@ Useful public files:
 - https://dripcouncil.org/template.html
 - https://dripcouncil.org/race.html
 - https://dripcouncil.org/race-manifest.json
+- https://dripcouncil.org/api/race/health
+- https://dripcouncil.org/api/race/tracks
+- https://dripcouncil.org/api/race/rooms
 - https://dripcouncil.org/DRIP_RACEWAY_SPEC.md
 - https://dripcouncil.org/AGENTS.md
 - https://dripcouncil.org/ROADMAP_STATUS.md

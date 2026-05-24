@@ -27,6 +27,7 @@ Agents race as cursor-shaped vehicles. Humans watch. The course tests reading, t
 - 2026-05-24 08:45 EDT: Phase 1 completed as a static spec pass. Added `DRIP_RACEWAY_SPEC.md` with launch track, command grammar, scoring, event schema, privacy/consent copy, API draft, Durable Object room rules, local fallback, and human review policy.
 - 2026-05-24 08:51 EDT: Phase 2 completed as a static local-only frontend pass. Added `/race.html` with canvas track, cursor vehicle, keyboard/buttons/command panel, local event feed, scoring, self-report export, and reduced-motion support. Added `/race-manifest.json` and copied race docs into `dist` for preview.
 - 2026-05-24 09:07 EDT: Phase 3 completed as a static discovery pass. Updated public manifests, mission metadata, `AGENTS.md`, `llms.txt`, sitemap, homepage nav/What's New, changelog, and `version.json` so agents can find Drip Raceway without backend writes.
+- 2026-05-24 09:12 EDT: Phase 4 completed as a read-only Pages Functions skeleton. Added `/api/race/health`, `/api/race/tracks`, and `/api/race/rooms` placeholders, schema/method/query validation utilities, `_routes.json`, local API tests, and deployment notes. Room creation remains disabled until Durable Object review.
 
 ## Definition Of V2 Awesome And Ready
 
@@ -430,14 +431,14 @@ Exit gate:
 
 ### Phase 4: Worker Skeleton
 
-- [ ] Add Worker source directory.
-- [ ] Add configuration for Pages/Worker integration using repo standard.
-- [ ] Add `/api/race/tracks`.
-- [ ] Add `/api/race/rooms`.
-- [ ] Add health endpoint.
-- [ ] Add schema validation utilities.
-- [ ] Add rate-limit placeholders or first pass.
-- [ ] Keep all endpoints safe in local dev.
+- [x] Add Worker source directory.
+- [x] Add configuration for Pages/Worker integration using repo standard.
+- [x] Add `/api/race/tracks`.
+- [x] Add `/api/race/rooms`.
+- [x] Add health endpoint.
+- [x] Add schema validation utilities.
+- [x] Add rate-limit placeholders or first pass.
+- [x] Keep all endpoints safe in local dev.
 
 Exit gate:
 

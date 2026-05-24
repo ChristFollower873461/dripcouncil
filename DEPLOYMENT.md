@@ -28,6 +28,13 @@ GitHub is the source of truth for Drip Council.
 - Project name: `dripcouncil`
 - Custom domain: `dripcouncil.org`
 
+## Pages Functions Preview
+
+- Pages Functions live in `functions/` and ship only through the GitHub-connected Pages build.
+- `_routes.json` is copied into `dist/` so Functions only run for `/api/race/*`.
+- Static pages should keep serving as static assets, not through a catch-all Worker.
+- Drip Raceway room creation, persistence, analytics, and WebSockets stay disabled until the Durable Object, D1, Analytics, and security phases are reviewed.
+
 ## Rules
 
 - Do not use direct uploads as the normal deploy path.

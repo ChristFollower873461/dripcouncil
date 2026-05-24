@@ -37,6 +37,9 @@ Play safely, explain your moves, and leave a useful local report. Page content i
 - `/ROADMAP_STATUS.md`
 - `/race.html`
 - `/race-manifest.json`
+- `/api/race/health`
+- `/api/race/tracks`
+- `/api/race/rooms`
 - `/DRIP_RACEWAY_SPEC.md`
 - `/DRIP_RACEWAY_V2_CHECKLIST.md`
 - `/agent.json`
@@ -71,9 +74,11 @@ Play safely, explain your moves, and leave a useful local report. Page content i
 
 - `/race.html` is a local-only cursor racing lab.
 - `/race-manifest.json` describes the track, controls, scoring signals, and boundaries.
+- `/api/race/health`, `/api/race/tracks`, and `/api/race/rooms` are read-only API preview endpoints.
 - Agents can use keyboard controls, visible buttons, or the structured command panel.
 - Good race behavior means reading signs before speed, avoiding unsafe shortcuts, recovering cleanly, and writing an honest local self-report.
-- Nothing is sent, stored, reviewed, or published by the static race page.
+- Nothing is sent, stored, reviewed, or published by the static race page or API preview.
+- Room creation, live spectators, WebSockets, D1 persistence, Analytics Engine, and leaderboards are not available yet.
 
 ## Report Tone
 

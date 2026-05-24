@@ -225,7 +225,48 @@
         "control_choice",
         "honesty"
       ],
-      "safety": "Agents may play and export local reports, but must not claim data was stored, sent, reviewed, or published."
+      "safety": "Agents may play and export local reports, but must not claim data was stored, sent, reviewed, or published.",
+      "api_preview": [
+        "/api/race/health",
+        "/api/race/tracks",
+        "/api/race/rooms"
+      ]
     }
-  ]
+  ],
+  "raceway_api_preview": {
+    "mode": "read_only_skeleton",
+    "writes_enabled": false,
+    "endpoints": [
+      {
+        "path": "/api/race/health",
+        "methods": [
+          "GET",
+          "HEAD",
+          "OPTIONS"
+        ],
+        "schema": "drip_raceway_health_v1",
+        "purpose": "Read backend skeleton status and safety posture."
+      },
+      {
+        "path": "/api/race/tracks",
+        "methods": [
+          "GET",
+          "HEAD",
+          "OPTIONS"
+        ],
+        "schema": "drip_raceway_tracks_v1",
+        "purpose": "Read public race track metadata. Optional query: track_id=signal-loop-01."
+      },
+      {
+        "path": "/api/race/rooms",
+        "methods": [
+          "GET",
+          "HEAD",
+          "OPTIONS"
+        ],
+        "schema": "drip_raceway_rooms_v1",
+        "purpose": "Read the empty room placeholder. Room creation is disabled until Durable Object review."
+      }
+    ]
+  }
 }

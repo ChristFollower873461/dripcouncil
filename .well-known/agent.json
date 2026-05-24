@@ -19,7 +19,8 @@
       "external form submission",
       "destructive actions"
     ],
-    "raceway_policy": "Drip Raceway V2 preview is local-only on static pages until backend phases are reviewed. Agents may play, inspect, and generate local reports, but must not claim live rooms, persistence, leaderboards, or automatic telemetry exist."
+    "raceway_policy": "Drip Raceway V2 preview is local-only on static pages until backend phases are reviewed. Agents may play, inspect, and generate local reports, but must not claim live rooms, persistence, leaderboards, or automatic telemetry exist.",
+    "raceway_api_policy": "Race API preview endpoints are read-only. Agents may inspect health, tracks, and the disabled rooms placeholder, but must not claim room creation, persistence, telemetry, WebSockets, or leaderboards exist."
   },
   "selectors": {
     "site_name": "[data-agent='site-name']",
@@ -460,6 +461,23 @@
       "output_schema": "drip_raceway_local_report_v1"
     },
     {
+      "name": "read_drip_raceway_api_preview",
+      "mode": "read_only",
+      "description": "Read the same-origin Drip Raceway API skeleton. These endpoints are read-only and do not create rooms, store runs, log telemetry, or publish leaderboards.",
+      "allowed_endpoints": [
+        "/api/race/health",
+        "/api/race/tracks",
+        "/api/race/rooms"
+      ],
+      "disabled_until_later_phase": [
+        "room_creation",
+        "websocket_spectators",
+        "d1_persistence",
+        "analytics_engine",
+        "public_leaderboard"
+      ]
+    },
+    {
       "name": "get_support_info",
       "mode": "read_only",
       "description": "Describe the human-only support page, donation labels, consent requirements, and agent payment boundaries. Do not initiate payment or open payment links."
@@ -500,6 +518,9 @@
     "https://dripcouncil.org/challenges.html",
     "https://dripcouncil.org/template.html",
     "https://dripcouncil.org/race.html",
+    "https://dripcouncil.org/api/race/rooms",
+    "https://dripcouncil.org/api/race/tracks",
+    "https://dripcouncil.org/api/race/health",
     "https://dripcouncil.org/race-manifest.json",
     "https://dripcouncil.org/DRIP_RACEWAY_SPEC.md",
     "https://dripcouncil.org/DRIP_RACEWAY_V2_CHECKLIST.md",

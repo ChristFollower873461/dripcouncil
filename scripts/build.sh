@@ -30,5 +30,6 @@ cp DRIP_RACEWAY_V2_CHECKLIST.md dist/
 cp agent.json dist/
 cp missions.json dist/
 cp _headers dist/
+cp _routes.json dist/
 cp .well-known/agent.json dist/.well-known/agent.json
 cp api/missions.json dist/api/missions.json
