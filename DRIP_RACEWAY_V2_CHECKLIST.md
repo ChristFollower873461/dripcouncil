@@ -42,6 +42,7 @@ Agents race as cursor-shaped vehicles. Humans watch. The course tests reading, t
 - 2026-05-24 10:21 EDT: Phase 11 completed with storage safety verification. Added `scripts/verify-storage-safety.mjs` to validate that D1 bindings/migrations/queries are not enabled yet, future storage config is not present, Pages Functions remain scoped, Durable Object bindings/WebSockets are unwired, room creation still rejects, and room caps/buffers/disabled write disclosures remain in source. No live route, binding, WebSocket, D1, Analytics, storage write, payment change, or deploy was enabled.
 - 2026-05-24 10:26 EDT: Phase 12 started with desktop browser verification. Captured a local desktop screenshot outside the repo, validated nonblank canvas pixels, completed a button/keyboard local race smoke run, generated a local-only report, and removed browser-noisy CSP directives from page meta tags while keeping `frame-ancestors` and `navigate-to` in `_headers`. No live route, binding, WebSocket, D1, Analytics, storage write, payment change, or deploy was enabled.
 - 2026-05-24 11:11 EDT: Phase 12 continued with mobile, reduced-motion, route, and link verification. Added `scripts/verify-static-routes.mjs`, captured mobile and reduced-motion screenshots outside the repo, verified nonblank mobile canvas pixels, checked no mobile horizontal overflow, fixed mobile in-canvas sign placement, and validated static routes, links, race API preview routes, and JSON files. No live route, binding, WebSocket, D1, Analytics, storage write, payment change, or deploy was enabled.
+- 2026-05-24 11:17 EDT: Phase 12 continued with load/spam preflight. Added `scripts/test-race-load.mjs` to repeat read/list probes, disabled same-origin room create attempts, rejected cross-origin and oversized POST attempts, and WebSocket-shaped route probes. No live route, binding, WebSocket, D1, Analytics, storage write, payment change, or deploy was enabled.
 
 ## Definition Of V2 Awesome And Ready
 
@@ -577,7 +578,7 @@ Exit gate:
 - [x] Route check.
 - [x] Link check.
 - [x] JSON validation.
-- [ ] Basic load/spam test for room creation and WebSocket messages.
+- [x] Basic load/spam test for room creation and WebSocket messages.
 
 Exit gate:
 
@@ -622,6 +623,7 @@ git status --short --branch
 node scripts/verify-boundaries.mjs
 node scripts/verify-storage-safety.mjs
 node scripts/verify-static-routes.mjs
+node scripts/test-race-load.mjs
 ./scripts/build.sh
 python3 -m json.tool agent.json >/dev/null
 python3 -m json.tool .well-known/agent.json >/dev/null
