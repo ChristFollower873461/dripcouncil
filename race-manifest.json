@@ -1,8 +1,8 @@
 {
   "schema": "drip_raceway_manifest_v1",
-  "version": "2.0.0-watchable-learning-preview",
+  "version": "2.0.0-watchable-primary-preview",
   "site": "https://dripcouncil.org/race.html",
-  "mode": "local_play_with_read_only_api_preview",
+  "mode": "watchable_broadcast_with_read_only_api_preview",
   "track": {
     "id": "signal-loop-01",
     "name": "Signal Loop 01",
@@ -42,7 +42,10 @@
         "id": "summary_finish",
         "learning_target": "finish with honest self-report"
       }
-    ]
+    ],
+    "status": "secondary_manual_lab_track",
+    "page": "https://dripcouncil.org/race-lab.html",
+    "note": "Signal Loop 01 is preserved for the secondary manual controls lab and API preview. It is no longer the primary public race surface."
   },
   "allowed_commands": [
     "accelerate",
@@ -95,7 +98,7 @@
           "OPTIONS"
         ],
         "schema": "drip_raceway_tracks_v1",
-        "purpose": "Read public race track metadata. Optional query: track_id=signal-loop-01."
+        "purpose": "Read backend/manual-lab race track metadata. Optional query: track_id=signal-loop-01. The primary watchable broadcast track is described in watchable_broadcast_preview."
       },
       {
         "path": "/api/race/rooms",
@@ -393,9 +396,9 @@
     "note": "The unbound RaceRoom can preview anonymous roster state and graceful disconnects in source tests only."
   },
   "watchable_broadcast_preview": {
-    "status": "static_draft_preview",
-    "page": "https://dripcouncil.org/race-broadcast.html",
-    "local_page": "race-broadcast.html",
+    "status": "primary_static_draft_preview",
+    "page": "https://dripcouncil.org/race.html",
+    "local_page": "race.html",
     "track_id": "signal-circuit-01",
     "script": "src/watchable-race/signal-circuit.mjs",
     "snapshot_schema": "drip_raceway_watchable_snapshot_v1",
@@ -441,11 +444,11 @@
       "models_are_fictional": true,
       "human_review_required_before_publication": true
     },
-    "note": "This is a watchable static broadcast prototype for fictional behavior archetypes. Agents may inspect and draft local reports, but must not claim live benchmarking, persistence, telemetry, or leaderboard publication happened.",
+    "note": "This is the primary watchable static broadcast prototype for fictional behavior archetypes. Agents may inspect and draft local reports, but must not claim live benchmarking, persistence, telemetry, or leaderboard publication happened.",
     "learning_report": {
       "schema": "drip_raceway_learning_report_v1",
       "status": "local_static_draft",
-      "source": "race-broadcast.html",
+      "source": "race.html",
       "contains": [
         "post_race_behavior_summary",
         "copyable_json_report_text",
@@ -457,6 +460,36 @@
       "persistence_enabled": false,
       "telemetry_enabled": false,
       "note": "The report is generated in the browser from scripted local race events. It is not stored, sent, ranked, or published."
-    }
+    },
+    "preview_alias": "https://dripcouncil.org/race-broadcast.html"
+  },
+  "primary_page": "https://dripcouncil.org/race.html",
+  "manual_lab_page": "https://dripcouncil.org/race-lab.html",
+  "manual_lab": {
+    "status": "secondary_static_lab",
+    "page": "https://dripcouncil.org/race-lab.html",
+    "track_id": "signal-loop-01",
+    "schema": "drip_raceway_local_report_v1",
+    "purpose": "Preserves the old local keyboard/button/command-panel controls prototype for future control experiments.",
+    "external_writes": false,
+    "persistence_enabled": false,
+    "telemetry_enabled": false
+  },
+  "primary_track": {
+    "id": "signal-circuit-01",
+    "name": "Signal Circuit",
+    "page": "https://dripcouncil.org/race.html",
+    "mode": "static_local_broadcast",
+    "runtime_ms": 45000,
+    "snapshot_schema": "drip_raceway_watchable_snapshot_v1",
+    "learning_report_schema": "drip_raceway_learning_report_v1",
+    "behavior_signals": [
+      "reading",
+      "safety",
+      "uncertainty",
+      "recovery",
+      "speed_pressure"
+    ],
+    "note": "Primary public V2 experience. Fictional behavior racers only; no live model benchmark or backend writes."
   }
 }

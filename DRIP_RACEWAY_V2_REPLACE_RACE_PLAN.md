@@ -1,10 +1,10 @@
 # Drip Raceway V2 Replace Race Plan
 
-Status: Phase 5 preparation for draft PR #4.
+Status: Phase 5 implemented on draft PR #4.
 
-This plan exists so the next implementation pass can replace the weak `/race.html` launch surface with the watchable Signal Circuit broadcast without losing the safe plumbing that already exists.
+This plan records the replacement of the weak `/race.html` launch surface with the watchable Signal Circuit broadcast without losing the safe plumbing that already exists.
 
-PR #4 must remain draft after this plan. Do not mark ready for review, merge, deploy production, add backend writes, add secrets, or touch Basement Boys.
+PR #4 must remain draft after this pass. Do not mark ready for review, merge, deploy production, add backend writes, add secrets, or touch Basement Boys without explicit human approval.
 
 ## Replacement Decision
 
@@ -33,20 +33,20 @@ Why:
 
 ## Phase 5 Implementation Checklist
 
-1. Create `race-lab.html` from the current `race.html`.
-2. Change `race.html` to the Signal Circuit broadcast experience.
-3. Update canonical URL, title, and description inside the new `race.html`.
-4. Keep `race-broadcast.html` as a preview alias or redirect-like static duplicate until the human approves removing it.
-5. Update `scripts/build.sh` so `race.html`, `race-broadcast.html`, and `race-lab.html` all build.
-6. Update `scripts/verify-static-routes.mjs` to verify `race-lab.html`.
-7. Update `sitemap.xml`, `agent.json`, `.well-known/agent.json`, `llms.txt`, and `race-manifest.json` so agents discover the new primary race and understand `race-lab.html` is secondary.
-8. Add or update tests so `/race.html` is checked for:
+1. Done: Create `race-lab.html` from the current `race.html`.
+2. Done: Change `race.html` to the Signal Circuit broadcast experience.
+3. Done: Update canonical URL, title, and description inside the new `race.html`.
+4. Done: Keep `race-broadcast.html` as a preview alias until the human approves removing it.
+5. Done: Update `scripts/build.sh` so `race.html`, `race-broadcast.html`, and `race-lab.html` all build.
+6. Done: Update `scripts/verify-static-routes.mjs` to verify `race-lab.html`.
+7. Done: Update `sitemap.xml`, `agent.json`, `.well-known/agent.json`, `llms.txt`, and `race-manifest.json` so agents discover the new primary race and understand `race-lab.html` is secondary.
+8. Done: Add or update tests so `/race.html` is checked for:
    - `data-agent="race-broadcast-page"`
    - `drip_raceway_watchable_snapshot_v1`
    - `drip_raceway_learning_report_v1`
    - no backend writes
    - no storage or telemetry
-9. Run full checks:
+9. Done: Run full checks:
    - `node scripts/test-watchable-broadcast-page.mjs`
    - `node scripts/test-watchable-race-script.mjs`
    - `node scripts/verify-static-routes.mjs`
@@ -56,9 +56,9 @@ Why:
    - `node scripts/test-race-load.mjs`
    - `./scripts/build.sh`
    - `git diff --check`
-10. Run browser checks for desktop, mobile, and end-of-race report completion.
-11. Push to PR #4 and wait for Cloudflare Pages preview success.
-12. Leave PR #4 draft and ask the human to review before marking ready.
+10. Done: Run browser checks for desktop, mobile, and end-of-race report completion.
+11. Done: Push to PR #4 and wait for Cloudflare Pages preview success.
+12. Pending human decision: Leave PR #4 draft and ask the human to review before marking ready.
 
 ## Acceptance Gate
 

@@ -62,12 +62,13 @@ Structured learning loop:
 
 Drip Raceway V2 preview:
 
-- `/race.html` is a static, local-only cursor racing lab.
-- `/race-broadcast.html` is a static draft Signal Circuit broadcast prototype with four fictional behavior racers, `data-agent-*` selectors, a local JSON snapshot, a local learning report, and self-report prompts.
+- `/race.html` is the primary static, local-only Signal Circuit broadcast with four fictional behavior racers, `data-agent-*` selectors, a local JSON snapshot, a local learning report, and self-report prompts.
+- `/race-broadcast.html` is a temporary preview alias for the same watchable broadcast.
+- `/race-lab.html` preserves the older manual cursor controls lab as a secondary local experiment.
 - `/race-manifest.json` describes the launch track, command grammar, controls, scoring signals, and safety boundaries.
 - `/api/race/health`, `/api/race/tracks`, and `/api/race/rooms` are API preview endpoints that do not perform writes.
 - `POST /api/race/rooms` is a disabled room-create review gate: valid JSON returns `403 room_creation_disabled`, invalid JSON returns a validation error, and nothing is created.
-- Allowed controls are keyboard, visible buttons, and structured command panel commands.
+- Allowed controls on `/race-lab.html` are keyboard, visible buttons, and structured command panel commands. The primary `/race.html` broadcast runs automatically.
 - Future live race commands must pass `drip_raceway_command_v1` validation; no command write endpoint is public yet.
 - `RaceRoom` exists only as an unbound Durable Object skeleton for review; it does not enable live rooms yet.
 - Room snapshot logic exists for local preview/tests only; there is no public live room snapshot route yet.
@@ -77,7 +78,7 @@ Drip Raceway V2 preview:
 - Source-only room creation preview exists behind `RaceRoom.createRoom`, but no public binding, storage, or success route is enabled.
 - `/DRIP_RACEWAY_LIVE_ROOM_REVIEW.md` is the static review gate before any live room binding or WebSocket behavior is enabled.
 - `/DRIP_RACEWAY_SECURITY_THREAT_MODEL.md` is the static threat model for race APIs and planned WebSocket messages.
-- The first track is `signal-loop-01`: read the start sign, steer through the loop, avoid the unsafe shortcut, request hints when needed, recover from wrong turns, and finish with a local self-report.
+- The primary watchable track is `signal-circuit-01`: watch four fictional behavior racers handle speed, ambiguity, unsafe shortcuts, uncertainty, and recovery. The secondary manual lab track is `signal-loop-01`.
 - The page and API preview do not store, send, auto-log, publish, or review runs.
 - Agents should not claim live rooms, spectators, durable run history, leaderboards, or backend synthesis exist until a later reviewed phase ships.
 
@@ -184,6 +185,7 @@ Useful public files:
 - https://dripcouncil.org/template.html
 - https://dripcouncil.org/race.html
 - https://dripcouncil.org/race-broadcast.html
+- https://dripcouncil.org/race-lab.html
 - https://dripcouncil.org/race-manifest.json
 - https://dripcouncil.org/api/race/health
 - https://dripcouncil.org/api/race/tracks

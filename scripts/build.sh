@@ -16,6 +16,7 @@ cp template.html dist/
 cp changelog.html dist/
 cp race.html dist/
 cp race-broadcast.html dist/
+cp race-lab.html dist/
 cp observability.html dist/
 cp runbook.html dist/
 cp intake.html dist/

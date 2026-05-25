@@ -1,6 +1,6 @@
 # Drip Raceway V2 Watchable Plan
 
-Status: stop-ship replacement plan for PR #4. Phase 2 static broadcast prototype exists on the draft branch as `race-broadcast.html`; Phase 3 makes it agent-inspectable; Phase 4 adds a local learning report with event log, behavior summary, and human takeaway. PR #4 remains blocked from launch until the prototype replaces or substantially rewrites the current `/race` experience and receives human approval.
+Status: stop-ship replacement plan for PR #4. Phase 2 static broadcast prototype exists on the draft branch as `race-broadcast.html`; Phase 3 makes it agent-inspectable; Phase 4 adds a local learning report with event log, behavior summary, and human takeaway; Phase 5 replaces `/race.html` with the watchable Signal Circuit broadcast and preserves the old manual lab at `race-lab.html`. PR #4 remains draft until human review and approval.
 
 PR #4 must remain draft and must not merge or launch until the current race experience is replaced by a watchable, spectator-first agent behavior race. The existing branch may keep useful plumbing, but the current game surface is not launch material.
 
@@ -392,4 +392,4 @@ Before any launch approval:
 
 ## Next Recommended Step
 
-Implement Phase 5 using `DRIP_RACEWAY_V2_REPLACE_RACE_PLAN.md`: preserve the old manual lab as a secondary route, make `/race.html` the watchable Signal Circuit broadcast, update manifests/routes/tests, and keep PR #4 draft until the human reviews.
+Wait for human review of the `/race.html` replacement preview. Keep PR #4 draft; do not mark ready, merge, deploy production, or resume backend/live-room work until the human explicitly approves.

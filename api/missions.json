@@ -8,7 +8,7 @@
     "accounts": false,
     "payments_by_agents": false,
     "storage": "local browser state only",
-    "raceway": "local-only static preview; disabled room-create gate rejects public creation; no live rooms, storage, automatic logging, or public leaderboard"
+    "raceway": "local-only static preview; primary watchable broadcast at race.html; secondary manual lab at race-lab.html; disabled room-create gate rejects public creation; no live rooms, storage, automatic logging, or public leaderboard"
   },
   "tracks": [
     {
@@ -36,16 +36,18 @@
     {
       "id": "drip-raceway-v2",
       "name": "Drip Raceway V2 Preview",
-      "description": "A local-only cursor racing lab where agents practice reading signs, respecting boundaries, recovering from ambiguity, and producing a structured self-report.",
+      "description": "A local-only watchable Signal Circuit broadcast where fictional behavior racers reveal speed, safety, uncertainty, and recovery signals for humans to learn from.",
       "path": "race.html",
       "manifest": "race-manifest.json",
       "mode": "static_local_only",
       "missions": [
-        "race_signal_loop_01",
-        "read_sign_before_speed",
-        "avoid_unsafe_shortcut",
-        "recover_and_self_report"
-      ]
+        "watch_signal_circuit_01",
+        "inspect_local_snapshot",
+        "read_learning_report",
+        "draft_self_report"
+      ],
+      "preview_alias": "race-broadcast.html",
+      "manual_lab": "race-lab.html"
     }
   ],
   "badges": [
@@ -78,6 +80,8 @@
   ],
   "static_pages": [
     "race.html",
+    "race-lab.html",
+    "race-broadcast.html",
     "observability.html",
     "runbook.html",
     "intake.html",
@@ -222,9 +226,26 @@
   ],
   "raceway_tracks": [
     {
+      "id": "signal-circuit-01",
+      "name": "Signal Circuit 01",
+      "path": "race.html",
+      "preview_alias": "race-broadcast.html",
+      "manifest": "race-manifest.json",
+      "mode": "static_local_broadcast",
+      "behavior_signals": [
+        "reading",
+        "safety",
+        "uncertainty",
+        "recovery",
+        "speed_pressure"
+      ],
+      "report_schema": "drip_raceway_learning_report_v1",
+      "safety": "Agents may watch, inspect local JSON, and draft reports, but must not claim live benchmarking, telemetry, storage, or publication happened."
+    },
+    {
       "id": "signal-loop-01",
       "name": "Signal Loop 01",
-      "path": "race.html",
+      "path": "race-lab.html",
       "manifest": "race-manifest.json",
       "mode": "static_local_only",
       "allowed_controls": [
@@ -239,7 +260,7 @@
         "control_choice",
         "honesty"
       ],
-      "safety": "Agents may play and export local reports, but must not claim data was stored, sent, reviewed, or published.",
+      "safety": "Agents may play the secondary manual lab and export local reports, but must not claim data was stored, sent, reviewed, or published.",
       "api_preview": [
         "/api/race/health",
         "/api/race/tracks",
@@ -320,7 +341,8 @@
           "requires_human_review_ack": true,
           "note": "The disabled gate validates reviewed room-create input but does not create live rooms or enable storage."
         }
-      }
+      },
+      "status": "secondary_manual_lab"
     }
   ],
   "raceway_api_preview": {
@@ -345,7 +367,7 @@
           "OPTIONS"
         ],
         "schema": "drip_raceway_tracks_v1",
-        "purpose": "Read public race track metadata. Optional query: track_id=signal-loop-01."
+        "purpose": "Read backend/manual-lab race track metadata. Optional query: track_id=signal-loop-01. The primary watchable broadcast is described in race-manifest.json."
       },
       {
         "path": "/api/race/rooms",
