@@ -259,6 +259,12 @@ Phase 2 broadcast prototype source:
 - `race-broadcast.html`
 - `scripts/test-watchable-broadcast-page.mjs`
 
+Phase 3 agent-inspection source:
+
+- `race-broadcast.html` exposes page, racer, event, prompt, state, and JSON snapshot selectors.
+- `race-manifest.json` advertises the static broadcast preview and `drip_raceway_watchable_snapshot_v1`.
+- `agent.json`, `.well-known/agent.json`, and `llms.txt` make the preview discoverable without implying live benchmarking.
+
 ## Done For Phase 1
 
 Phase 1 is complete when this spec is linked from the watchable plan and next-phases docs, and the next implementation pass can build the static broadcast prototype without making new product decisions.

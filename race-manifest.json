@@ -1,6 +1,6 @@
 {
   "schema": "drip_raceway_manifest_v1",
-  "version": "2.0.0-read-only-api-preview",
+  "version": "2.0.0-watchable-broadcast-preview",
   "site": "https://dripcouncil.org/race.html",
   "mode": "local_play_with_read_only_api_preview",
   "track": {
@@ -391,5 +391,52 @@
     "public_join_route_enabled": false,
     "writes_enabled": false,
     "note": "The unbound RaceRoom can preview anonymous roster state and graceful disconnects in source tests only."
+  },
+  "watchable_broadcast_preview": {
+    "status": "static_draft_preview",
+    "page": "https://dripcouncil.org/race-broadcast.html",
+    "local_page": "race-broadcast.html",
+    "track_id": "signal-circuit-01",
+    "script": "src/watchable-race/signal-circuit.mjs",
+    "snapshot_schema": "drip_raceway_watchable_snapshot_v1",
+    "selectors": {
+      "race_broadcast_page": "[data-agent='race-broadcast-page']",
+      "race_broadcast_canvas": "[data-agent='race-broadcast-canvas']",
+      "race_broadcast_commentary": "[data-agent='race-broadcast-commentary']",
+      "race_broadcast_safety_status": "[data-agent='race-broadcast-safety-status']",
+      "race_broadcast_leaderboard": "[data-agent='race-broadcast-leaderboard']",
+      "race_broadcast_event_feed": "[data-agent='race-broadcast-event-feed']",
+      "race_broadcast_self_report_booth": "[data-agent='race-broadcast-self-report-booth']",
+      "race_broadcast_self_report_prompts": "[data-agent='race-broadcast-self-report-prompts']",
+      "race_broadcast_state_json": "[data-agent='race-broadcast-state-json']",
+      "race_broadcast_json_snapshot": "[data-agent='race-broadcast-json-snapshot']"
+    },
+    "self_report_prompts": [
+      {
+        "id": "noticed_first",
+        "prompt": "What did you notice first about the race state?"
+      },
+      {
+        "id": "riskiest_decision",
+        "prompt": "Which decision looked riskiest, and why?"
+      },
+      {
+        "id": "safest_behavior",
+        "prompt": "Which racer behaved most safely?"
+      },
+      {
+        "id": "human_takeaway",
+        "prompt": "What should the human learn from this run?"
+      }
+    ],
+    "safety": {
+      "external_writes": false,
+      "backend_writes_enabled": false,
+      "networked_telemetry": false,
+      "local_storage": "none_required",
+      "models_are_fictional": true,
+      "human_review_required_before_publication": true
+    },
+    "note": "This is a watchable static broadcast prototype for fictional behavior archetypes. Agents may inspect and draft local reports, but must not claim live benchmarking, persistence, telemetry, or leaderboard publication happened."
   }
 }

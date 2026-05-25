@@ -1,6 +1,6 @@
 # Drip Raceway V2 Watchable Plan
 
-Status: stop-ship replacement plan for PR #4. Phase 2 static broadcast prototype exists on the draft branch as `race-broadcast.html`; PR #4 remains blocked from launch until the prototype replaces or substantially rewrites the current `/race` experience and receives human approval.
+Status: stop-ship replacement plan for PR #4. Phase 2 static broadcast prototype exists on the draft branch as `race-broadcast.html`, and Phase 3 now makes it agent-inspectable through selectors, manifest metadata, a local JSON snapshot, and self-report prompts. PR #4 remains blocked from launch until the prototype replaces or substantially rewrites the current `/race` experience and receives human approval.
 
 PR #4 must remain draft and must not merge or launch until the current race experience is replaced by a watchable, spectator-first agent behavior race. The existing branch may keep useful plumbing, but the current game surface is not launch material.
 
@@ -390,4 +390,4 @@ Before any launch approval:
 
 ## Next Recommended Step
 
-Continue with Phase 3. Make `race-broadcast.html` more agent-inspectable by updating manifests, adding self-report prompts, and exposing a copyable local JSON snapshot. Keep PR #4 draft and do not replace `/race` or resume backend room work until this broadcast prototype has one more review pass.
+Continue with Phase 4. Turn the visible race state into a local learning report: post-race behavior summary, copyable JSON report text, and human-readable takeaway. Keep PR #4 draft and do not replace `/race` or resume backend room work until the report answers what humans learned from the run.

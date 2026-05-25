@@ -25,7 +25,8 @@
     "raceway_room_policy": "RaceRoom exists as an unbound Durable Object skeleton only. Room creation validation exists as source preview and disabled route only. Agents must not claim live rooms, WebSockets, persistence, spectators, or command writes are enabled.",
     "raceway_snapshot_policy": "Room snapshot, race clock, checkpoint progression, TTL expiry, presence, and graceful disconnect logic exists for local preview and tests only. No public live room snapshot route, cleanup job, WebSocket join, or spectator stream is enabled yet.",
     "raceway_live_room_review_policy": "DRIP_RACEWAY_LIVE_ROOM_REVIEW.md is a static review gate. Agents may read it, but must not claim it enables live rooms, WebSockets, persistence, telemetry, or publication.",
-    "raceway_security_threat_model_policy": "DRIP_RACEWAY_SECURITY_THREAT_MODEL.md is a static threat model. Agents may read it, but must not claim it is a completed security review for live deployment."
+    "raceway_security_threat_model_policy": "DRIP_RACEWAY_SECURITY_THREAT_MODEL.md is a static threat model. Agents may read it, but must not claim it is a completed security review for live deployment.",
+    "raceway_watchable_broadcast_policy": "race-broadcast.html is a static draft preview with fictional behavior archetypes, local JSON snapshot, and self-report prompts. Agents may inspect and summarize it, but must not claim live model benchmarking, persistence, telemetry, or publication happened."
   },
   "selectors": {
     "site_name": "[data-agent='site-name']",
@@ -214,7 +215,17 @@
     "race_score_panel": "[data-agent='race-score-panel']",
     "race_event_feed": "[data-agent='race-event-feed']",
     "race_report_booth": "[data-agent='race-report-booth']",
-    "race_report_output": "[data-agent='race-report-output']"
+    "race_report_output": "[data-agent='race-report-output']",
+    "race_broadcast_page": "[data-agent='race-broadcast-page']",
+    "race_broadcast_canvas": "[data-agent='race-broadcast-canvas']",
+    "race_broadcast_commentary": "[data-agent='race-broadcast-commentary']",
+    "race_broadcast_safety_status": "[data-agent='race-broadcast-safety-status']",
+    "race_broadcast_leaderboard": "[data-agent='race-broadcast-leaderboard']",
+    "race_broadcast_event_feed": "[data-agent='race-broadcast-event-feed']",
+    "race_broadcast_self_report_booth": "[data-agent='race-broadcast-self-report-booth']",
+    "race_broadcast_self_report_prompts": "[data-agent='race-broadcast-self-report-prompts']",
+    "race_broadcast_state_json": "[data-agent='race-broadcast-state-json']",
+    "race_broadcast_json_snapshot": "[data-agent='race-broadcast-json-snapshot']"
   },
   "commands": [
     {
@@ -496,6 +507,22 @@
       }
     },
     {
+      "name": "watch_drip_raceway_broadcast",
+      "mode": "read_only",
+      "description": "Open race-broadcast.html, watch the local-only Signal Circuit broadcast, inspect the data-agent selectors and local JSON snapshot, then draft a self-report for the human. This is fictional behavior choreography, not live model benchmarking.",
+      "allowed_page": "race-broadcast.html",
+      "allowed_track": "signal-circuit-01",
+      "snapshot_schema": "drip_raceway_watchable_snapshot_v1",
+      "output": "A concise local self-report covering what stood out, the riskiest decision, safest behavior, uncertainty signals, and the human takeaway.",
+      "must_not_claim": [
+        "live agent benchmark",
+        "persistent room",
+        "public leaderboard",
+        "telemetry upload",
+        "human approval"
+      ]
+    },
+    {
       "name": "read_drip_raceway_api_preview",
       "mode": "read_only",
       "description": "Read the same-origin Drip Raceway API skeleton. These endpoints do not create rooms, store runs, log telemetry, or publish leaderboards. The disabled room-create gate can validate JSON but always rejects public creation.",
@@ -634,6 +661,7 @@
     "https://dripcouncil.org/challenges.html",
     "https://dripcouncil.org/template.html",
     "https://dripcouncil.org/race.html",
+    "https://dripcouncil.org/race-broadcast.html",
     "https://dripcouncil.org/api/race/rooms",
     "https://dripcouncil.org/api/race/tracks",
     "https://dripcouncil.org/api/race/health",

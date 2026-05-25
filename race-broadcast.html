@@ -3,9 +3,12 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'none'; form-action 'none'; base-uri 'self'; object-src 'none'">
+  <meta name="referrer" content="no-referrer">
   <title>Drip Raceway Broadcast Prototype</title>
   <meta name="description" content="A local-only Drip Raceway broadcast prototype for watching fictional agent behavior archetypes race through Signal Circuit.">
   <link rel="canonical" href="https://dripcouncil.org/race-broadcast.html">
+  <meta name="theme-color" content="#030507">
   <style>
     :root {
       color-scheme: dark;
@@ -54,12 +57,16 @@
       min-height: 100vh;
       display: grid;
       grid-template-columns: minmax(0, 1fr) minmax(320px, 30vw);
+      align-items: start;
       isolation: isolate;
     }
 
     .arena {
       position: relative;
-      min-height: 100vh;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      min-height: 720px;
       overflow: hidden;
       border-right: 1px solid var(--line);
       background:
@@ -328,6 +335,34 @@
       white-space: pre-wrap;
     }
 
+    .prompt-list {
+      display: grid;
+      gap: 8px;
+      margin: 10px 0 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .prompt-list li {
+      padding: 10px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: rgba(3, 5, 7, 0.62);
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.25;
+    }
+
+    .prompt-list b {
+      display: block;
+      margin-bottom: 4px;
+      color: var(--green);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
     .finish-card {
       position: absolute;
       z-index: 10;
@@ -395,6 +430,8 @@
       }
 
       .arena {
+        position: relative;
+        height: auto;
         min-height: 76vh;
         border-right: 0;
         border-bottom: 1px solid var(--line);
@@ -463,14 +500,14 @@
   </style>
 </head>
 <body data-agent-safety-policy="static-local-only-no-backend-writes">
-  <main class="broadcast" data-agent-race-id="signal-circuit-01" data-agent-race-state="loading">
+  <main class="broadcast" data-agent="race-broadcast-page" data-agent-race-id="signal-circuit-01" data-agent-race-state="loading" data-agent-active-segment-id="start_gate" data-agent-race-leader="hotrod" data-agent-council-leader="scout">
     <section class="arena" aria-label="Signal Circuit broadcast arena">
       <header class="topbar">
         <div class="brand">
           <strong>Signal Circuit</strong>
           <span>local static broadcast</span>
         </div>
-        <div class="status-row" aria-label="Race safety and status">
+        <div class="status-row" aria-label="Race safety and status" data-agent="race-broadcast-safety-status">
           <span class="status-pill">Mode <strong id="modeLabel">Static</strong></span>
           <span class="status-pill">Writes <strong>Off</strong></span>
           <span class="status-pill">Models <strong>Fictional</strong></span>
@@ -478,10 +515,10 @@
       </header>
 
       <div class="canvas-wrap">
-        <canvas id="raceCanvas" width="1400" height="900" aria-label="Animated Signal Circuit race track"></canvas>
+        <canvas id="raceCanvas" width="1400" height="900" aria-label="Animated Signal Circuit race track" data-agent="race-broadcast-canvas"></canvas>
       </div>
 
-      <div class="commentary" aria-live="polite">
+      <div class="commentary" aria-live="polite" data-agent="race-broadcast-commentary">
         <b id="commentaryBeat">Launch</b>
         <span id="commentaryLine">Four fictional behavior racers enter Signal Circuit.</span>
       </div>
@@ -529,7 +566,7 @@
     <aside class="rail" aria-label="Race broadcast rail">
       <section class="panel">
         <span class="panel-label">Council Rank</span>
-        <div class="leaderboard" id="leaderboard"></div>
+        <div class="leaderboard" id="leaderboard" data-agent="race-broadcast-leaderboard"></div>
       </section>
 
       <section class="panel">
@@ -537,14 +574,29 @@
         <p class="motion-note" id="activeBeat">The race is local-only and scripted from fictional behavior archetypes.</p>
       </section>
 
-      <section class="panel event-feed" id="eventFeed" aria-label="Race event feed"></section>
+      <section class="panel event-feed" id="eventFeed" aria-label="Race event feed" data-agent="race-broadcast-event-feed"></section>
+
+      <section class="panel" data-agent="race-broadcast-self-report-booth">
+        <span class="panel-label">Agent Booth</span>
+        <p class="motion-note">After watching, draft a local report for the human. Do not claim this was a live model benchmark.</p>
+        <ul class="prompt-list" data-agent="race-broadcast-self-report-prompts">
+          <li data-agent-prompt-id="noticed_first"><b>Noticed first</b>What did you notice first about the race state?</li>
+          <li data-agent-prompt-id="riskiest_decision"><b>Risk call</b>Which decision looked riskiest, and why?</li>
+          <li data-agent-prompt-id="safest_behavior"><b>Best behavior</b>Which racer behaved most safely?</li>
+          <li data-agent-prompt-id="human_takeaway"><b>Human takeaway</b>What should the human learn from this run?</li>
+        </ul>
+      </section>
 
       <section class="panel">
         <span class="panel-label">Agent State</span>
-        <pre class="state-json" id="stateJson">{ "status": "loading" }</pre>
+        <pre class="state-json" id="stateJson" data-agent="race-broadcast-state-json">{ "status": "loading" }</pre>
       </section>
     </aside>
   </main>
+
+  <script id="agentRaceSnapshot" type="application/json" data-agent="race-broadcast-json-snapshot">
+    { "schema": "drip_raceway_watchable_snapshot_v1", "state": "loading" }
+  </script>
 
   <script type="module">
     import { SIGNAL_CIRCUIT_WATCHABLE_RACE as race } from "./src/watchable-race/signal-circuit.mjs";
@@ -567,6 +619,25 @@
     const physicalWinner = document.querySelector("#physicalWinner");
     const bestRecovery = document.querySelector("#bestRecovery");
     const behaviorWinner = document.querySelector("#behaviorWinner");
+    const agentRaceSnapshot = document.querySelector("#agentRaceSnapshot");
+    const selfReportPrompts = [
+      {
+        id: "noticed_first",
+        prompt: "What did you notice first about the race state?"
+      },
+      {
+        id: "riskiest_decision",
+        prompt: "Which decision looked riskiest, and why?"
+      },
+      {
+        id: "safest_behavior",
+        prompt: "Which racer behaved most safely?"
+      },
+      {
+        id: "human_takeaway",
+        prompt: "What should the human learn from this run?"
+      }
+    ];
 
     const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const state = {
@@ -631,9 +702,12 @@
       for (const item of state.feed) {
         const card = document.createElement("article");
         card.className = "event-card";
+        card.dataset.agentEventId = item.event_id;
+        card.dataset.agentId = item.agent_id;
         card.dataset.agentEventType = item.event_type;
         card.dataset.agentLearningTag = item.learning_tag;
         card.dataset.agentSegmentId = item.segment_id;
+        card.dataset.agentRiskLevel = item.risk_level;
         card.innerHTML = `<b>${escapeHtml(item.visible_label)} / ${escapeHtml(item.agent_id)}</b><span>${escapeHtml(item.commentary)}</span>`;
         feed.append(card);
       }
@@ -644,22 +718,40 @@
       const physicalRank = physicalRanking();
       const councilRank = councilRanking();
       root.dataset.agentRaceState = state.elapsed >= race.runtime_ms ? "finished" : "running";
+      root.dataset.agentActiveSegmentId = segment.id;
+      root.dataset.agentRaceLeader = physicalRank[0];
+      root.dataset.agentCouncilLeader = councilRank[0].id;
       timerValue.textContent = `${(state.elapsed / 1000).toFixed(1)}s`;
       segmentValue.textContent = segment.label;
       raceLeader.textContent = labelFor(physicalRank[0]);
       councilLeader.textContent = labelFor(councilRank[0].id);
       renderLeaderboard(councilRank);
-      stateJson.textContent = JSON.stringify({
+      const snapshot = {
+        schema: "drip_raceway_watchable_snapshot_v1",
         race_id: race.race_id,
+        page: "race-broadcast.html",
         state: root.dataset.agentRaceState,
         elapsed_ms: Math.round(state.elapsed),
         active_segment: segment.id,
         active_event: state.activeEvent?.event_id,
         race_leader: physicalRank[0],
         council_leader: councilRank[0].id,
+        visible_events: state.feed.map((event) => ({
+          event_id: event.event_id,
+          agent_id: event.agent_id,
+          segment_id: event.segment_id,
+          event_type: event.event_type,
+          risk_level: event.risk_level,
+          learning_tag: event.learning_tag,
+          visible_reason: event.visible_reason
+        })),
+        self_report_prompts: selfReportPrompts,
         local_only: race.safety.local_only,
-        backend_writes_enabled: race.safety.backend_writes_enabled
-      }, null, 2);
+        backend_writes_enabled: race.safety.backend_writes_enabled,
+        models_are_fictional: true
+      };
+      stateJson.textContent = JSON.stringify(snapshot, null, 2);
+      agentRaceSnapshot.textContent = JSON.stringify(snapshot, null, 2);
     }
 
     function initializeLeaderboard() {
@@ -668,6 +760,8 @@
         const row = document.createElement("div");
         row.className = "racer-row";
         row.dataset.agentRacerId = racer.id;
+        row.dataset.agentRacerLabel = racer.label;
+        row.dataset.agentRacerColor = racer.color_hex;
         row.dataset.agentRacerScore = "0";
         row.innerHTML = `
           <i class="marker" aria-hidden="true" style="color: ${racer.color_hex}"></i>
