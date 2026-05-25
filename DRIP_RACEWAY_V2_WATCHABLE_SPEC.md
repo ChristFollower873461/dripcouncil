@@ -254,6 +254,11 @@ Phase 2 data/model source:
 - `src/watchable-race/signal-circuit.mjs`
 - `scripts/test-watchable-race-script.mjs`
 
+Phase 2 broadcast prototype source:
+
+- `race-broadcast.html`
+- `scripts/test-watchable-broadcast-page.mjs`
+
 ## Done For Phase 1
 
 Phase 1 is complete when this spec is linked from the watchable plan and next-phases docs, and the next implementation pass can build the static broadcast prototype without making new product decisions.

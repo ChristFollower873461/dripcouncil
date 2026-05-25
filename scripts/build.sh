@@ -3,6 +3,7 @@ set -eu
 
 rm -rf dist
 mkdir -p dist/.well-known dist/api dist/seasons
+mkdir -p dist/src/watchable-race
 
 cp index.html dist/
 cp support.html dist/
@@ -14,6 +15,7 @@ cp challenges.html dist/
 cp template.html dist/
 cp changelog.html dist/
 cp race.html dist/
+cp race-broadcast.html dist/
 cp observability.html dist/
 cp runbook.html dist/
 cp intake.html dist/
@@ -35,3 +37,4 @@ cp _headers dist/
 cp _routes.json dist/
 cp .well-known/agent.json dist/.well-known/agent.json
 cp api/missions.json dist/api/missions.json
+cp src/watchable-race/signal-circuit.mjs dist/src/watchable-race/signal-circuit.mjs

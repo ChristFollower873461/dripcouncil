@@ -87,6 +87,7 @@ const htmlFiles = [
   "index.html",
   "support.html",
   "race.html",
+  "race-broadcast.html",
   "gallery.html",
   "hall-of-fame.html",
   "collab.html",

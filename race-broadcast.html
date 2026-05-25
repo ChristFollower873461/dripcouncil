@@ -1,0 +1,952 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Drip Raceway Broadcast Prototype</title>
+  <meta name="description" content="A local-only Drip Raceway broadcast prototype for watching fictional agent behavior archetypes race through Signal Circuit.">
+  <link rel="canonical" href="https://dripcouncil.org/race-broadcast.html">
+  <style>
+    :root {
+      color-scheme: dark;
+      --void: #030507;
+      --panel: #080d12;
+      --panel-2: #0d141c;
+      --line: rgba(215, 236, 255, 0.18);
+      --line-strong: rgba(255, 255, 255, 0.44);
+      --text: #f7fbff;
+      --muted: #9dafc2;
+      --green: #00ff85;
+      --red: #ff4d2e;
+      --blue: #16a5ff;
+      --violet: #a260ff;
+      --yellow: #fcff76;
+      --radius: 8px;
+      font-family: "Arial Narrow", "Roboto Condensed", "Arial", sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--void);
+      color: var(--text);
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background:
+        linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+      background-size: 40px 40px;
+      mask-image: linear-gradient(90deg, transparent, #000 14%, #000 86%, transparent);
+      opacity: 0.65;
+    }
+
+    .broadcast {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(320px, 30vw);
+      isolation: isolate;
+    }
+
+    .arena {
+      position: relative;
+      min-height: 100vh;
+      overflow: hidden;
+      border-right: 1px solid var(--line);
+      background:
+        radial-gradient(circle at 47% 48%, rgba(0, 255, 133, 0.1), transparent 34%),
+        radial-gradient(circle at 67% 27%, rgba(255, 77, 46, 0.12), transparent 24%),
+        linear-gradient(135deg, rgba(22, 165, 255, 0.08), transparent 38%);
+    }
+
+    .topbar {
+      position: absolute;
+      z-index: 6;
+      top: 0;
+      left: 0;
+      right: 0;
+      min-height: 84px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 18px 22px;
+      background: linear-gradient(180deg, rgba(3, 5, 7, 0.95), rgba(3, 5, 7, 0));
+    }
+
+    .brand {
+      display: grid;
+      gap: 4px;
+      text-transform: uppercase;
+    }
+
+    .brand strong {
+      font-size: clamp(28px, 5vw, 68px);
+      line-height: 0.92;
+      letter-spacing: 0;
+    }
+
+    .brand span,
+    .micro {
+      color: var(--green);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+    }
+
+    .status-row {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 8px;
+      max-width: 620px;
+    }
+
+    .status-pill {
+      min-height: 34px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 10px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: rgba(8, 13, 18, 0.72);
+      color: var(--muted);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .status-pill strong {
+      color: var(--text);
+      font-weight: 900;
+    }
+
+    .canvas-wrap {
+      position: absolute;
+      inset: 84px 0 120px;
+    }
+
+    #raceCanvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .commentary {
+      position: absolute;
+      z-index: 6;
+      left: clamp(16px, 3vw, 40px);
+      right: clamp(16px, 3vw, 40px);
+      bottom: 138px;
+      min-height: 78px;
+      display: grid;
+      align-content: center;
+      gap: 6px;
+      padding: 14px 16px;
+      border: 1px solid rgba(0, 255, 133, 0.38);
+      border-radius: var(--radius);
+      background: linear-gradient(90deg, rgba(3, 5, 7, 0.9), rgba(8, 13, 18, 0.72));
+      box-shadow: 0 0 34px rgba(0, 255, 133, 0.12);
+    }
+
+    .commentary b {
+      color: var(--green);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .commentary span {
+      font-size: clamp(20px, 2.4vw, 38px);
+      font-weight: 900;
+      line-height: 1.02;
+      text-wrap: balance;
+    }
+
+    .bottom-hud {
+      position: absolute;
+      z-index: 7;
+      left: 16px;
+      right: 16px;
+      bottom: 16px;
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .hud-tile {
+      min-height: 88px;
+      display: grid;
+      gap: 7px;
+      align-content: center;
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: rgba(4, 8, 13, 0.86);
+    }
+
+    .hud-tile small,
+    .panel-label {
+      color: var(--muted);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .hud-tile strong {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: clamp(20px, 2.2vw, 32px);
+      line-height: 1;
+    }
+
+    .rail {
+      min-height: 100vh;
+      padding: 16px;
+      display: grid;
+      grid-template-rows: auto auto minmax(210px, 1fr) minmax(170px, auto);
+      gap: 12px;
+      background: linear-gradient(180deg, rgba(6, 10, 15, 0.98), rgba(3, 5, 7, 0.98));
+      overflow: hidden;
+    }
+
+    .panel {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: rgba(8, 13, 18, 0.78);
+      padding: 14px;
+    }
+
+    .leaderboard {
+      display: grid;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .racer-row {
+      min-height: 54px;
+      display: grid;
+      grid-template-columns: 26px 1fr auto;
+      gap: 10px;
+      align-items: center;
+      padding: 8px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: rgba(3, 5, 7, 0.64);
+    }
+
+    .marker {
+      width: 20px;
+      height: 20px;
+      border: 2px solid currentColor;
+      border-radius: 3px 10px 3px 10px;
+      transform: rotate(45deg);
+      box-shadow: 0 0 18px currentColor;
+    }
+
+    .racer-row b,
+    .racer-row span {
+      display: block;
+    }
+
+    .racer-row b {
+      font-size: 16px;
+      text-transform: uppercase;
+    }
+
+    .racer-row span {
+      color: var(--muted);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 11px;
+    }
+
+    .score {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 22px;
+      font-weight: 900;
+    }
+
+    .event-feed {
+      display: grid;
+      gap: 8px;
+      align-content: start;
+      overflow: auto;
+      padding-right: 2px;
+    }
+
+    .event-card {
+      padding: 10px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: rgba(3, 5, 7, 0.72);
+    }
+
+    .event-card b {
+      display: block;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 11px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .event-card span {
+      display: block;
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.25;
+    }
+
+    .state-json {
+      width: 100%;
+      max-height: 150px;
+      overflow: auto;
+      margin: 10px 0 0;
+      padding: 10px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: #020304;
+      color: #b7f7ff;
+      font-size: 11px;
+      line-height: 1.35;
+      white-space: pre-wrap;
+    }
+
+    .finish-card {
+      position: absolute;
+      z-index: 10;
+      inset: auto 5vw 9vh;
+      display: none;
+      max-width: 920px;
+      padding: clamp(18px, 3vw, 32px);
+      border: 1px solid rgba(252, 255, 118, 0.58);
+      border-radius: var(--radius);
+      background: rgba(3, 5, 7, 0.95);
+      box-shadow: 0 0 80px rgba(252, 255, 118, 0.12);
+    }
+
+    .finish-card.is-visible {
+      display: grid;
+      gap: 16px;
+    }
+
+    .finish-card h2 {
+      margin: 0;
+      font-size: clamp(34px, 5vw, 72px);
+      line-height: 0.94;
+      letter-spacing: 0;
+      text-transform: uppercase;
+    }
+
+    .finish-card p {
+      max-width: 760px;
+      margin: 0;
+      color: var(--muted);
+      font-size: clamp(16px, 1.4vw, 21px);
+      line-height: 1.36;
+    }
+
+    .finish-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .finish-stat {
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: rgba(8, 13, 18, 0.8);
+    }
+
+    .finish-stat strong {
+      display: block;
+      margin-top: 6px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 18px;
+      color: var(--text);
+    }
+
+    .motion-note {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.35;
+    }
+
+    @media (max-width: 980px) {
+      .broadcast {
+        display: block;
+      }
+
+      .arena {
+        min-height: 76vh;
+        border-right: 0;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .canvas-wrap {
+        inset: 112px 0 118px;
+      }
+
+      .topbar {
+        display: grid;
+        align-items: start;
+      }
+
+      .status-row {
+        justify-content: flex-start;
+      }
+
+      .bottom-hud {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .hud-tile {
+        min-height: 64px;
+        padding: 10px;
+      }
+
+      .rail {
+        min-height: auto;
+        grid-template-rows: none;
+      }
+
+      .finish-card {
+        inset: auto 16px 18px;
+      }
+
+      .finish-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .arena {
+        min-height: 82vh;
+      }
+
+      .commentary {
+        bottom: 150px;
+      }
+
+      .commentary span {
+        font-size: 18px;
+      }
+
+      .status-pill {
+        font-size: 10px;
+      }
+
+      .bottom-hud {
+        left: 8px;
+        right: 8px;
+        bottom: 8px;
+        gap: 6px;
+      }
+    }
+  </style>
+</head>
+<body data-agent-safety-policy="static-local-only-no-backend-writes">
+  <main class="broadcast" data-agent-race-id="signal-circuit-01" data-agent-race-state="loading">
+    <section class="arena" aria-label="Signal Circuit broadcast arena">
+      <header class="topbar">
+        <div class="brand">
+          <strong>Signal Circuit</strong>
+          <span>local static broadcast</span>
+        </div>
+        <div class="status-row" aria-label="Race safety and status">
+          <span class="status-pill">Mode <strong id="modeLabel">Static</strong></span>
+          <span class="status-pill">Writes <strong>Off</strong></span>
+          <span class="status-pill">Models <strong>Fictional</strong></span>
+        </div>
+      </header>
+
+      <div class="canvas-wrap">
+        <canvas id="raceCanvas" width="1400" height="900" aria-label="Animated Signal Circuit race track"></canvas>
+      </div>
+
+      <div class="commentary" aria-live="polite">
+        <b id="commentaryBeat">Launch</b>
+        <span id="commentaryLine">Four fictional behavior racers enter Signal Circuit.</span>
+      </div>
+
+      <section class="bottom-hud" aria-label="Broadcast race state">
+        <div class="hud-tile">
+          <small>Timer</small>
+          <strong id="timerValue">0.0s</strong>
+        </div>
+        <div class="hud-tile">
+          <small>Segment</small>
+          <strong id="segmentValue">Start Gate</strong>
+        </div>
+        <div class="hud-tile">
+          <small>Race P1</small>
+          <strong id="raceLeader">Hotrod</strong>
+        </div>
+        <div class="hud-tile">
+          <small>Council P1</small>
+          <strong id="councilLeader">Scout</strong>
+        </div>
+      </section>
+
+      <aside class="finish-card" id="finishCard" aria-live="polite">
+        <div class="panel-label">What we learned</div>
+        <h2>Council point: Scout</h2>
+        <p id="finishTakeaway">Hotrod crossed first, but Scout wins the Council point. The fastest route included a poisoned shortcut. The strongest behavior was reading the gate, rejecting the bait, and finishing clean.</p>
+        <div class="finish-grid">
+          <div class="finish-stat">
+            <span class="panel-label">Physical winner</span>
+            <strong id="physicalWinner">Hotrod</strong>
+          </div>
+          <div class="finish-stat">
+            <span class="panel-label">Best recovery</span>
+            <strong id="bestRecovery">Hotrod</strong>
+          </div>
+          <div class="finish-stat">
+            <span class="panel-label">Best behavior</span>
+            <strong id="behaviorWinner">Scout</strong>
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <aside class="rail" aria-label="Race broadcast rail">
+      <section class="panel">
+        <span class="panel-label">Council Rank</span>
+        <div class="leaderboard" id="leaderboard"></div>
+      </section>
+
+      <section class="panel">
+        <span class="panel-label">Active Beat</span>
+        <p class="motion-note" id="activeBeat">The race is local-only and scripted from fictional behavior archetypes.</p>
+      </section>
+
+      <section class="panel event-feed" id="eventFeed" aria-label="Race event feed"></section>
+
+      <section class="panel">
+        <span class="panel-label">Agent State</span>
+        <pre class="state-json" id="stateJson">{ "status": "loading" }</pre>
+      </section>
+    </aside>
+  </main>
+
+  <script type="module">
+    import { SIGNAL_CIRCUIT_WATCHABLE_RACE as race } from "./src/watchable-race/signal-circuit.mjs";
+
+    const canvas = document.querySelector("#raceCanvas");
+    const ctx = canvas.getContext("2d");
+    const root = document.querySelector("[data-agent-race-id]");
+    const feed = document.querySelector("#eventFeed");
+    const leaderboard = document.querySelector("#leaderboard");
+    const timerValue = document.querySelector("#timerValue");
+    const segmentValue = document.querySelector("#segmentValue");
+    const raceLeader = document.querySelector("#raceLeader");
+    const councilLeader = document.querySelector("#councilLeader");
+    const commentaryBeat = document.querySelector("#commentaryBeat");
+    const commentaryLine = document.querySelector("#commentaryLine");
+    const activeBeat = document.querySelector("#activeBeat");
+    const stateJson = document.querySelector("#stateJson");
+    const finishCard = document.querySelector("#finishCard");
+    const finishTakeaway = document.querySelector("#finishTakeaway");
+    const physicalWinner = document.querySelector("#physicalWinner");
+    const bestRecovery = document.querySelector("#bestRecovery");
+    const behaviorWinner = document.querySelector("#behaviorWinner");
+
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const state = {
+      startedAt: performance.now(),
+      elapsed: 0,
+      playedEventIds: new Set(),
+      activeEvent: race.events[0],
+      scores: Object.fromEntries(race.racers.map((racer) => [racer.id, { ...racer.starting_scores }])),
+      feed: []
+    };
+
+    const racerMap = new Map(race.racers.map((racer) => [racer.id, racer]));
+
+    initializeLeaderboard();
+    resizeCanvas();
+    window.addEventListener("resize", resizeCanvas);
+    requestAnimationFrame(tick);
+
+    function tick(now) {
+      const rawElapsed = now - state.startedAt;
+      state.elapsed = prefersReducedMotion
+        ? Math.min(race.runtime_ms, Math.floor(rawElapsed / 1200) * 1200)
+        : Math.min(race.runtime_ms, rawElapsed);
+
+      playDueEvents();
+      render();
+      updateHud();
+
+      if (state.elapsed < race.runtime_ms) {
+        requestAnimationFrame(tick);
+      } else {
+        showFinish();
+        root.dataset.agentRaceState = "finished";
+      }
+    }
+
+    function playDueEvents() {
+      for (const event of race.events) {
+        if (event.elapsed_ms <= state.elapsed && !state.playedEventIds.has(event.event_id)) {
+          state.playedEventIds.add(event.event_id);
+          state.activeEvent = event;
+          applyScoreDelta(event);
+          addFeedEvent(event);
+        }
+      }
+    }
+
+    function applyScoreDelta(event) {
+      if (!state.scores[event.agent_id]) return;
+      for (const [key, value] of Object.entries(event.score_delta || {})) {
+        state.scores[event.agent_id][key] = clamp(state.scores[event.agent_id][key] + value, 0, 100);
+      }
+    }
+
+    function addFeedEvent(event) {
+      state.feed.unshift(event);
+      state.feed = state.feed.slice(0, 8);
+      commentaryBeat.textContent = event.visible_label;
+      commentaryLine.textContent = event.commentary;
+      activeBeat.textContent = event.commentary;
+      feed.innerHTML = "";
+      for (const item of state.feed) {
+        const card = document.createElement("article");
+        card.className = "event-card";
+        card.dataset.agentEventType = item.event_type;
+        card.dataset.agentLearningTag = item.learning_tag;
+        card.dataset.agentSegmentId = item.segment_id;
+        card.innerHTML = `<b>${escapeHtml(item.visible_label)} / ${escapeHtml(item.agent_id)}</b><span>${escapeHtml(item.commentary)}</span>`;
+        feed.append(card);
+      }
+    }
+
+    function updateHud() {
+      const segment = currentSegment();
+      const physicalRank = physicalRanking();
+      const councilRank = councilRanking();
+      root.dataset.agentRaceState = state.elapsed >= race.runtime_ms ? "finished" : "running";
+      timerValue.textContent = `${(state.elapsed / 1000).toFixed(1)}s`;
+      segmentValue.textContent = segment.label;
+      raceLeader.textContent = labelFor(physicalRank[0]);
+      councilLeader.textContent = labelFor(councilRank[0].id);
+      renderLeaderboard(councilRank);
+      stateJson.textContent = JSON.stringify({
+        race_id: race.race_id,
+        state: root.dataset.agentRaceState,
+        elapsed_ms: Math.round(state.elapsed),
+        active_segment: segment.id,
+        active_event: state.activeEvent?.event_id,
+        race_leader: physicalRank[0],
+        council_leader: councilRank[0].id,
+        local_only: race.safety.local_only,
+        backend_writes_enabled: race.safety.backend_writes_enabled
+      }, null, 2);
+    }
+
+    function initializeLeaderboard() {
+      leaderboard.innerHTML = "";
+      for (const racer of race.racers) {
+        const row = document.createElement("div");
+        row.className = "racer-row";
+        row.dataset.agentRacerId = racer.id;
+        row.dataset.agentRacerScore = "0";
+        row.innerHTML = `
+          <i class="marker" aria-hidden="true" style="color: ${racer.color_hex}"></i>
+          <span><b>${escapeHtml(racer.label)}</b><span>${escapeHtml(racer.personality)}</span></span>
+          <strong class="score">0</strong>
+        `;
+        leaderboard.append(row);
+      }
+    }
+
+    function renderLeaderboard(rank) {
+      const rows = new Map([...leaderboard.children].map((row) => [row.dataset.agentRacerId, row]));
+      rank.forEach((entry, index) => {
+        const row = rows.get(entry.id);
+        if (!row) return;
+        row.style.order = index;
+        row.dataset.agentRacerScore = String(entry.score);
+        row.querySelector(".score").textContent = String(entry.score);
+      });
+    }
+
+    function render() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      drawTrackGlow();
+      drawHazards();
+      drawSegmentLabels();
+      drawRacers();
+      if (state.activeEvent?.event_type === "hazard_hit") drawImpactBurst(positionFor("hotrod"));
+    }
+
+    function drawTrackGlow() {
+      const pathPoints = race.track.route_points.map((point) => toCanvas(point));
+
+      ctx.save();
+      ctx.lineJoin = "round";
+      ctx.lineCap = "round";
+
+      drawPath(pathPoints, 58, "rgba(22, 165, 255, 0.14)");
+      drawPath(pathPoints, 34, "rgba(22, 165, 255, 0.32)");
+      drawPath(pathPoints, 16, "rgba(0, 255, 133, 0.92)");
+      ctx.setLineDash([18, 18]);
+      drawPath(pathPoints, 5, "rgba(252, 255, 118, 0.72)");
+      ctx.setLineDash([]);
+
+      ctx.restore();
+    }
+
+    function drawHazards() {
+      const shortcutStart = toCanvas({ x: 60, y: 36 });
+      const shortcutEnd = toCanvas({ x: 76, y: 25 });
+      ctx.save();
+      ctx.lineCap = "round";
+      ctx.strokeStyle = "rgba(255, 77, 46, 0.95)";
+      ctx.lineWidth = 18;
+      ctx.shadowColor = "#ff4d2e";
+      ctx.shadowBlur = 28;
+      ctx.beginPath();
+      ctx.moveTo(shortcutStart.x, shortcutStart.y);
+      ctx.lineTo(shortcutEnd.x, shortcutEnd.y);
+      ctx.stroke();
+      ctx.shadowBlur = 0;
+      ctx.fillStyle = "rgba(255, 77, 46, 0.12)";
+      ctx.strokeStyle = "rgba(255, 77, 46, 0.5)";
+      ctx.lineWidth = 1;
+      const tunnel = toCanvas({ x: 72, y: 31 });
+      ctx.strokeRect(tunnel.x - 86, tunnel.y - 25, 172, 50);
+      ctx.fillRect(tunnel.x - 86, tunnel.y - 25, 172, 50);
+      ctx.fillStyle = "#ff4d2e";
+      ctx.font = "900 13px ui-monospace, monospace";
+      ctx.fillText("UNTRUSTED SHORTCUT", tunnel.x - 74, tunnel.y + 5);
+      ctx.restore();
+    }
+
+    function drawSegmentLabels() {
+      const labels = [
+        ["START GATE", 17, 64, "#00ff85"],
+        ["AMBIGUITY BEND", 42, 43, "#fcff76"],
+        ["INJECTION TUNNEL", 64, 47, "#ff4d2e"],
+        ["MEMORY FOG", 77, 61, "#a260ff"],
+        ["RECOVERY CHICANE", 52, 76, "#16a5ff"]
+      ];
+      ctx.save();
+      ctx.font = "900 12px ui-monospace, monospace";
+      for (const [text, x, y, color] of labels) {
+        const p = toCanvas({ x, y });
+        ctx.strokeStyle = "rgba(255, 255, 255, 0.18)";
+        ctx.fillStyle = "rgba(3, 5, 7, 0.72)";
+        ctx.strokeRect(p.x - 78, p.y - 20, 156, 34);
+        ctx.fillRect(p.x - 78, p.y - 20, 156, 34);
+        ctx.fillStyle = color;
+        ctx.fillText(text, p.x - 68, p.y + 2);
+      }
+      ctx.restore();
+    }
+
+    function drawRacers() {
+      for (const racer of race.racers) {
+        const position = positionFor(racer.id);
+        const previous = previousPositionFor(racer.id);
+        ctx.save();
+        ctx.strokeStyle = racer.color_hex;
+        ctx.fillStyle = racer.color_hex;
+        ctx.shadowColor = racer.color_hex;
+        ctx.shadowBlur = 22;
+        ctx.lineWidth = 4;
+        ctx.beginPath();
+        ctx.moveTo(previous.x, previous.y);
+        ctx.lineTo(position.x, position.y);
+        ctx.stroke();
+        ctx.translate(position.x, position.y);
+        ctx.rotate(position.angle);
+        drawRacerShape(racer);
+        ctx.restore();
+
+        ctx.save();
+        ctx.fillStyle = "#f7fbff";
+        ctx.font = "900 13px ui-monospace, monospace";
+        ctx.fillText(racer.label.toUpperCase(), position.x + 16, position.y - 14);
+        ctx.restore();
+      }
+    }
+
+    function drawRacerShape(racer) {
+      ctx.beginPath();
+      if (racer.shape === "square_cursor") {
+        ctx.rect(-11, -11, 22, 22);
+      } else if (racer.shape === "arrow_bolt") {
+        ctx.moveTo(20, 0);
+        ctx.lineTo(-13, -14);
+        ctx.lineTo(-6, 0);
+        ctx.lineTo(-13, 14);
+        ctx.closePath();
+      } else if (racer.shape === "split_pointer") {
+        ctx.moveTo(18, 0);
+        ctx.lineTo(-12, -16);
+        ctx.lineTo(-5, 0);
+        ctx.lineTo(-12, 16);
+        ctx.lineTo(2, 7);
+        ctx.closePath();
+      } else {
+        ctx.moveTo(20, 0);
+        ctx.lineTo(-14, -13);
+        ctx.lineTo(-8, 0);
+        ctx.lineTo(-14, 13);
+        ctx.closePath();
+      }
+      ctx.fill();
+      ctx.strokeStyle = "rgba(255,255,255,0.78)";
+      ctx.lineWidth = 2;
+      ctx.stroke();
+    }
+
+    function drawImpactBurst(position) {
+      ctx.save();
+      ctx.translate(position.x, position.y);
+      ctx.strokeStyle = "#ff4d2e";
+      ctx.lineWidth = 3;
+      ctx.shadowColor = "#ff4d2e";
+      ctx.shadowBlur = 25;
+      for (let i = 0; i < 12; i++) {
+        const angle = (Math.PI * 2 * i) / 12;
+        ctx.beginPath();
+        ctx.moveTo(Math.cos(angle) * 18, Math.sin(angle) * 18);
+        ctx.lineTo(Math.cos(angle) * 52, Math.sin(angle) * 52);
+        ctx.stroke();
+      }
+      ctx.restore();
+    }
+
+    function showFinish() {
+      finishCard.classList.add("is-visible");
+      finishTakeaway.textContent = race.finish.takeaway;
+      physicalWinner.textContent = labelFor(race.finish.physical_winner);
+      bestRecovery.textContent = labelFor(race.finish.best_recovery);
+      behaviorWinner.textContent = labelFor(race.finish.council_winner);
+    }
+
+    function positionFor(racerId) {
+      const frames = race.keyframes[racerId];
+      let from = frames[0];
+      let to = frames.at(-1);
+      for (let i = 0; i < frames.length - 1; i++) {
+        if (state.elapsed >= frames[i].elapsed_ms && state.elapsed <= frames[i + 1].elapsed_ms) {
+          from = frames[i];
+          to = frames[i + 1];
+          break;
+        }
+      }
+      const span = Math.max(1, to.elapsed_ms - from.elapsed_ms);
+      const t = clamp((state.elapsed - from.elapsed_ms) / span, 0, 1);
+      const eased = t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+      const point = {
+        x: from.x + (to.x - from.x) * eased,
+        y: from.y + (to.y - from.y) * eased
+      };
+      const current = toCanvas(point);
+      const target = toCanvas(to);
+      current.angle = Math.atan2(target.y - current.y, target.x - current.x);
+      return current;
+    }
+
+    function previousPositionFor(racerId) {
+      const oldElapsed = state.elapsed;
+      state.elapsed = Math.max(0, oldElapsed - 460);
+      const previous = positionFor(racerId);
+      state.elapsed = oldElapsed;
+      return previous;
+    }
+
+    function currentSegment() {
+      return race.segments.find((segment) => state.elapsed >= segment.start_ms && state.elapsed <= segment.end_ms) || race.segments.at(-1);
+    }
+
+    function physicalRanking() {
+      return race.racers
+        .map((racer) => ({ id: racer.id, progress: progressFor(racer.id) }))
+        .sort((a, b) => b.progress - a.progress)
+        .map((entry) => entry.id);
+    }
+
+    function progressFor(racerId) {
+      const frames = race.keyframes[racerId];
+      for (let i = frames.length - 1; i >= 0; i--) {
+        if (state.elapsed >= frames[i].elapsed_ms) return i + state.elapsed / race.runtime_ms;
+      }
+      return 0;
+    }
+
+    function councilRanking() {
+      return Object.entries(state.scores)
+        .map(([id, scores]) => ({
+          id,
+          score: Math.round(Object.entries(race.scoring.weights).reduce((sum, [key, weight]) => sum + scores[key] * weight, 0))
+        }))
+        .sort((a, b) => b.score - a.score);
+    }
+
+    function drawPath(pathPoints, width, color) {
+      ctx.strokeStyle = color;
+      ctx.lineWidth = width;
+      ctx.beginPath();
+      ctx.moveTo(pathPoints[0].x, pathPoints[0].y);
+      for (let i = 1; i < pathPoints.length; i++) {
+        ctx.lineTo(pathPoints[i].x, pathPoints[i].y);
+      }
+      ctx.stroke();
+    }
+
+    function toCanvas(point) {
+      return {
+        x: (point.x / 100) * canvas.width,
+        y: (point.y / 100) * canvas.height
+      };
+    }
+
+    function labelFor(id) {
+      return racerMap.get(id)?.label || id;
+    }
+
+    function resizeCanvas() {
+      const rect = canvas.getBoundingClientRect();
+      const scale = Math.min(window.devicePixelRatio || 1, 2);
+      canvas.width = Math.max(720, Math.floor(rect.width * scale));
+      canvas.height = Math.max(460, Math.floor(rect.height * scale));
+    }
+
+    function clamp(value, min = 0, max = 100) {
+      return Math.min(max, Math.max(min, value));
+    }
+
+    function escapeHtml(value) {
+      return String(value).replace(/[&<>"']/g, (char) => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+      })[char]);
+    }
+  </script>
+</body>
+</html>
