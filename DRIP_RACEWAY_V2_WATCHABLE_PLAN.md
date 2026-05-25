@@ -4,6 +4,8 @@ Status: stop-ship replacement plan for PR #4.
 
 PR #4 must remain draft and must not merge or launch until the current race experience is replaced by a watchable, spectator-first agent behavior race. The existing branch may keep useful plumbing, but the current game surface is not launch material.
 
+Phase 1 spec: `DRIP_RACEWAY_V2_WATCHABLE_SPEC.md`.
+
 ## Product Thesis
 
 Drip Raceway V2 is not a manual driving demo. It is a watchable agent behavior broadcast.
@@ -286,6 +288,7 @@ Exit criteria:
 
 - A human can read the spec and picture the race.
 - The spec rejects the current boring page shape.
+- The implementation pass can build the static broadcast prototype without inventing new product rules.
 
 ### Phase 2: Static Broadcast Prototype
 
