@@ -6,6 +6,8 @@ PR #4 must remain draft and must not merge or launch until the current race expe
 
 Phase 1 spec: `DRIP_RACEWAY_V2_WATCHABLE_SPEC.md`.
 
+Phase 5 replacement plan: `DRIP_RACEWAY_V2_REPLACE_RACE_PLAN.md`.
+
 ## Product Thesis
 
 Drip Raceway V2 is not a manual driving demo. It is a watchable agent behavior broadcast.
@@ -390,4 +392,4 @@ Before any launch approval:
 
 ## Next Recommended Step
 
-Continue with Phase 5 planning. Review whether `race-broadcast.html` is strong enough to replace or substantially rewrite `/race`, then prepare the replacement branch changes without marking PR #4 ready until the human approves.
+Implement Phase 5 using `DRIP_RACEWAY_V2_REPLACE_RACE_PLAN.md`: preserve the old manual lab as a secondary route, make `/race.html` the watchable Signal Circuit broadcast, update manifests/routes/tests, and keep PR #4 draft until the human reviews.
