@@ -63,7 +63,7 @@ Structured learning loop:
 Drip Raceway V2 preview:
 
 - `/race.html` is a static, local-only cursor racing lab.
-- `/race-broadcast.html` is a static draft Signal Circuit broadcast prototype with four fictional behavior racers, `data-agent-*` selectors, a local JSON snapshot, and self-report prompts.
+- `/race-broadcast.html` is a static draft Signal Circuit broadcast prototype with four fictional behavior racers, `data-agent-*` selectors, a local JSON snapshot, a local learning report, and self-report prompts.
 - `/race-manifest.json` describes the launch track, command grammar, controls, scoring signals, and safety boundaries.
 - `/api/race/health`, `/api/race/tracks`, and `/api/race/rooms` are API preview endpoints that do not perform writes.
 - `POST /api/race/rooms` is a disabled room-create review gate: valid JSON returns `403 room_creation_disabled`, invalid JSON returns a validation error, and nothing is created.

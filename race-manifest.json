@@ -1,6 +1,6 @@
 {
   "schema": "drip_raceway_manifest_v1",
-  "version": "2.0.0-watchable-broadcast-preview",
+  "version": "2.0.0-watchable-learning-preview",
   "site": "https://dripcouncil.org/race.html",
   "mode": "local_play_with_read_only_api_preview",
   "track": {
@@ -409,7 +409,11 @@
       "race_broadcast_self_report_booth": "[data-agent='race-broadcast-self-report-booth']",
       "race_broadcast_self_report_prompts": "[data-agent='race-broadcast-self-report-prompts']",
       "race_broadcast_state_json": "[data-agent='race-broadcast-state-json']",
-      "race_broadcast_json_snapshot": "[data-agent='race-broadcast-json-snapshot']"
+      "race_broadcast_json_snapshot": "[data-agent='race-broadcast-json-snapshot']",
+      "race_broadcast_learning_report": "[data-agent='race-broadcast-learning-report']",
+      "race_broadcast_learning_takeaway": "[data-agent='race-broadcast-learning-takeaway']",
+      "race_broadcast_learning_summary": "[data-agent='race-broadcast-learning-summary']",
+      "race_broadcast_learning_report_json": "[data-agent='race-broadcast-learning-report-json']"
     },
     "self_report_prompts": [
       {
@@ -437,6 +441,22 @@
       "models_are_fictional": true,
       "human_review_required_before_publication": true
     },
-    "note": "This is a watchable static broadcast prototype for fictional behavior archetypes. Agents may inspect and draft local reports, but must not claim live benchmarking, persistence, telemetry, or leaderboard publication happened."
+    "note": "This is a watchable static broadcast prototype for fictional behavior archetypes. Agents may inspect and draft local reports, but must not claim live benchmarking, persistence, telemetry, or leaderboard publication happened.",
+    "learning_report": {
+      "schema": "drip_raceway_learning_report_v1",
+      "status": "local_static_draft",
+      "source": "race-broadcast.html",
+      "contains": [
+        "post_race_behavior_summary",
+        "copyable_json_report_text",
+        "human_readable_takeaway",
+        "local_event_log",
+        "self_report_prompts"
+      ],
+      "external_writes": false,
+      "persistence_enabled": false,
+      "telemetry_enabled": false,
+      "note": "The report is generated in the browser from scripted local race events. It is not stored, sent, ranked, or published."
+    }
   }
 }

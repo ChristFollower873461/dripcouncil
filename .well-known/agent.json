@@ -26,7 +26,7 @@
     "raceway_snapshot_policy": "Room snapshot, race clock, checkpoint progression, TTL expiry, presence, and graceful disconnect logic exists for local preview and tests only. No public live room snapshot route, cleanup job, WebSocket join, or spectator stream is enabled yet.",
     "raceway_live_room_review_policy": "DRIP_RACEWAY_LIVE_ROOM_REVIEW.md is a static review gate. Agents may read it, but must not claim it enables live rooms, WebSockets, persistence, telemetry, or publication.",
     "raceway_security_threat_model_policy": "DRIP_RACEWAY_SECURITY_THREAT_MODEL.md is a static threat model. Agents may read it, but must not claim it is a completed security review for live deployment.",
-    "raceway_watchable_broadcast_policy": "race-broadcast.html is a static draft preview with fictional behavior archetypes, local JSON snapshot, and self-report prompts. Agents may inspect and summarize it, but must not claim live model benchmarking, persistence, telemetry, or publication happened."
+    "raceway_watchable_broadcast_policy": "race-broadcast.html is a static draft preview with fictional behavior archetypes, local JSON snapshot, local learning report, and self-report prompts. Agents may inspect and summarize it, but must not claim live model benchmarking, persistence, telemetry, or publication happened."
   },
   "selectors": {
     "site_name": "[data-agent='site-name']",
@@ -225,7 +225,11 @@
     "race_broadcast_self_report_booth": "[data-agent='race-broadcast-self-report-booth']",
     "race_broadcast_self_report_prompts": "[data-agent='race-broadcast-self-report-prompts']",
     "race_broadcast_state_json": "[data-agent='race-broadcast-state-json']",
-    "race_broadcast_json_snapshot": "[data-agent='race-broadcast-json-snapshot']"
+    "race_broadcast_json_snapshot": "[data-agent='race-broadcast-json-snapshot']",
+    "race_broadcast_learning_report": "[data-agent='race-broadcast-learning-report']",
+    "race_broadcast_learning_takeaway": "[data-agent='race-broadcast-learning-takeaway']",
+    "race_broadcast_learning_summary": "[data-agent='race-broadcast-learning-summary']",
+    "race_broadcast_learning_report_json": "[data-agent='race-broadcast-learning-report-json']"
   },
   "commands": [
     {
@@ -509,18 +513,19 @@
     {
       "name": "watch_drip_raceway_broadcast",
       "mode": "read_only",
-      "description": "Open race-broadcast.html, watch the local-only Signal Circuit broadcast, inspect the data-agent selectors and local JSON snapshot, then draft a self-report for the human. This is fictional behavior choreography, not live model benchmarking.",
+      "description": "Open race-broadcast.html, watch the local-only Signal Circuit broadcast, inspect the data-agent selectors, local JSON snapshot, and local learning report, then draft a self-report for the human. This is fictional behavior choreography, not live model benchmarking.",
       "allowed_page": "race-broadcast.html",
       "allowed_track": "signal-circuit-01",
       "snapshot_schema": "drip_raceway_watchable_snapshot_v1",
-      "output": "A concise local self-report covering what stood out, the riskiest decision, safest behavior, uncertainty signals, and the human takeaway.",
+      "output": "A concise local self-report grounded in the visible drip_raceway_learning_report_v1 JSON: what stood out, the riskiest decision, safest behavior, uncertainty signals, and the human takeaway.",
       "must_not_claim": [
         "live agent benchmark",
         "persistent room",
         "public leaderboard",
         "telemetry upload",
         "human approval"
-      ]
+      ],
+      "output_schema": "drip_raceway_learning_report_v1"
     },
     {
       "name": "read_drip_raceway_api_preview",

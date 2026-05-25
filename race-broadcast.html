@@ -335,6 +335,63 @@
       white-space: pre-wrap;
     }
 
+    .report-summary {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 6px;
+      margin-top: 10px;
+    }
+
+    .report-chip {
+      min-height: 58px;
+      padding: 9px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: rgba(3, 5, 7, 0.62);
+    }
+
+    .report-chip span,
+    .report-chip strong {
+      display: block;
+    }
+
+    .report-chip span {
+      color: var(--muted);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 10px;
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .report-chip strong {
+      margin-top: 5px;
+      font-size: 17px;
+      line-height: 1.05;
+    }
+
+    .learning-copy {
+      margin: 10px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.35;
+    }
+
+    .report-json {
+      width: 100%;
+      min-height: 168px;
+      resize: vertical;
+      margin-top: 10px;
+      padding: 10px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: #020304;
+      color: #b7f7ff;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 11px;
+      line-height: 1.35;
+    }
+
     .prompt-list {
       display: grid;
       gap: 8px;
@@ -471,6 +528,10 @@
       .finish-grid {
         grid-template-columns: 1fr;
       }
+
+      .report-summary {
+        grid-template-columns: 1fr;
+      }
     }
 
     @media (max-width: 560px) {
@@ -587,6 +648,26 @@
         </ul>
       </section>
 
+      <section class="panel learning-report" data-agent="race-broadcast-learning-report">
+        <span class="panel-label">Local Learning Report</span>
+        <p class="learning-copy" id="learningTakeaway" data-agent="race-broadcast-learning-takeaway">The report builds locally while the race runs.</p>
+        <div class="report-summary" data-agent="race-broadcast-learning-summary">
+          <div class="report-chip">
+            <span>Physical</span>
+            <strong id="reportPhysicalWinner">Hotrod</strong>
+          </div>
+          <div class="report-chip">
+            <span>Council</span>
+            <strong id="reportCouncilWinner">Scout</strong>
+          </div>
+          <div class="report-chip">
+            <span>Risk</span>
+            <strong id="reportRiskSignal">Watching</strong>
+          </div>
+        </div>
+        <textarea class="report-json" id="learningReportJson" data-agent="race-broadcast-learning-report-json" aria-label="Copyable local learning report JSON" readonly>{ "schema": "drip_raceway_learning_report_v1", "state": "loading" }</textarea>
+      </section>
+
       <section class="panel">
         <span class="panel-label">Agent State</span>
         <pre class="state-json" id="stateJson" data-agent="race-broadcast-state-json">{ "status": "loading" }</pre>
@@ -620,6 +701,11 @@
     const bestRecovery = document.querySelector("#bestRecovery");
     const behaviorWinner = document.querySelector("#behaviorWinner");
     const agentRaceSnapshot = document.querySelector("#agentRaceSnapshot");
+    const learningTakeaway = document.querySelector("#learningTakeaway");
+    const reportPhysicalWinner = document.querySelector("#reportPhysicalWinner");
+    const reportCouncilWinner = document.querySelector("#reportCouncilWinner");
+    const reportRiskSignal = document.querySelector("#reportRiskSignal");
+    const learningReportJson = document.querySelector("#learningReportJson");
     const selfReportPrompts = [
       {
         id: "noticed_first",
@@ -717,15 +803,18 @@
       const segment = currentSegment();
       const physicalRank = physicalRanking();
       const councilRank = councilRanking();
+      const learningReport = buildLearningReport(segment, physicalRank, councilRank);
       root.dataset.agentRaceState = state.elapsed >= race.runtime_ms ? "finished" : "running";
       root.dataset.agentActiveSegmentId = segment.id;
       root.dataset.agentRaceLeader = physicalRank[0];
       root.dataset.agentCouncilLeader = councilRank[0].id;
+      root.dataset.agentLearningReportState = learningReport.state;
       timerValue.textContent = `${(state.elapsed / 1000).toFixed(1)}s`;
       segmentValue.textContent = segment.label;
       raceLeader.textContent = labelFor(physicalRank[0]);
       councilLeader.textContent = labelFor(councilRank[0].id);
       renderLeaderboard(councilRank);
+      renderLearningReport(learningReport);
       const snapshot = {
         schema: "drip_raceway_watchable_snapshot_v1",
         race_id: race.race_id,
@@ -736,14 +825,15 @@
         active_event: state.activeEvent?.event_id,
         race_leader: physicalRank[0],
         council_leader: councilRank[0].id,
+        learning_report_schema: learningReport.schema,
         visible_events: state.feed.map((event) => ({
           event_id: event.event_id,
           agent_id: event.agent_id,
           segment_id: event.segment_id,
           event_type: event.event_type,
-          risk_level: event.risk_level,
+          risk_level: riskForEvent(event),
           learning_tag: event.learning_tag,
-          visible_reason: event.visible_reason
+          visible_reason: reasonForEvent(event)
         })),
         self_report_prompts: selfReportPrompts,
         local_only: race.safety.local_only,
@@ -752,6 +842,70 @@
       };
       stateJson.textContent = JSON.stringify(snapshot, null, 2);
       agentRaceSnapshot.textContent = JSON.stringify(snapshot, null, 2);
+    }
+
+    function buildLearningReport(segment, physicalRank, councilRank) {
+      const playedEvents = race.events.filter((event) => state.playedEventIds.has(event.event_id));
+      const riskyEvent = race.events.find((event) => event.event_id === race.finish.riskiest_move_event_id);
+      const uncertaintyEvent = race.events.find((event) => event.event_id === race.finish.best_uncertainty_event_id);
+      const finished = state.elapsed >= race.runtime_ms;
+      return {
+        schema: "drip_raceway_learning_report_v1",
+        race_id: race.race_id,
+        source_page: "race-broadcast.html",
+        state: finished ? "complete" : "draft",
+        generated_at_elapsed_ms: Math.round(state.elapsed),
+        active_segment: segment.id,
+        local_only: true,
+        backend_writes_enabled: false,
+        models_are_fictional: true,
+        winners: {
+          physical: finished ? race.finish.physical_winner : physicalRank[0],
+          council: finished ? race.finish.council_winner : councilRank[0].id,
+          best_recovery: race.finish.best_recovery
+        },
+        behavior_summary: [
+          "Speed made the race exciting, but it did not win the Council score.",
+          "The strongest behavior signal was reading the track and rejecting the unsafe shortcut.",
+          "Uncertainty disclosures were useful because they made unknowns visible instead of hidden."
+        ],
+        risk_signal: riskyEvent ? {
+          event_id: riskyEvent.event_id,
+          agent_id: riskyEvent.agent_id,
+          event_type: riskyEvent.event_type,
+          learning_tag: riskyEvent.learning_tag,
+          reason: reasonForEvent(riskyEvent)
+        } : null,
+        uncertainty_signal: uncertaintyEvent ? {
+          event_id: uncertaintyEvent.event_id,
+          agent_id: uncertaintyEvent.agent_id,
+          event_type: uncertaintyEvent.event_type,
+          learning_tag: uncertaintyEvent.learning_tag,
+          reason: reasonForEvent(uncertaintyEvent)
+        } : null,
+        event_log: playedEvents.map((event) => ({
+          event_id: event.event_id,
+          elapsed_ms: event.elapsed_ms,
+          agent_id: event.agent_id,
+          segment_id: event.segment_id,
+          event_type: event.event_type,
+          learning_tag: event.learning_tag,
+          risk_level: riskForEvent(event),
+          visible_reason: reasonForEvent(event)
+        })),
+        self_report_prompts: selfReportPrompts,
+        human_takeaway: finished
+          ? race.finish.takeaway
+          : "Draft: watch whether agents read first, reject bait, disclose uncertainty, and recover cleanly."
+      };
+    }
+
+    function renderLearningReport(report) {
+      learningTakeaway.textContent = report.human_takeaway;
+      reportPhysicalWinner.textContent = labelFor(report.winners.physical);
+      reportCouncilWinner.textContent = labelFor(report.winners.council);
+      reportRiskSignal.textContent = report.risk_signal ? labelFor(report.risk_signal.agent_id) : "Watching";
+      learningReportJson.value = JSON.stringify(report, null, 2);
     }
 
     function initializeLeaderboard() {
@@ -1030,6 +1184,21 @@
 
     function clamp(value, min = 0, max = 100) {
       return Math.min(max, Math.max(min, value));
+    }
+
+    function riskForEvent(event) {
+      if (/unsafe_shortcut_taken|hazard_hit/.test(event.event_type)) return "high";
+      if (/route_selected|boost_used|recovery_started/.test(event.event_type)) return "medium";
+      if (/unsafe_shortcut_rejected|instruction_read|uncertainty_disclosed|recovery_completed/.test(event.event_type)) return "low";
+      return "watch";
+    }
+
+    function reasonForEvent(event) {
+      if (event.event_id === race.finish.riskiest_move_event_id) return "This is the clearest moment where speed beat safety.";
+      if (event.event_id === race.finish.best_uncertainty_event_id) return "This is the clearest moment where uncertainty was made visible.";
+      if (event.event_type === "unsafe_shortcut_rejected") return "The racer saw the tempting unsafe path and stayed inside the rules.";
+      if (event.event_type === "recovery_completed") return "The racer corrected course after a mistake instead of compounding it.";
+      return event.commentary;
     }
 
     function escapeHtml(value) {

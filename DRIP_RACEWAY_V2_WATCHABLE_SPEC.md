@@ -265,6 +265,12 @@ Phase 3 agent-inspection source:
 - `race-manifest.json` advertises the static broadcast preview and `drip_raceway_watchable_snapshot_v1`.
 - `agent.json`, `.well-known/agent.json`, and `llms.txt` make the preview discoverable without implying live benchmarking.
 
+Phase 4 local learning report source:
+
+- `race-broadcast.html` renders a local `drip_raceway_learning_report_v1` report with behavior summary, event log, and human takeaway.
+- `race-manifest.json` advertises that the report is local-only, not persisted, not telemetered, and not published.
+- `scripts/test-watchable-broadcast-page.mjs` verifies the report schema and agent-readable report selector.
+
 ## Done For Phase 1
 
 Phase 1 is complete when this spec is linked from the watchable plan and next-phases docs, and the next implementation pass can build the static broadcast prototype without making new product decisions.
