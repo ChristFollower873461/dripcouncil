@@ -7,6 +7,8 @@ This is the short operating plan after the first V2 draft PR.
 - Branch: `codex/drip-raceway-v2`
 - Draft PR: https://github.com/ChristFollower873461/dripcouncil/pull/4
 - Rule: do not merge, deploy, add secrets, add live backend bindings, or touch Basement Boys without explicit approval.
+- Stop-ship rule: PR #4 is blocked from launch until the current race experience is replaced by the spectator-first plan in `DRIP_RACEWAY_V2_WATCHABLE_PLAN.md`.
+- Current product verdict: the existing race page is useful only as plumbing/reference work; it is not V2 awesome and ready.
 
 ## Phase A: Preview Watch
 
@@ -40,9 +42,11 @@ Detailed repair runbook: `DRIP_RACEWAY_PREVIEW_REPAIR_PLAN.md`.
 
 Goal: decide whether the static/local V2 preview should merge.
 
+- Blocked: do not move PR #4 out of draft while the current race UX remains the launch candidate.
 - Keep PR #4 draft until the human says it is ready.
 - Summarize any preview findings and required fixes.
 - Convert out of draft or merge only after explicit approval.
+- Replace the current `/race` experience with the watchable race plan before considering launch approval.
 
 ## Phase C: Approved Launch
 
