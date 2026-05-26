@@ -275,9 +275,11 @@ export function startFirstPersonSignalCircuit({ race }) {
 
     drawSky(width, height, now);
     drawSpeedField(width, height, now);
+    drawWarpRibs(width, height);
     drawRoad(width, height);
     drawRoadMoments(width, height);
     drawRacerPack(width, height);
+    drawNearFieldSparks(width, height);
     drawCockpit(width, height);
     drawVignette(width, height);
 
@@ -286,28 +288,39 @@ export function startFirstPersonSignalCircuit({ race }) {
 
   function drawSky(width, height, now) {
     const gradient = ctx.createLinearGradient(0, 0, 0, height);
-    gradient.addColorStop(0, "#020405");
-    gradient.addColorStop(0.35, "#081015");
+    gradient.addColorStop(0, "#000000");
+    gradient.addColorStop(0.34, "#071015");
+    gradient.addColorStop(0.58, "#020707");
     gradient.addColorStop(1, "#030507");
     ctx.fillStyle = gradient;
     ctx.fillRect(0, 0, width, height);
 
     const horizon = height * 0.36;
     ctx.save();
-    ctx.strokeStyle = "rgba(22, 165, 255, 0.14)";
+    ctx.globalCompositeOperation = "lighter";
+    ctx.strokeStyle = "rgba(22, 165, 255, 0.16)";
     ctx.lineWidth = 1;
-    for (let i = 0; i < 26; i++) {
-      const x = ((i * 173 + state.elapsed * 0.035) % (width + 220)) - 110;
+    for (let i = 0; i < 34; i++) {
+      const x = ((i * 157 + state.elapsed * 0.06) % (width + 260)) - 130;
+      const top = horizon - 110 - (i % 4) * 22;
       ctx.beginPath();
-      ctx.moveTo(x, horizon - 70);
-      ctx.lineTo(x + Math.sin((now + i * 77) * 0.001) * 18, horizon + 25);
+      ctx.moveTo(x, top);
+      ctx.lineTo(x + Math.sin((now + i * 77) * 0.001) * 28, horizon + 34);
       ctx.stroke();
     }
-    ctx.strokeStyle = "rgba(0, 255, 133, 0.16)";
+    ctx.strokeStyle = "rgba(0, 255, 133, 0.24)";
+    ctx.lineWidth = 2;
     ctx.beginPath();
     ctx.moveTo(0, horizon);
     ctx.lineTo(width, horizon + Math.sin(state.elapsed * 0.0012) * 8);
     ctx.stroke();
+
+    const bloom = ctx.createRadialGradient(width * 0.5, horizon + 10, 10, width * 0.5, horizon + 18, width * 0.58);
+    bloom.addColorStop(0, "rgba(0,255,133,0.18)");
+    bloom.addColorStop(0.28, "rgba(22,165,255,0.09)");
+    bloom.addColorStop(1, "rgba(0,0,0,0)");
+    ctx.fillStyle = bloom;
+    ctx.fillRect(0, 0, width, height);
     ctx.restore();
   }
 
@@ -315,27 +328,63 @@ export function startFirstPersonSignalCircuit({ race }) {
     const boost = state.elapsed < state.boostUntil ? 1 : 0;
     ctx.save();
     ctx.globalCompositeOperation = "lighter";
-    for (let i = 0; i < 64; i++) {
+    for (let i = 0; i < 96; i++) {
       const seed = i * 97.31;
-      const phase = (state.elapsed * (0.0008 + boost * 0.0008) + seed) % 1;
+      const phase = (state.elapsed * (0.0011 + boost * 0.0011) + seed) % 1;
       const side = i % 2 === 0 ? -1 : 1;
-      const y = height * (0.12 + phase * 0.88);
-      const x = width * 0.5 + side * width * (0.18 + phase * 0.62);
-      const len = 24 + phase * 150 + boost * 70;
-      ctx.strokeStyle = i % 5 === 0 ? "rgba(252,255,118,0.5)" : "rgba(22,165,255,0.36)";
-      ctx.lineWidth = 1 + phase * 3;
+      const y = height * (0.04 + phase * 1.02);
+      const x = width * 0.5 + side * width * (0.12 + phase * 0.72);
+      const len = 38 + phase * 210 + boost * 110;
+      ctx.strokeStyle = i % 9 === 0
+        ? "rgba(252,255,118,0.62)"
+        : i % 4 === 0
+          ? "rgba(0,255,133,0.42)"
+          : "rgba(22,165,255,0.34)";
+      ctx.lineWidth = 1 + phase * 3.8;
       ctx.beginPath();
       ctx.moveTo(x, y);
-      ctx.lineTo(x + side * len, y + len * 0.18);
+      ctx.lineTo(x + side * len, y + len * 0.24);
       ctx.stroke();
+    }
+    ctx.restore();
+  }
+
+  function drawWarpRibs(width, height) {
+    const horizon = height * 0.36;
+    const cameraLane = state.lane * width * 0.14;
+    const scroll = (state.elapsed * currentSpeed() * 0.000026) % 1;
+    ctx.save();
+    ctx.globalCompositeOperation = "lighter";
+    for (let i = 0; i < 18; i++) {
+      const depth = ((i / 18) + scroll) % 1;
+      const p = projectRoad(depth, width, height, horizon, cameraLane);
+      const ribAlpha = 0.06 + depth * 0.22;
+      const ceiling = Math.max(24, p.y - p.width * (0.42 + depth * 0.18));
+      ctx.strokeStyle = `rgba(22,165,255,${ribAlpha})`;
+      ctx.lineWidth = 1 + depth * 3;
+      ctx.beginPath();
+      ctx.moveTo(p.center - p.width * 1.26, p.y);
+      ctx.lineTo(p.center - p.width * 0.58, ceiling);
+      ctx.lineTo(p.center + p.width * 0.58, ceiling);
+      ctx.lineTo(p.center + p.width * 1.26, p.y);
+      ctx.stroke();
+
+      if (i % 3 === 0) {
+        ctx.strokeStyle = `rgba(0,255,133,${ribAlpha + 0.06})`;
+        ctx.beginPath();
+        ctx.moveTo(p.center - p.width * 0.28, p.y);
+        ctx.lineTo(p.center, ceiling + p.width * 0.08);
+        ctx.lineTo(p.center + p.width * 0.28, p.y);
+        ctx.stroke();
+      }
     }
     ctx.restore();
   }
 
   function drawRoad(width, height) {
     const horizon = height * 0.36;
-    const strips = 58;
-    const scroll = (state.elapsed * currentSpeed() * 0.000018) % 1;
+    const strips = 70;
+    const scroll = (state.elapsed * currentSpeed() * 0.000026) % 1;
     const cameraLane = state.lane * width * 0.14;
 
     ctx.save();
@@ -344,8 +393,9 @@ export function startFirstPersonSignalCircuit({ race }) {
       const z2 = clamp((i + 1 + scroll) / strips, 0, 1);
       const p1 = projectRoad(z1, width, height, horizon, cameraLane);
       const p2 = projectRoad(z2, width, height, horizon, cameraLane);
-      const stripe = Math.floor((i + state.elapsed * 0.02) / 2) % 2 === 0;
-      ctx.fillStyle = stripe ? "rgba(8, 20, 22, 0.98)" : "rgba(6, 14, 18, 0.98)";
+      const stripe = Math.floor((i + state.elapsed * 0.03) / 2) % 2 === 0;
+      const surfaceAlpha = 0.9 + z2 * 0.1;
+      ctx.fillStyle = stripe ? `rgba(7, 21, 22, ${surfaceAlpha})` : `rgba(4, 12, 16, ${surfaceAlpha})`;
       polygon([
         [p1.center - p1.width, p1.y],
         [p1.center + p1.width, p1.y],
@@ -354,28 +404,52 @@ export function startFirstPersonSignalCircuit({ race }) {
       ]);
       ctx.fill();
 
+      ctx.fillStyle = "rgba(0, 255, 133, 0.035)";
+      polygon([
+        [p1.center - p1.width * 1.28, p1.y],
+        [p1.center - p1.width, p1.y],
+        [p2.center - p2.width, p2.y],
+        [p2.center - p2.width * 1.28, p2.y]
+      ]);
+      ctx.fill();
+      polygon([
+        [p1.center + p1.width, p1.y],
+        [p1.center + p1.width * 1.28, p1.y],
+        [p2.center + p2.width * 1.28, p2.y],
+        [p2.center + p2.width, p2.y]
+      ]);
+      ctx.fill();
+
       if (i % 4 === 0) {
-        ctx.strokeStyle = "rgba(0, 255, 133, 0.55)";
-        ctx.lineWidth = 2;
+        ctx.strokeStyle = "rgba(0, 255, 133, 0.72)";
+        ctx.lineWidth = 2 + z2 * 2.4;
         drawRoadLine(p1, p2, -0.96);
         drawRoadLine(p1, p2, 0.96);
       }
       if (i % 3 === 0) {
-        ctx.strokeStyle = "rgba(252, 255, 118, 0.38)";
-        ctx.lineWidth = 1.4;
+        ctx.strokeStyle = "rgba(252, 255, 118, 0.52)";
+        ctx.lineWidth = 1.2 + z2 * 1.8;
         drawRoadLine(p1, p2, 0);
       }
       if (i % 5 === 0) {
-        ctx.strokeStyle = "rgba(22, 165, 255, 0.24)";
-        ctx.lineWidth = 1;
+        ctx.strokeStyle = "rgba(22, 165, 255, 0.34)";
+        ctx.lineWidth = 1 + z2 * 1.4;
         drawRoadLine(p1, p2, -0.34);
         drawRoadLine(p1, p2, 0.34);
+      }
+      if (i % 7 === 0 && z2 > 0.36) {
+        ctx.strokeStyle = "rgba(247, 251, 255, 0.16)";
+        ctx.lineWidth = 1;
+        const chevron = z2 % 0.2;
+        if (chevron < 0.08) {
+          drawRoadChevron(p1, p2);
+        }
       }
     }
 
     const roadGlow = ctx.createRadialGradient(width * 0.5, height * 0.82, 20, width * 0.5, height * 0.78, width * 0.9);
-    roadGlow.addColorStop(0, "rgba(0,255,133,0.16)");
-    roadGlow.addColorStop(0.38, "rgba(22,165,255,0.10)");
+    roadGlow.addColorStop(0, "rgba(0,255,133,0.24)");
+    roadGlow.addColorStop(0.38, "rgba(22,165,255,0.14)");
     roadGlow.addColorStop(1, "rgba(0,0,0,0)");
     ctx.fillStyle = roadGlow;
     ctx.fillRect(0, horizon, width, height - horizon);
@@ -463,11 +537,11 @@ export function startFirstPersonSignalCircuit({ race }) {
     race.racers.forEach((racer, index) => {
       const topDown = positionFor(racer.id);
       const phase = (state.elapsed / race.runtime_ms + racerPhases[racer.id]) % 1;
-      const depth = 0.34 + Math.abs(Math.sin(phase * Math.PI)) * 0.5;
-      const dangerNudge = segment.id === "injection_tunnel" && racer.id === "hotrod" ? 0.23 : 0;
-      const lane = clamp(((topDown.x - 50) / 46) + racerOffsets[racer.id] * 0.52 + dangerNudge, -0.98, 0.98);
+      const depth = 0.26 + Math.abs(Math.sin(phase * Math.PI)) * 0.43;
+      const dangerNudge = segment.id === "injection_tunnel" && racer.id === "hotrod" ? 0.18 : 0;
+      const lane = clamp(((topDown.x - 50) / 58) + racerOffsets[racer.id] * 0.32 + dangerNudge, -0.82, 0.82);
       const projected = projectVehicle(depth, lane, width, height);
-      const size = 0.62 + depth * 1.62;
+      const size = 0.42 + depth * 1.08;
       const wobble = Math.sin(state.elapsed * 0.005 + index) * 0.06;
       drawCursorVehicle(racer, projected.x, projected.y, size, wobble, depth);
     });
@@ -482,34 +556,39 @@ export function startFirstPersonSignalCircuit({ race }) {
     ctx.strokeStyle = racer.color_hex;
     ctx.fillStyle = racer.color_hex;
     ctx.shadowColor = racer.color_hex;
-    ctx.shadowBlur = 26;
-    ctx.lineWidth = 3;
+    ctx.shadowBlur = 22;
+    ctx.lineWidth = 2.2;
 
-    ctx.globalAlpha = 0.28 + depth * 0.44;
-    for (let i = 0; i < 4; i++) {
+    ctx.globalAlpha = 0.22 + depth * 0.4;
+    for (let i = 0; i < 5; i++) {
       ctx.beginPath();
-      ctx.moveTo(-16 - i * 20, 6 + i * 4);
-      ctx.lineTo(-74 - i * 32, 21 + i * 8);
+      ctx.moveTo(-12 - i * 18, 8 + i * 2.8);
+      ctx.lineTo(-68 - i * 34, 28 + i * 7);
       ctx.stroke();
     }
     ctx.globalAlpha = 1;
 
     ctx.beginPath();
-    ctx.moveTo(26, -24);
-    ctx.lineTo(26, 30);
-    ctx.lineTo(7, 19);
-    ctx.lineTo(-6, 48);
-    ctx.lineTo(-19, 42);
-    ctx.lineTo(-8, 14);
-    ctx.lineTo(-31, 14);
+    ctx.moveTo(24, -22);
+    ctx.lineTo(24, 28);
+    ctx.lineTo(8, 18);
+    ctx.lineTo(-5, 44);
+    ctx.lineTo(-17, 39);
+    ctx.lineTo(-7, 13);
+    ctx.lineTo(-29, 13);
     ctx.closePath();
     ctx.fill();
     ctx.strokeStyle = "rgba(247,251,255,0.86)";
     ctx.lineWidth = 2;
     ctx.stroke();
-    ctx.fillStyle = "#f7fbff";
-    ctx.font = "900 10px ui-monospace, monospace";
-    ctx.fillText(racer.label.toUpperCase(), -26, -30);
+
+    ctx.strokeStyle = "rgba(0,0,0,0.42)";
+    ctx.lineWidth = 5;
+    ctx.stroke();
+    ctx.strokeStyle = "rgba(247,251,255,0.82)";
+    ctx.lineWidth = 1.6;
+    ctx.stroke();
+
     ctx.restore();
   }
 
@@ -548,6 +627,43 @@ export function startFirstPersonSignalCircuit({ race }) {
       [width * 0.36, height]
     ]);
     ctx.fill();
+
+    const noseY = height * 0.92;
+    ctx.fillStyle = boost ? "rgba(252,255,118,0.82)" : "rgba(0,255,133,0.72)";
+    ctx.strokeStyle = "rgba(247,251,255,0.88)";
+    ctx.lineWidth = 1.4;
+    ctx.beginPath();
+    ctx.moveTo(width * 0.5, noseY - 42);
+    ctx.lineTo(width * 0.46, height);
+    ctx.lineTo(width * 0.54, height);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.font = "900 11px ui-monospace, monospace";
+    ctx.textAlign = "center";
+    ctx.fillStyle = boost ? "#fcff76" : "#00ff85";
+    ctx.fillText(boost ? "BOOST VECTOR" : "WATCH VECTOR", width * 0.5, noseY - 56);
+    ctx.restore();
+  }
+
+  function drawNearFieldSparks(width, height) {
+    const boost = state.elapsed < state.boostUntil ? 1 : 0;
+    ctx.save();
+    ctx.globalCompositeOperation = "lighter";
+    for (let i = 0; i < 22; i++) {
+      const phase = (state.elapsed * 0.0022 + i * 0.173) % 1;
+      const y = height * (0.55 + phase * 0.48);
+      const side = i % 2 === 0 ? -1 : 1;
+      const x = width * (0.5 + side * (0.18 + phase * 0.42));
+      const len = 36 + phase * 160 + boost * 80;
+      ctx.strokeStyle = i % 3 === 0 ? "rgba(0,255,133,0.62)" : "rgba(247,251,255,0.34)";
+      ctx.lineWidth = 1.4 + phase * 4;
+      ctx.beginPath();
+      ctx.moveTo(x, y);
+      ctx.lineTo(x + side * len, y + len * 0.22);
+      ctx.stroke();
+    }
     ctx.restore();
   }
 
@@ -583,6 +699,19 @@ export function startFirstPersonSignalCircuit({ race }) {
     ctx.beginPath();
     ctx.moveTo(p1.center + p1.width * lane, p1.y);
     ctx.lineTo(p2.center + p2.width * lane, p2.y);
+    ctx.stroke();
+  }
+
+  function drawRoadChevron(p1, p2) {
+    const mid1 = {
+      x: (p1.center + p2.center) / 2,
+      y: (p1.y + p2.y) / 2,
+      width: (p1.width + p2.width) / 2
+    };
+    ctx.beginPath();
+    ctx.moveTo(mid1.x - mid1.width * 0.18, mid1.y + 8);
+    ctx.lineTo(mid1.x, mid1.y - 10);
+    ctx.lineTo(mid1.x + mid1.width * 0.18, mid1.y + 8);
     ctx.stroke();
   }
 
@@ -766,16 +895,16 @@ export function startFirstPersonSignalCircuit({ race }) {
   function currentSpeed() {
     const segment = currentSegment();
     const segmentBoost = {
-      start_gate: 610,
-      ambiguity_bend: 720,
-      injection_tunnel: 860,
-      memory_fog: 690,
-      recovery_chicane: 810,
-      finish_gate: 930
-    }[segment.id] || 700;
-    const eventBoost = state.elapsed < state.boostUntil ? 140 : 0;
-    const brake = state.lastCommand === "brake" ? -140 : 0;
-    return Math.max(360, Math.round(segmentBoost + eventBoost + brake));
+      start_gate: 820,
+      ambiguity_bend: 930,
+      injection_tunnel: 1080,
+      memory_fog: 760,
+      recovery_chicane: 1010,
+      finish_gate: 1180
+    }[segment.id] || 880;
+    const eventBoost = state.elapsed < state.boostUntil ? 220 : 0;
+    const brake = state.lastCommand === "brake" ? -210 : 0;
+    return Math.max(520, Math.round(segmentBoost + eventBoost + brake));
   }
 
   function laneLabel() {
