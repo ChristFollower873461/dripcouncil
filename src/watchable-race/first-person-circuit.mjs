@@ -215,6 +215,7 @@ export function startFirstPersonSignalCircuit({ race }) {
     root.dataset.agentLearningReportState = learningReport.state;
     root.dataset.agentCameraMode = "first_person_signal_rush";
     root.dataset.agentLastLocalCommand = state.lastCommand;
+    root.dataset.agentObstacleVisual = obstacleVisualForSegment(segment);
 
     timerValue.textContent = `${(state.elapsed / 1000).toFixed(1)}s`;
     segmentValue.textContent = segment.label;
@@ -238,6 +239,7 @@ export function startFirstPersonSignalCircuit({ race }) {
       race_leader: physicalRank[0],
       council_leader: councilRank[0].id,
       speed_visual: speed,
+      obstacle_visual: root.dataset.agentObstacleVisual,
       local_lane: laneLabel(),
       last_local_command: state.lastCommand,
       learning_report_schema: learningReport.schema,
@@ -459,26 +461,354 @@ export function startFirstPersonSignalCircuit({ race }) {
   function drawRoadMoments(width, height) {
     const segment = currentSegment();
     if (segment.id === "injection_tunnel") {
-      drawGate(width, height, 0.54, "UNTRUSTED SHORTCUT", "#ff4d2e", 0.48);
-      drawGate(width, height, 0.78, "SAFE ROUTE", "#00ff85", -0.28);
+      drawShortcutTrap(width, height);
     } else if (segment.id === "ambiguity_bend") {
-      drawGate(width, height, 0.6, "SIGNAL UNCLEAR", "#fcff76", 0.08);
-      drawGate(width, height, 0.82, "READ BEFORE TURN", "#16a5ff", -0.48);
+      drawAmbiguitySplit(width, height);
     } else if (segment.id === "memory_fog") {
-      drawGate(width, height, 0.5, "MEMORY FOG", "#a260ff", 0.18);
       drawFog(width, height);
+      drawMemoryOcclusion(width, height);
     } else if (segment.id === "recovery_chicane") {
-      drawGate(width, height, 0.58, "RECOVER LINE", "#16a5ff", -0.42);
-      drawGate(width, height, 0.84, "NO COMPOUND ERRORS", "#00ff85", 0.38);
+      drawRecoveryRails(width, height);
     } else if (segment.id === "finish_gate") {
-      drawGate(width, height, 0.66, "COUNCIL FINISH", "#fcff76", 0);
+      drawFinishBeacon(width, height);
     } else {
-      drawGate(width, height, 0.68, "START GATE", "#00ff85", 0);
+      drawStartScanner(width, height);
     }
 
     if (state.activeEvent?.event_type === "hazard_hit") {
       drawExplosion(width, height);
     }
+  }
+
+  function drawStartScanner(width, height) {
+    ctx.save();
+    ctx.globalCompositeOperation = "lighter";
+    drawLaneRibbon(width, height, [
+      { depth: 0.42, lane: -0.28 },
+      { depth: 0.56, lane: -0.12 },
+      { depth: 0.72, lane: 0 },
+      { depth: 0.88, lane: 0.1 }
+    ], "#00ff85", 20, 0.72);
+    for (let i = 0; i < 4; i++) {
+      const depth = 0.5 + i * 0.1;
+      const p = lanePoint(depth, 0, width, height);
+      const size = 28 + depth * 56;
+      ctx.strokeStyle = `rgba(0,255,133,${0.28 + i * 0.08})`;
+      ctx.lineWidth = 2 + depth * 2;
+      ctx.strokeRect(p.x - size * 1.6, p.y - size * 0.42, size * 3.2, size * 0.84);
+      drawScanDiamond(p.x, p.y, size * 0.26, "#00ff85", 0.7);
+    }
+    ctx.restore();
+  }
+
+  function drawAmbiguitySplit(width, height) {
+    ctx.save();
+    ctx.globalCompositeOperation = "lighter";
+    drawLaneRibbon(width, height, [
+      { depth: 0.34, lane: 0 },
+      { depth: 0.5, lane: -0.18 },
+      { depth: 0.68, lane: -0.5 },
+      { depth: 0.88, lane: -0.72 }
+    ], "#16a5ff", 18, 0.62);
+    drawLaneRibbon(width, height, [
+      { depth: 0.34, lane: 0 },
+      { depth: 0.5, lane: 0.14 },
+      { depth: 0.68, lane: 0.46 },
+      { depth: 0.88, lane: 0.72 }
+    ], "#fcff76", 14, 0.4, [12, 14]);
+
+    for (let i = 0; i < 8; i++) {
+      const depth = 0.44 + i * 0.055;
+      const lane = i % 2 === 0 ? -0.42 : 0.42;
+      const p = lanePoint(depth, lane, width, height);
+      const pulse = 0.45 + Math.sin(state.elapsed * 0.006 + i) * 0.28;
+      drawQuestionBeacon(p.x, p.y, 14 + depth * 28, pulse);
+    }
+
+    drawBranchCurtain(width, height, "#fcff76", 0.23);
+    ctx.restore();
+  }
+
+  function drawShortcutTrap(width, height) {
+    ctx.save();
+    ctx.globalCompositeOperation = "lighter";
+    drawLaneRibbon(width, height, [
+      { depth: 0.35, lane: 0.04 },
+      { depth: 0.5, lane: 0.34 },
+      { depth: 0.68, lane: 0.72 },
+      { depth: 0.88, lane: 0.98 }
+    ], "#ff4d2e", 22, 0.78, [16, 8]);
+    drawLaneRibbon(width, height, [
+      { depth: 0.36, lane: -0.08 },
+      { depth: 0.54, lane: -0.28 },
+      { depth: 0.72, lane: -0.5 },
+      { depth: 0.9, lane: -0.42 }
+    ], "#00ff85", 18, 0.58);
+
+    for (let i = 0; i < 18; i++) {
+      const depth = 0.45 + (i % 6) * 0.075;
+      const lane = 0.34 + (i % 3) * 0.22;
+      const p = lanePoint(depth, lane, width, height);
+      const size = 9 + depth * 30;
+      drawHazardShard(p.x, p.y, size, "#ff4d2e", i);
+    }
+
+    for (let i = 0; i < 5; i++) {
+      const p = lanePoint(0.48 + i * 0.09, -0.4, width, height);
+      drawScanDiamond(p.x, p.y, 12 + i * 4, "#00ff85", 0.52);
+    }
+    drawCorruptPulse(width, height);
+    ctx.restore();
+  }
+
+  function drawMemoryOcclusion(width, height) {
+    ctx.save();
+    ctx.globalCompositeOperation = "lighter";
+    drawLaneRibbon(width, height, [
+      { depth: 0.36, lane: 0 },
+      { depth: 0.54, lane: 0.04 },
+      { depth: 0.72, lane: -0.08 },
+      { depth: 0.9, lane: 0.02 }
+    ], "#a260ff", 16, 0.42, [5, 20]);
+
+    for (let i = 0; i < 18; i++) {
+      const depth = 0.36 + (i % 6) * 0.08;
+      const lane = -0.78 + (i % 5) * 0.39;
+      const p = lanePoint(depth, lane, width, height);
+      const w = (28 + depth * 90) * (i % 2 ? 0.6 : 1);
+      const h = 4 + depth * 10;
+      ctx.fillStyle = `rgba(183,247,255,${0.08 + (i % 3) * 0.04})`;
+      ctx.fillRect(p.x - w * 0.5, p.y - h * 0.5, w, h);
+    }
+
+    const veil = ctx.createRadialGradient(width * 0.5, height * 0.55, 30, width * 0.5, height * 0.55, width * 0.52);
+    veil.addColorStop(0, "rgba(162,96,255,0.20)");
+    veil.addColorStop(0.45, "rgba(183,247,255,0.10)");
+    veil.addColorStop(1, "rgba(0,0,0,0)");
+    ctx.fillStyle = veil;
+    ctx.fillRect(0, 0, width, height);
+    ctx.restore();
+  }
+
+  function drawRecoveryRails(width, height) {
+    ctx.save();
+    ctx.globalCompositeOperation = "lighter";
+    drawLaneRibbon(width, height, [
+      { depth: 0.34, lane: 0.62 },
+      { depth: 0.48, lane: -0.44 },
+      { depth: 0.62, lane: 0.42 },
+      { depth: 0.78, lane: -0.22 },
+      { depth: 0.92, lane: 0 }
+    ], "#16a5ff", 20, 0.72);
+    drawLaneRibbon(width, height, [
+      { depth: 0.36, lane: 0.56 },
+      { depth: 0.5, lane: -0.5 },
+      { depth: 0.64, lane: 0.48 },
+      { depth: 0.8, lane: -0.28 },
+      { depth: 0.94, lane: 0.04 }
+    ], "#00ff85", 7, 0.64);
+
+    for (let i = 0; i < 7; i++) {
+      const depth = 0.4 + i * 0.075;
+      const lane = Math.sin(i * 1.15) * 0.55;
+      const p = lanePoint(depth, lane, width, height);
+      drawRecoveryRing(p.x, p.y, 18 + depth * 42, i);
+    }
+
+    for (let i = 0; i < 9; i++) {
+      const p = lanePoint(0.38 + i * 0.045, 0.72 + Math.sin(i) * 0.08, width, height);
+      drawHazardShard(p.x, p.y, 8 + i * 2, "#ff4d2e", i);
+    }
+    ctx.restore();
+  }
+
+  function drawFinishBeacon(width, height) {
+    ctx.save();
+    ctx.globalCompositeOperation = "lighter";
+    drawLaneRibbon(width, height, [
+      { depth: 0.36, lane: 0 },
+      { depth: 0.55, lane: 0 },
+      { depth: 0.74, lane: 0 },
+      { depth: 0.92, lane: 0 }
+    ], "#fcff76", 24, 0.62);
+    for (let i = 0; i < 4; i++) {
+      const p = lanePoint(0.5 + i * 0.1, 0, width, height);
+      const size = 34 + i * 18;
+      ctx.strokeStyle = `rgba(252,255,118,${0.28 + i * 0.08})`;
+      ctx.lineWidth = 2 + i;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, size, 0, Math.PI * 2);
+      ctx.stroke();
+    }
+    ctx.restore();
+  }
+
+  function drawLaneRibbon(width, height, points, color, lineWidth, alpha, dash = []) {
+    const projected = points.map((point) => lanePoint(point.depth, point.lane, width, height));
+    ctx.save();
+    ctx.globalCompositeOperation = "lighter";
+    ctx.strokeStyle = withAlpha(color, alpha * 0.28);
+    ctx.lineWidth = lineWidth * 2.8;
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
+    ctx.shadowColor = color;
+    ctx.shadowBlur = lineWidth * 1.8;
+    if (dash.length) ctx.setLineDash(dash);
+    drawProjectedCurve(projected);
+    ctx.stroke();
+
+    ctx.strokeStyle = withAlpha(color, alpha);
+    ctx.lineWidth = lineWidth;
+    ctx.shadowBlur = lineWidth;
+    drawProjectedCurve(projected);
+    ctx.stroke();
+
+    ctx.strokeStyle = "rgba(247,251,255,0.24)";
+    ctx.lineWidth = Math.max(1, lineWidth * 0.18);
+    ctx.shadowBlur = 0;
+    drawProjectedCurve(projected);
+    ctx.stroke();
+    ctx.restore();
+  }
+
+  function drawProjectedCurve(points) {
+    ctx.beginPath();
+    ctx.moveTo(points[0].x, points[0].y);
+    for (let i = 1; i < points.length; i++) {
+      const previous = points[i - 1];
+      const current = points[i];
+      const cx = (previous.x + current.x) * 0.5;
+      const cy = (previous.y + current.y) * 0.5;
+      ctx.quadraticCurveTo(previous.x, previous.y, cx, cy);
+    }
+    const last = points.at(-1);
+    ctx.lineTo(last.x, last.y);
+  }
+
+  function lanePoint(depth, lane, width, height) {
+    const horizon = height * 0.36;
+    const p = projectRoad(depth, width, height, horizon, state.lane * width * 0.14);
+    return {
+      x: p.center + lane * p.width * 0.62,
+      y: p.y,
+      width: p.width
+    };
+  }
+
+  function drawScanDiamond(x, y, size, color, alpha) {
+    ctx.save();
+    ctx.strokeStyle = withAlpha(color, alpha);
+    ctx.fillStyle = withAlpha(color, alpha * 0.16);
+    ctx.shadowColor = color;
+    ctx.shadowBlur = size * 0.9;
+    ctx.lineWidth = Math.max(1, size * 0.09);
+    ctx.beginPath();
+    ctx.moveTo(x, y - size);
+    ctx.lineTo(x + size, y);
+    ctx.lineTo(x, y + size);
+    ctx.lineTo(x - size, y);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+    ctx.restore();
+  }
+
+  function drawQuestionBeacon(x, y, size, pulse) {
+    ctx.save();
+    ctx.strokeStyle = `rgba(252,255,118,${0.22 + pulse * 0.34})`;
+    ctx.shadowColor = "#fcff76";
+    ctx.shadowBlur = size * 1.1;
+    ctx.lineWidth = Math.max(1, size * 0.08);
+    ctx.beginPath();
+    ctx.arc(x, y, size, Math.PI * 0.12, Math.PI * 1.64);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(x - size * 0.42, y);
+    ctx.lineTo(x + size * 0.42, y);
+    ctx.moveTo(x, y - size * 0.42);
+    ctx.lineTo(x, y + size * 0.42);
+    ctx.stroke();
+    ctx.restore();
+  }
+
+  function drawBranchCurtain(width, height, color, alpha) {
+    const horizon = height * 0.36;
+    ctx.save();
+    ctx.strokeStyle = withAlpha(color, alpha);
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([10, 18]);
+    for (let i = 0; i < 9; i++) {
+      const x = width * (0.24 + i * 0.065);
+      ctx.beginPath();
+      ctx.moveTo(x, horizon + 10);
+      ctx.lineTo(width * 0.5 + (i - 4) * 18, height * 0.72);
+      ctx.stroke();
+    }
+    ctx.restore();
+  }
+
+  function drawHazardShard(x, y, size, color, index) {
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.rotate(index * 0.8 + state.elapsed * 0.004);
+    ctx.fillStyle = withAlpha(color, 0.22);
+    ctx.strokeStyle = withAlpha(color, 0.86);
+    ctx.shadowColor = color;
+    ctx.shadowBlur = size * 1.2;
+    ctx.lineWidth = Math.max(1, size * 0.08);
+    ctx.beginPath();
+    ctx.moveTo(0, -size);
+    ctx.lineTo(size * 0.72, size * 0.8);
+    ctx.lineTo(0, size * 0.38);
+    ctx.lineTo(-size * 0.72, size * 0.8);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+    ctx.restore();
+  }
+
+  function drawCorruptPulse(width, height) {
+    const p = lanePoint(0.68, 0.66, width, height);
+    const pulse = 0.5 + Math.sin(state.elapsed * 0.012) * 0.5;
+    ctx.save();
+    ctx.strokeStyle = `rgba(255,77,46,${0.28 + pulse * 0.3})`;
+    ctx.shadowColor = "#ff4d2e";
+    ctx.shadowBlur = 32;
+    ctx.lineWidth = 4;
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, 46 + pulse * 34, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, 20 + pulse * 18, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.restore();
+  }
+
+  function drawRecoveryRing(x, y, size, index) {
+    const progress = (state.elapsed * 0.002 + index * 0.16) % 1;
+    ctx.save();
+    ctx.strokeStyle = `rgba(22,165,255,${0.28 + progress * 0.36})`;
+    ctx.shadowColor = "#16a5ff";
+    ctx.shadowBlur = size * 0.9;
+    ctx.lineWidth = Math.max(1, size * 0.08);
+    ctx.beginPath();
+    ctx.arc(x, y, size * (0.6 + progress * 0.5), Math.PI * 0.15, Math.PI * 1.75);
+    ctx.stroke();
+    ctx.strokeStyle = "rgba(0,255,133,0.62)";
+    ctx.beginPath();
+    ctx.moveTo(x - size * 0.36, y + size * 0.06);
+    ctx.lineTo(x - size * 0.08, y + size * 0.32);
+    ctx.lineTo(x + size * 0.46, y - size * 0.34);
+    ctx.stroke();
+    ctx.restore();
+  }
+
+  function withAlpha(hex, alpha) {
+    const clean = hex.replace("#", "");
+    const r = parseInt(clean.slice(0, 2), 16);
+    const g = parseInt(clean.slice(2, 4), 16);
+    const b = parseInt(clean.slice(4, 6), 16);
+    return `rgba(${r},${g},${b},${alpha})`;
   }
 
   function drawGate(width, height, depth, label, color, laneOffset) {
@@ -866,6 +1196,17 @@ export function startFirstPersonSignalCircuit({ race }) {
 
   function currentSegment() {
     return race.segments.find((segment) => state.elapsed >= segment.start_ms && state.elapsed <= segment.end_ms) || race.segments.at(-1);
+  }
+
+  function obstacleVisualForSegment(segment) {
+    return {
+      start_gate: "green_scan_gate_and_launch_corridor",
+      ambiguity_bend: "split_paths_with_flickering_uncertainty_beacons",
+      injection_tunnel: "red_broken_shortcut_trap_vs_green_stable_route",
+      memory_fog: "occluded_lane_markers_and_violet_fog",
+      recovery_chicane: "blue_correction_rails_and_debris",
+      finish_gate: "yellow_finish_beacon"
+    }[segment.id] || "visual_race_obstacle";
   }
 
   function physicalRanking() {
