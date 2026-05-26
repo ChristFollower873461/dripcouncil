@@ -275,17 +275,38 @@ export function startFirstPersonSignalCircuit({ race }) {
       ctx.translate((Math.random() - 0.5) * 18 * shake, (Math.random() - 0.5) * 12 * shake);
     }
 
+    applyDirectorCamera(width, height);
     drawSky(width, height, now);
     drawSpeedField(width, height, now);
     drawWarpRibs(width, height);
     drawRoad(width, height);
     drawRoadMoments(width, height);
     drawRacerPack(width, height);
+    drawEventDrama(width, height);
     drawNearFieldSparks(width, height);
     drawCockpit(width, height);
     drawVignette(width, height);
 
     ctx.restore();
+  }
+
+  function applyDirectorCamera(width, height) {
+    const segment = currentSegment();
+    const pulse = eventPulse(1300);
+    const bank = {
+      start_gate: 0,
+      ambiguity_bend: -0.012,
+      injection_tunnel: 0.018,
+      memory_fog: -0.006,
+      recovery_chicane: 0.024,
+      finish_gate: 0.006
+    }[segment.id] || 0;
+    const zoom = 1 + (state.elapsed < state.boostUntil ? 0.028 : 0) + pulse * 0.018;
+    const sway = Math.sin(state.elapsed * 0.002) * 3 + state.lane * 10;
+    ctx.translate(width * 0.5, height * 0.55);
+    ctx.rotate(bank + state.lane * 0.012);
+    ctx.scale(zoom, zoom);
+    ctx.translate(-width * 0.5 + sway, -height * 0.55);
   }
 
   function drawSky(width, height, now) {
@@ -863,18 +884,27 @@ export function startFirstPersonSignalCircuit({ race }) {
   }
 
   function drawRacerPack(width, height) {
-    const segment = currentSegment();
     race.racers.forEach((racer, index) => {
-      const topDown = positionFor(racer.id);
-      const phase = (state.elapsed / race.runtime_ms + racerPhases[racer.id]) % 1;
-      const depth = 0.26 + Math.abs(Math.sin(phase * Math.PI)) * 0.43;
-      const dangerNudge = segment.id === "injection_tunnel" && racer.id === "hotrod" ? 0.18 : 0;
-      const lane = clamp(((topDown.x - 50) / 58) + racerOffsets[racer.id] * 0.32 + dangerNudge, -0.82, 0.82);
-      const projected = projectVehicle(depth, lane, width, height);
-      const size = 0.42 + depth * 1.08;
+      const projected = racerProjection(racer.id, width, height);
+      const size = 0.42 + projected.depth * 1.08;
       const wobble = Math.sin(state.elapsed * 0.005 + index) * 0.06;
-      drawCursorVehicle(racer, projected.x, projected.y, size, wobble, depth);
+      drawCursorVehicle(racer, projected.x, projected.y, size, wobble, projected.depth);
     });
+  }
+
+  function racerProjection(racerId, width, height) {
+    const segment = currentSegment();
+    const topDown = positionFor(racerId);
+    const phase = (state.elapsed / race.runtime_ms + racerPhases[racerId]) % 1;
+    const depth = 0.26 + Math.abs(Math.sin(phase * Math.PI)) * 0.43;
+    const dangerNudge = segment.id === "injection_tunnel" && racerId === "hotrod" ? 0.18 : 0;
+    const lane = clamp(((topDown.x - 50) / 58) + racerOffsets[racerId] * 0.32 + dangerNudge, -0.82, 0.82);
+    const projected = projectVehicle(depth, lane, width, height);
+    return {
+      ...projected,
+      depth,
+      lane
+    };
   }
 
   function drawCursorVehicle(racer, x, y, scale, angle, depth) {
@@ -992,6 +1022,144 @@ export function startFirstPersonSignalCircuit({ race }) {
       ctx.beginPath();
       ctx.moveTo(x, y);
       ctx.lineTo(x + side * len, y + len * 0.22);
+      ctx.stroke();
+    }
+    ctx.restore();
+  }
+
+  function drawEventDrama(width, height) {
+    const event = state.activeEvent;
+    if (!event) return;
+    const pulse = eventPulse(2200);
+    if (pulse <= 0.01) return;
+
+    if (event.event_type === "unsafe_shortcut_rejected") {
+      drawSafetyDeflection(event.agent_id, width, height, pulse);
+    } else if (event.event_type === "unsafe_shortcut_taken") {
+      drawShortcutGravity(event.agent_id, width, height, pulse);
+    } else if (event.event_type === "hazard_hit") {
+      drawShatterWake(width, height, pulse);
+    } else if (event.event_type === "uncertainty_disclosed") {
+      drawUncertaintyEcho(event.agent_id, width, height, pulse);
+    } else if (event.event_type === "recovery_started" || event.event_type === "recovery_completed") {
+      drawRepairSurge(event.agent_id, width, height, pulse);
+    } else if (event.event_type === "boost_used") {
+      drawBoostWake(event.agent_id, width, height, pulse);
+    }
+  }
+
+  function drawSafetyDeflection(racerId, width, height, pulse) {
+    const p = racerProjection(racerId, width, height);
+    ctx.save();
+    ctx.globalCompositeOperation = "lighter";
+    const radius = 36 + p.depth * 74 + pulse * 36;
+    ctx.strokeStyle = `rgba(0,255,133,${0.28 + pulse * 0.42})`;
+    ctx.fillStyle = `rgba(0,255,133,${0.04 + pulse * 0.08})`;
+    ctx.shadowColor = "#00ff85";
+    ctx.shadowBlur = 34;
+    ctx.lineWidth = 3 + pulse * 5;
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, radius, Math.PI * 1.1, Math.PI * 2.35);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, radius * 0.58, 0, Math.PI * 2);
+    ctx.fill();
+
+    for (let i = 0; i < 5; i++) {
+      const shardX = p.x + radius * (0.6 + i * 0.12);
+      const shardY = p.y - radius * (0.25 - i * 0.08);
+      drawHazardShard(shardX, shardY, 10 + i * 4, "#ff4d2e", i);
+    }
+    ctx.restore();
+  }
+
+  function drawShortcutGravity(racerId, width, height, pulse) {
+    const p = racerProjection(racerId, width, height);
+    const trap = lanePoint(0.82, 0.86, width, height);
+    ctx.save();
+    ctx.globalCompositeOperation = "lighter";
+    ctx.strokeStyle = `rgba(255,77,46,${0.35 + pulse * 0.46})`;
+    ctx.lineWidth = 10 + pulse * 18;
+    ctx.shadowColor = "#ff4d2e";
+    ctx.shadowBlur = 40;
+    ctx.setLineDash([18, 12]);
+    ctx.beginPath();
+    ctx.moveTo(p.x, p.y);
+    ctx.quadraticCurveTo((p.x + trap.x) * 0.5 + 80, (p.y + trap.y) * 0.5 - 80, trap.x, trap.y);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    for (let i = 0; i < 4; i++) {
+      const t = i / 3;
+      const x = p.x + (trap.x - p.x) * t + Math.sin(state.elapsed * 0.006 + i) * 22;
+      const y = p.y + (trap.y - p.y) * t;
+      drawHazardShard(x, y, 14 + pulse * 22, "#ff4d2e", i);
+    }
+    ctx.restore();
+  }
+
+  function drawShatterWake(width, height, pulse) {
+    const p = racerProjection("hotrod", width, height);
+    ctx.save();
+    ctx.globalCompositeOperation = "lighter";
+    for (let i = 0; i < 22; i++) {
+      const angle = (Math.PI * 2 * i) / 22 + state.elapsed * 0.003;
+      const radius = 28 + i * 6 + pulse * 90;
+      const x = p.x + Math.cos(angle) * radius;
+      const y = p.y + Math.sin(angle) * radius * 0.55;
+      drawHazardShard(x, y, 8 + pulse * 18, i % 2 ? "#ff4d2e" : "#fcff76", i);
+    }
+    ctx.restore();
+  }
+
+  function drawUncertaintyEcho(racerId, width, height, pulse) {
+    const p = racerProjection(racerId, width, height);
+    ctx.save();
+    ctx.globalCompositeOperation = "lighter";
+    for (let i = 0; i < 4; i++) {
+      const radius = 28 + i * 28 + pulse * 44;
+      ctx.strokeStyle = `rgba(162,96,255,${0.38 - i * 0.06})`;
+      ctx.shadowColor = "#a260ff";
+      ctx.shadowBlur = 22;
+      ctx.lineWidth = 2 + pulse * 3;
+      ctx.setLineDash([10 + i * 3, 10]);
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, radius, Math.PI * 0.1, Math.PI * 1.85);
+      ctx.stroke();
+    }
+    ctx.setLineDash([]);
+    drawQuestionBeacon(p.x, p.y, 28 + pulse * 26, 0.8);
+    ctx.restore();
+  }
+
+  function drawRepairSurge(racerId, width, height, pulse) {
+    const p = racerProjection(racerId, width, height);
+    ctx.save();
+    ctx.globalCompositeOperation = "lighter";
+    drawRecoveryRing(p.x, p.y, 44 + pulse * 54, 1);
+    drawRecoveryRing(p.x, p.y, 72 + pulse * 62, 3);
+    ctx.strokeStyle = `rgba(0,255,133,${0.2 + pulse * 0.48})`;
+    ctx.lineWidth = 4 + pulse * 6;
+    ctx.shadowColor = "#00ff85";
+    ctx.shadowBlur = 28;
+    ctx.beginPath();
+    ctx.moveTo(p.x - 70, p.y + 24);
+    ctx.lineTo(p.x - 24, p.y + 68);
+    ctx.lineTo(p.x + 88, p.y - 58);
+    ctx.stroke();
+    ctx.restore();
+  }
+
+  function drawBoostWake(racerId, width, height, pulse) {
+    const p = racerProjection(racerId, width, height);
+    ctx.save();
+    ctx.globalCompositeOperation = "lighter";
+    for (let i = 0; i < 8; i++) {
+      ctx.strokeStyle = i % 2 ? "rgba(252,255,118,0.74)" : "rgba(0,255,133,0.62)";
+      ctx.lineWidth = 3 + i * 0.8;
+      ctx.beginPath();
+      ctx.moveTo(p.x - i * 16, p.y + i * 8);
+      ctx.lineTo(p.x - 120 - pulse * 120 - i * 22, p.y + 42 + i * 14);
       ctx.stroke();
     }
     ctx.restore();
@@ -1207,6 +1375,15 @@ export function startFirstPersonSignalCircuit({ race }) {
       recovery_chicane: "blue_correction_rails_and_debris",
       finish_gate: "yellow_finish_beacon"
     }[segment.id] || "visual_race_obstacle";
+  }
+
+  function eventPulse(durationMs) {
+    const event = state.activeEvent;
+    if (!event || typeof event.elapsed_ms !== "number") return 0;
+    const age = state.elapsed - event.elapsed_ms;
+    if (age < 0 || age > durationMs) return 0;
+    const normalized = age / durationMs;
+    return Math.sin((1 - normalized) * Math.PI * 0.5);
   }
 
   function physicalRanking() {
