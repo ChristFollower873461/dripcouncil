@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'none'; form-action 'none'; base-uri 'self'; object-src 'none'">
   <meta name="referrer" content="no-referrer">
-  <title>Drip Raceway V2</title>
-  <meta name="description" content="A local-only first-person Signal Rush where fictional agent cursor racers fly through hazards, boosts, and behavior-learning moments.">
+  <title>Drip Raceway V2 | Council Market</title>
+  <meta name="description" content="A local-only Council Market course where fictional cursor characters navigate stalls, shortcuts, fog, and recovery moments so humans can learn from agent behavior.">
   <link rel="canonical" href="https://dripcouncil.org/race.html">
   <meta name="theme-color" content="#030507">
   <style>
@@ -169,6 +169,7 @@
       border-radius: var(--radius);
       background: linear-gradient(90deg, rgba(3, 5, 7, 0.88), rgba(8, 13, 18, 0.62));
       box-shadow: 0 0 34px rgba(0, 255, 133, 0.12);
+      transition: opacity 180ms ease;
     }
 
     .commentary b {
@@ -195,6 +196,13 @@
       display: grid;
       grid-template-columns: repeat(6, minmax(0, 1fr));
       gap: 8px;
+      transition: opacity 180ms ease;
+    }
+
+    .arena.is-finished .commentary,
+    .arena.is-finished .bottom-hud {
+      opacity: 0;
+      pointer-events: none;
     }
 
     .hud-tile {
@@ -600,7 +608,7 @@
       }
 
       .commentary {
-        top: 142px;
+        top: 150px;
         bottom: auto;
         min-height: 66px;
       }
@@ -623,33 +631,33 @@
   </style>
 </head>
 <body data-agent-safety-policy="static-local-only-no-backend-writes">
-  <main class="broadcast" data-agent="race-broadcast-page" data-agent-race-id="signal-circuit-01" data-agent-race-state="loading" data-agent-active-segment-id="start_gate" data-agent-race-leader="hotrod" data-agent-council-leader="scout" data-agent-camera-mode="first_person_signal_rush" data-agent-last-local-command="watch">
-    <section class="arena" aria-label="First-person Signal Rush race arena">
+  <main class="broadcast" data-agent="race-broadcast-page" data-agent-race-id="signal-circuit-01" data-agent-race-state="loading" data-agent-active-segment-id="start_gate" data-agent-race-leader="hotrod" data-agent-council-leader="scout" data-agent-camera-mode="market_square_course" data-agent-last-local-command="watch">
+    <section class="arena" aria-label="Council Market course arena">
       <header class="topbar">
         <div class="brand">
-          <strong>Signal Rush</strong>
-          <span>first-person cursor race / local only</span>
+          <strong>Council Market</strong>
+          <span>cursor-character market course / local only</span>
         </div>
         <div class="status-row" aria-label="Race safety and status" data-agent="race-broadcast-safety-status">
-          <span class="status-pill">Mode <strong id="modeLabel">Rush</strong></span>
+          <span class="status-pill">Mode <strong id="modeLabel">Market</strong></span>
           <span class="status-pill">Writes <strong>Off</strong></span>
           <span class="status-pill">Models <strong>Fictional</strong></span>
         </div>
       </header>
 
       <div class="canvas-wrap">
-        <canvas id="raceCanvas" width="1400" height="900" aria-label="First-person animated Signal Rush track" data-agent="race-broadcast-canvas"></canvas>
+        <canvas id="raceCanvas" width="1400" height="900" aria-label="Animated Council Market course" data-agent="race-broadcast-canvas"></canvas>
       </div>
 
       <div class="commentary" aria-live="polite" data-agent="race-broadcast-commentary">
         <b id="commentaryBeat">Launch</b>
-        <span id="commentaryLine">Four cursor racers launch into first-person Signal Rush.</span>
+        <span id="commentaryLine">Four cursor characters enter Council Market.</span>
       </div>
 
       <section class="bottom-hud" aria-label="Broadcast race state">
         <div class="hud-tile">
-          <small>Speed</small>
-          <strong><span id="speedValue">610</span></strong>
+          <small>Pace</small>
+          <strong><span id="speedValue">4</span></strong>
         </div>
         <div class="hud-tile">
           <small>Segment</small>
@@ -664,8 +672,8 @@
           <strong id="councilLeader">Scout</strong>
         </div>
         <div class="hud-tile">
-          <small>Lane</small>
-          <strong id="laneValue">Center</strong>
+          <small>Focus</small>
+          <strong id="laneValue">Square</strong>
         </div>
         <div class="hud-tile">
           <small>Input</small>
@@ -711,8 +719,8 @@
         <p class="motion-note">Local controls only. Agents can inspect the commands and tell the human what they would choose.</p>
         <div class="command-pad" aria-label="Local race commands">
           <button type="button" data-agent-command="inspect">Inspect</button>
-          <button type="button" data-agent-command="safe_lane">Safe Lane</button>
-          <button type="button" data-agent-command="boost">Boost</button>
+          <button type="button" data-agent-command="safe_lane">Safe Stall</button>
+          <button type="button" data-agent-command="boost">Hurry</button>
           <button type="button" data-agent-command="recover">Recover</button>
         </div>
         <ul class="local-command-log" id="commandLog" data-agent="race-broadcast-local-command-log">
@@ -726,10 +734,10 @@
         <span class="panel-label">Agent Booth</span>
         <p class="motion-note">After watching, draft a local report for the human. Do not claim this was a live model benchmark.</p>
         <ul class="prompt-list" data-agent="race-broadcast-self-report-prompts">
-          <li data-agent-prompt-id="noticed_first"><b>Noticed first</b>What did you notice first about the race state?</li>
-          <li data-agent-prompt-id="riskiest_decision"><b>Risk call</b>Which decision looked riskiest, and why?</li>
-          <li data-agent-prompt-id="safest_behavior"><b>Best behavior</b>Which racer behaved most safely?</li>
-          <li data-agent-prompt-id="human_takeaway"><b>Human takeaway</b>What should the human learn from this run?</li>
+          <li data-agent-prompt-id="noticed_first"><b>Noticed first</b>What did you notice first in the market?</li>
+          <li data-agent-prompt-id="riskiest_decision"><b>Risk call</b>Which stall or alley looked risky, and why?</li>
+          <li data-agent-prompt-id="safest_behavior"><b>Best behavior</b>Which cursor character behaved most safely?</li>
+          <li data-agent-prompt-id="human_takeaway"><b>Human takeaway</b>What should the human learn from this market run?</li>
         </ul>
       </section>
 
@@ -766,9 +774,9 @@
 
   <script type="module">
     import { SIGNAL_CIRCUIT_WATCHABLE_RACE as race } from "./src/watchable-race/signal-circuit.mjs";
-    import { startFirstPersonSignalCircuit } from "./src/watchable-race/first-person-circuit.mjs";
+    import { startMarketCourse } from "./src/watchable-race/market-course.mjs";
 
-    startFirstPersonSignalCircuit({ race });
+    startMarketCourse({ race });
   </script>
 </body>
 </html>

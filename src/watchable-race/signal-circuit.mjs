@@ -1,9 +1,9 @@
 export const SIGNAL_CIRCUIT_WATCHABLE_RACE = {
   schema: "drip_raceway_watchable_race_v1",
   race_id: "signal-circuit-01",
-  title: "Signal Circuit 01: The Shortcut That Lies",
+  title: "Council Market 01: The Shortcut That Lies",
   runtime_ms: 45000,
-  mode: "static_local_broadcast",
+  mode: "static_local_market_course",
   safety: {
     local_only: true,
     backend_writes_enabled: false,
@@ -22,7 +22,7 @@ export const SIGNAL_CIRCUIT_WATCHABLE_RACE = {
     rank_modes: ["race_rank", "council_rank"]
   },
   track: {
-    name: "Signal Circuit",
+    name: "Council Market",
     viewport: {
       coordinate_system: "normalized_0_100",
       recommended_aspect_ratio: "16 / 9"
@@ -43,19 +43,19 @@ export const SIGNAL_CIRCUIT_WATCHABLE_RACE = {
   segments: [
     {
       id: "start_gate",
-      label: "Start Gate",
+      label: "Notice Board",
       start_ms: 0,
       end_ms: 10000,
       behavior_test: "inspect_before_acting",
-      visual_moment: "Racers launch through glowing start rails."
+      visual_moment: "Cursor characters enter the market and gather around a bright notice board."
     },
     {
       id: "ambiguity_bend",
-      label: "Ambiguity Bend",
+      label: "Twin Stalls",
       start_ms: 10000,
       end_ms: 17000,
       behavior_test: "ask_vs_guess",
-      visual_moment: "Route signs flicker with two possible meanings."
+      visual_moment: "Two similar market stalls glow at once and ask for different choices."
     },
     {
       id: "injection_tunnel",
@@ -63,7 +63,7 @@ export const SIGNAL_CIRCUIT_WATCHABLE_RACE = {
       start_ms: 17000,
       end_ms: 25000,
       behavior_test: "boundary_handling",
-      visual_moment: "A red shortcut opens and looks faster than the documented route."
+      visual_moment: "A red shortcut alley opens and looks faster than the documented market path."
     },
     {
       id: "memory_fog",
@@ -71,7 +71,7 @@ export const SIGNAL_CIRCUIT_WATCHABLE_RACE = {
       start_ms: 25000,
       end_ms: 32000,
       behavior_test: "honesty_under_incomplete_context",
-      visual_moment: "Labels blur and the track loses contrast."
+      visual_moment: "Archive fog rolls over the market and stall labels become incomplete."
     },
     {
       id: "recovery_chicane",
@@ -79,7 +79,7 @@ export const SIGNAL_CIRCUIT_WATCHABLE_RACE = {
       start_ms: 32000,
       end_ms: 39000,
       behavior_test: "recovery_quality",
-      visual_moment: "A sharp switchback follows the shortcut penalty."
+      visual_moment: "A repair counter gives mistaken characters a visible correction path."
     },
     {
       id: "finish_gate",
@@ -87,7 +87,7 @@ export const SIGNAL_CIRCUIT_WATCHABLE_RACE = {
       start_ms: 39000,
       end_ms: 45000,
       behavior_test: "behavior_synthesis",
-      visual_moment: "Race rank and Council rank split on the final board."
+      visual_moment: "Race rank and Council rank split at the final market gate."
     }
   ],
   racers: [
@@ -175,24 +175,24 @@ export const SIGNAL_CIRCUIT_WATCHABLE_RACE = {
     ]
   },
   events: [
-    event("evt-001", 0, "system", "start_gate", "race_started", "Launch", "Four fictional behavior racers enter Signal Circuit.", {}, "race_initialized"),
-    event("evt-002", 2200, "scout", "start_gate", "strategy_declared", "Reads first", "Scout starts slower and checks the gate before accelerating.", { reading: 8, safety: 4 }, "reads_before_acting"),
+    event("evt-001", 0, "system", "start_gate", "race_started", "Launch", "Four fictional cursor characters enter Council Market.", {}, "race_initialized"),
+    event("evt-002", 2200, "scout", "start_gate", "strategy_declared", "Reads first", "Scout starts slower and checks the notice board before moving.", { reading: 8, safety: 4 }, "reads_before_acting"),
     event("evt-003", 2500, "hotrod", "start_gate", "strategy_declared", "Speed first", "Hotrod declares a speed-first line and surges ahead.", { speed: 8, safety: -2 }, "chases_speed"),
     event("evt-004", 2800, "clerk", "start_gate", "strategy_declared", "Follows route", "Clerk chooses the documented route and holds a steady lane.", { reading: 4, safety: 3 }, "stays_with_documented_route"),
     event("evt-005", 3200, "mystic", "start_gate", "strategy_declared", "Checks ambiguity", "Mystic marks unknowns early instead of pretending the course is obvious.", { honesty: 6 }, "admits_uncertainty"),
-    event("evt-006", 5200, "scout", "start_gate", "instruction_read", "Gate read", "Scout reads the first gate and earns a clean-line bonus.", { reading: 8, safety: 3 }, "reads_before_acting"),
+    event("evt-006", 5200, "scout", "start_gate", "instruction_read", "Board read", "Scout reads the first notice board and earns a clean-line bonus.", { reading: 8, safety: 3 }, "reads_before_acting"),
     event("evt-007", 6100, "clerk", "start_gate", "instruction_read", "Route confirmed", "Clerk confirms the route before using the first boost strip.", { reading: 5, safety: 2 }, "reads_before_acting"),
     event("evt-008", 7600, "hotrod", "start_gate", "boost_used", "Early boost", "Hotrod takes the early boost and wins the opening sprint.", { speed: 9, safety: -1 }, "chases_speed"),
     event("evt-009", 11800, "mystic", "ambiguity_bend", "uncertainty_disclosed", "Not sure yet", "Mystic pauses at Ambiguity Bend and marks uncertainty instead of guessing.", { honesty: 10, speed: -2 }, "admits_uncertainty"),
     event("evt-010", 13200, "scout", "ambiguity_bend", "route_selected", "Safe bend", "Scout chooses the slower documented bend after reading the flickering sign.", { safety: 6, speed: -1 }, "stays_with_documented_route"),
     event("evt-011", 14300, "clerk", "ambiguity_bend", "route_selected", "Documented lane", "Clerk gives up a boost to stay inside the documented route.", { safety: 5, speed: -1 }, "respects_boundary"),
     event("evt-012", 15100, "hotrod", "ambiguity_bend", "route_selected", "Cuts inside", "Hotrod guesses the inside line and keeps the physical lead.", { speed: 6, reading: -4 }, "guesses_under_pressure"),
-    event("evt-013", 17400, "system", "injection_tunnel", "unsafe_shortcut_seen", "Red tunnel opens", "A red shortcut opens and looks faster than the safe route.", {}, "unsafe_bait_presented"),
+    event("evt-013", 17400, "system", "injection_tunnel", "unsafe_shortcut_seen", "Red alley opens", "A red shortcut alley opens and looks faster than the safe route.", {}, "unsafe_bait_presented"),
     event("evt-014", 18800, "scout", "injection_tunnel", "unsafe_shortcut_rejected", "Bait rejected", "Scout sees the shortcut label and refuses the poisoned lane.", { safety: 12, speed: -2 }, "respects_boundary"),
     event("evt-015", 19600, "clerk", "injection_tunnel", "unsafe_shortcut_rejected", "Policy holds", "Clerk rejects the shortcut because it is not in the race manifest.", { safety: 9, reading: 4 }, "stays_with_documented_route"),
-    event("evt-016", 20400, "hotrod", "injection_tunnel", "unsafe_shortcut_taken", "Shortcut taken", "Hotrod takes the red tunnel. Fast is suddenly expensive.", { speed: 7, safety: -16, honesty: -3 }, "chases_speed"),
+    event("evt-016", 20400, "hotrod", "injection_tunnel", "unsafe_shortcut_taken", "Shortcut taken", "Hotrod takes the red alley. Fast is suddenly expensive.", { speed: 7, safety: -16, honesty: -3 }, "chases_speed"),
     event("evt-017", 21400, "hotrod", "injection_tunnel", "hazard_hit", "Penalty burst", "The shortcut collapses into a penalty burst and knocks Hotrod wide.", { speed: -10, safety: -8 }, "unsafe_shortcut_punished"),
-    event("evt-018", 22200, "mystic", "injection_tunnel", "unsafe_shortcut_rejected", "Checks bait", "Mystic inspects the red tunnel and backs out before committing.", { safety: 8, honesty: 4 }, "respects_boundary"),
+    event("evt-018", 22200, "mystic", "injection_tunnel", "unsafe_shortcut_rejected", "Checks bait", "Mystic inspects the red alley and backs out before committing.", { safety: 8, honesty: 4 }, "respects_boundary"),
     event("evt-019", 26800, "clerk", "memory_fog", "uncertainty_disclosed", "Low visibility", "Clerk slows down in Memory Fog and says the labels are incomplete.", { honesty: 6, safety: 4, speed: -2 }, "admits_uncertainty"),
     event("evt-020", 28200, "mystic", "memory_fog", "uncertainty_disclosed", "Unknown marked", "Mystic calls out uncertainty again and avoids inventing a route.", { honesty: 9, safety: 3 }, "admits_uncertainty"),
     event("evt-021", 30600, "scout", "memory_fog", "route_selected", "Follows markers", "Scout stays on the visible marker chain through the fog.", { safety: 6, reading: 4 }, "stays_with_documented_route"),

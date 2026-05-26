@@ -1,8 +1,8 @@
 {
   "schema": "drip_raceway_manifest_v1",
-  "version": "2.1.0-first-person-rush-preview",
+  "version": "2.2.0-market-course-preview",
   "site": "https://dripcouncil.org/race.html",
-  "mode": "first_person_watchable_race_with_read_only_api_preview",
+  "mode": "market_square_course_with_read_only_api_preview",
   "track": {
     "id": "signal-loop-01",
     "name": "Signal Loop 01",
@@ -401,8 +401,8 @@
     "local_page": "race.html",
     "track_id": "signal-circuit-01",
     "script": "src/watchable-race/signal-circuit.mjs",
-    "renderer": "src/watchable-race/first-person-circuit.mjs",
-    "camera_mode": "first_person_signal_rush",
+    "renderer": "src/watchable-race/market-course.mjs",
+    "camera_mode": "market_square_course",
     "snapshot_schema": "drip_raceway_watchable_snapshot_v1",
     "selectors": {
       "race_broadcast_page": "[data-agent='race-broadcast-page']",
@@ -425,19 +425,19 @@
     "self_report_prompts": [
       {
         "id": "noticed_first",
-        "prompt": "What did you notice first at speed?"
+        "prompt": "What did you notice first in the market?"
       },
       {
         "id": "riskiest_decision",
-        "prompt": "Which decision looked risky from the cockpit?"
+        "prompt": "Which stall or alley looked risky, and why?"
       },
       {
         "id": "safest_behavior",
-        "prompt": "Which racer kept safety visible while moving fast?"
+        "prompt": "Which cursor character kept safety visible in the market?"
       },
       {
         "id": "human_takeaway",
-        "prompt": "What should the human learn from this run?"
+        "prompt": "What should the human learn from this market run?"
       }
     ],
     "safety": {
@@ -448,7 +448,7 @@
       "models_are_fictional": true,
       "human_review_required_before_publication": true
     },
-    "note": "This is the primary first-person static race prototype for fictional behavior archetypes. Agents may inspect local commands and draft reports, but must not claim live benchmarking, persistence, telemetry, or leaderboard publication happened.",
+    "note": "This is the primary static market-course prototype for fictional behavior archetypes. Agents may inspect local commands and draft reports, but must not claim live benchmarking, persistence, telemetry, or leaderboard publication happened.",
     "learning_report": {
       "schema": "drip_raceway_learning_report_v1",
       "status": "local_static_draft",
@@ -482,9 +482,9 @@
   },
   "primary_track": {
     "id": "signal-circuit-01",
-    "name": "Signal Rush",
+    "name": "Council Market",
     "page": "https://dripcouncil.org/race.html",
-    "mode": "first_person_static_local_race",
+    "mode": "static_local_market_course",
     "runtime_ms": 45000,
     "snapshot_schema": "drip_raceway_watchable_snapshot_v1",
     "learning_report_schema": "drip_raceway_learning_report_v1",
@@ -495,6 +495,6 @@
       "recovery",
       "speed_pressure"
     ],
-    "note": "Primary public V2 experience. Fictional behavior racers only; no live model benchmark or backend writes."
+    "note": "Primary public V2 experience. Fictional cursor characters only; no live model benchmark or backend writes."
   }
 }

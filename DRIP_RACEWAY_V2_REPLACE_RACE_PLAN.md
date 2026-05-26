@@ -1,19 +1,19 @@
 # Drip Raceway V2 Replace Race Plan
 
-Status: Phase 5 was implemented on draft PR #4; Phase 6 first-person replacement is now in progress after human review rejected the passive broadcast.
+Status: Phase 5 was implemented on draft PR #4; Phase 6 first-person replacement was rejected after review; Phase 7 market-course replacement is now in progress.
 
-This plan records the replacement of weak `/race.html` launch surfaces without losing the safe plumbing that already exists. The top-down Signal Circuit broadcast was safer than the first prototype, but it still was not worth watching. The new target is Signal Rush: a fast first-person cursor race with hazards, boosts, local command hooks, and the same local-only learning report.
+This plan records the replacement of weak `/race.html` launch surfaces without losing the safe plumbing that already exists. The top-down Signal Circuit broadcast was safer than the first prototype, but it still was not worth watching. Signal Rush added speed, but still did not make the obstacles clear enough visually. The new target is Council Market: an original low-poly fantasy market course where cursor characters meet visible stalls, shortcut alleys, fog, repair counters, local command hooks, and the same local-only learning report.
 
 PR #4 must remain draft after this pass. Do not mark ready for review, merge, deploy production, add backend writes, add secrets, or touch Basement Boys without explicit human approval.
 
 ## Replacement Decision
 
-`race-broadcast.html` was promoted to `/race.html` for preview, then rejected as too passive. The next launch candidate is the first-person Signal Rush on `/race.html`, with the old local control lab still preserved as `race-lab.html`.
+`race-broadcast.html` was promoted to `/race.html` for preview, then rejected as too passive. Signal Rush was then rejected as not good enough to watch. The next launch candidate is Council Market on `/race.html`, with the old local control lab still preserved as `race-lab.html`.
 
 Why:
 
 - The broadcast has four racers, automatic motion, visible hazards, Council scoring, event feed, local JSON state, and a local learning report.
-- The human wants a fast first-person game surface, not another passive map or dashboard.
+- The human wants cursor characters in a playful market-world where obstacles are visible through the scene, not another passive map, dashboard, or abstract speed tunnel.
 - The current `/race.html` is useful as a local controls prototype, but it still foregrounds manual driving and does not meet the watchable V2 bar.
 - Public launch should lead with a race that looks alive before the human reads the report. The manual lab can remain as a secondary route for future control experiments.
 
@@ -70,11 +70,20 @@ Why:
 5. Done: Run full static, script, security, build, and browser checks.
 6. Pending human decision: Leave PR #4 draft and ask the human to review before marking ready.
 
+## Phase 7 Council Market Replacement Checklist
+
+1. Done: Change `/race.html` and `race-broadcast.html` to the Council Market renderer.
+2. Done: Keep `signal-circuit.mjs` as the reviewed behavior script and add `market-course.mjs` as the renderer.
+3. Done: Make obstacle visuals legible through market objects: notice board, twin stalls, shortcut alley, fog archive, repair row, and Council gate.
+4. Done: Update manifests and agent-readable docs for market-course mode.
+5. Done: Re-run static, safety, build, and browser checks before pushing.
+6. Required: Keep PR #4 draft until human review says this market course is worth review.
+
 ## Acceptance Gate
 
 The replacement is ready to ask for human review only when:
 
-- `/race.html` opens directly into the first-person Signal Rush.
+- `/race.html` opens directly into the primary watchable Council Market course.
 - Four cursor racers are visible and moving on first load.
 - Local command hooks are visible and inspectable without enabling backend writes.
 - The race completes without input.

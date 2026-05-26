@@ -19,14 +19,14 @@
       "external form submission",
       "destructive actions"
     ],
-    "raceway_policy": "Drip Raceway V2 preview is local-only on static pages until backend phases are reviewed. The primary race page is the first-person Signal Rush at race.html; the old manual controls lab is preserved at race-lab.html. Agents may watch, inspect local commands, and generate local reports, but must not claim live rooms, persistence, leaderboards, or automatic telemetry exist.",
+    "raceway_policy": "Drip Raceway V2 preview is local-only on static pages until backend phases are reviewed. The primary race page is the Council Market course at race.html; the old manual controls lab is preserved at race-lab.html. Agents may watch, inspect local commands, and generate local reports, but must not claim live rooms, persistence, leaderboards, or automatic telemetry exist.",
     "raceway_api_policy": "Race API preview endpoints do not perform writes. Agents may inspect health, tracks, and the disabled rooms placeholder. /api/race/rooms also has a disabled POST review gate that validates room-create JSON and returns rejection; agents must not claim room creation, persistence, telemetry, WebSockets, or leaderboards exist.",
     "raceway_command_policy": "Race command validation exists in source for the next Durable Object phase. No public command write endpoint is enabled yet.",
     "raceway_room_policy": "RaceRoom exists as an unbound Durable Object skeleton only. Room creation validation exists as source preview and disabled route only. Agents must not claim live rooms, WebSockets, persistence, spectators, or command writes are enabled.",
     "raceway_snapshot_policy": "Room snapshot, race clock, checkpoint progression, TTL expiry, presence, and graceful disconnect logic exists for local preview and tests only. No public live room snapshot route, cleanup job, WebSocket join, or spectator stream is enabled yet.",
     "raceway_live_room_review_policy": "DRIP_RACEWAY_LIVE_ROOM_REVIEW.md is a static review gate. Agents may read it, but must not claim it enables live rooms, WebSockets, persistence, telemetry, or publication.",
     "raceway_security_threat_model_policy": "DRIP_RACEWAY_SECURITY_THREAT_MODEL.md is a static threat model. Agents may read it, but must not claim it is a completed security review for live deployment.",
-    "raceway_watchable_broadcast_policy": "race.html is the primary static first-person race with fictional behavior archetypes, local command hooks, local JSON snapshot, local learning report, and self-report prompts. race-broadcast.html remains a preview alias. Agents may inspect and summarize it, but must not claim live model benchmarking, persistence, telemetry, or publication happened."
+    "raceway_watchable_broadcast_policy": "race.html is the primary static Council Market course with fictional behavior archetypes, cursor characters, local command hooks, local JSON snapshot, local learning report, and self-report prompts. race-broadcast.html remains a preview alias. Agents may inspect and summarize it, but must not claim live model benchmarking, persistence, telemetry, or publication happened."
   },
   "selectors": {
     "site_name": "[data-agent='site-name']",
@@ -517,7 +517,7 @@
     {
       "name": "watch_drip_raceway_broadcast",
       "mode": "read_only",
-      "description": "Open race.html, watch the local-only first-person Signal Rush, inspect the data-agent selectors, local command hooks, local JSON snapshot, and local learning report, then draft a self-report for the human. This is fictional behavior choreography, not live model benchmarking.",
+      "description": "Open race.html, watch the local-only Council Market course, inspect the data-agent selectors, local command hooks, local JSON snapshot, and local learning report, then draft a self-report for the human. This is fictional behavior choreography, not live model benchmarking.",
       "allowed_page": "race.html",
       "allowed_track": "signal-circuit-01",
       "snapshot_schema": "drip_raceway_watchable_snapshot_v1",

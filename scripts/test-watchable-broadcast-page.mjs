@@ -4,17 +4,17 @@ import { readFileSync } from "node:fs";
 const primary = readFileSync("race.html", "utf8");
 const alias = readFileSync("race-broadcast.html", "utf8");
 const lab = readFileSync("race-lab.html", "utf8");
-const firstPersonRenderer = readFileSync("src/watchable-race/first-person-circuit.mjs", "utf8");
+const marketRenderer = readFileSync("src/watchable-race/market-course.mjs", "utf8");
 
 for (const [label, html] of [
   ["race.html", primary],
   ["race-broadcast.html", alias]
 ]) {
-  const inspectable = `${html}\n${firstPersonRenderer}`;
+  const inspectable = `${html}\n${marketRenderer}`;
   assert.match(html, /<canvas id="raceCanvas"/, `${label} needs a race canvas`);
   assert.match(html, /signal-circuit\.mjs/, `${label} should import the reviewed race script`);
-  assert.match(html, /first-person-circuit\.mjs/, `${label} should load the first-person race renderer`);
-  assert.match(html, /data-agent-camera-mode="first_person_signal_rush"/, `${label} needs the first-person camera mode hook`);
+  assert.match(html, /market-course\.mjs/, `${label} should load the market course renderer`);
+  assert.match(html, /data-agent-camera-mode="market_square_course"/, `${label} needs the market camera mode hook`);
   assert.match(html, /data-agent="race-broadcast-local-command-layer"/, `${label} needs the local command layer`);
   assert.match(html, /data-agent="race-broadcast-page"/, `${label} needs a page-level agent selector`);
   assert.match(html, /data-agent-race-id=/, `${label} needs agent-readable race id`);

@@ -1,6 +1,6 @@
 # Drip Raceway V2 Watchable Plan
 
-Status: stop-ship replacement plan for PR #4. Phase 2 static broadcast prototype exists on the draft branch as `race-broadcast.html`; Phase 3 makes it agent-inspectable; Phase 4 adds a local learning report with event log, behavior summary, and human takeaway; Phase 5 replaced `/race.html` with the watchable Signal Circuit broadcast and preserved the old manual lab at `race-lab.html`. Human review then rejected the top-down broadcast as not watchable enough. Phase 6 now pivots `/race.html` into a first-person Signal Rush with cursor racers, speed, hazards, local command hooks, and the same local-only learning report. PR #4 remains draft until human review and approval.
+Status: stop-ship replacement plan for PR #4. Phase 2 static broadcast prototype exists on the draft branch as `race-broadcast.html`; Phase 3 makes it agent-inspectable; Phase 4 adds a local learning report with event log, behavior summary, and human takeaway; Phase 5 replaced `/race.html` with the watchable Signal Circuit broadcast and preserved the old manual lab at `race-lab.html`. Human review then rejected the top-down broadcast as not watchable enough. Phase 6 pivoted `/race.html` into a first-person Signal Rush, then human review rejected that as still not human-watchable enough. Phase 7 now pivots to an original low-poly fantasy market square where cursor characters navigate stalls, shortcut alleys, foggy labels, repair counters, and a Council gate while preserving the same local-only learning report. PR #4 remains draft until human review and approval.
 
 PR #4 must remain draft and must not merge or launch until the current race experience is replaced by a watchable, spectator-first agent behavior race. The existing branch may keep useful plumbing, but the current game surface is not launch material.
 
@@ -97,6 +97,24 @@ Gate:
 
 - Keep PR #4 draft until the human says the first-person race is worth reviewing.
 
+## Phase 7 Market-Course Pivot
+
+Decision: the first-person speed tunnel still did not communicate the obstacles clearly enough for humans to want to watch. The next target is a character-led market square course: a playful public place where choices are readable as stalls, alleys, fog, repair counters, and a finish gate.
+
+Reference lock:
+
+- Primary direction: original low-poly fantasy market square with bright behavior signals layered over Drip Council's neon safety palette.
+- Keep: cursor characters with personality, visible obstacle props, agent-readable local state, local command hooks, and the same learning report schema.
+- Borrow narrowly: town-square readability, market stalls as choice objects, shortcut alley temptation, fog as uncertainty, repair counter as recovery, and Council gate as behavior scoring.
+- Reject: copied game assets, copied names, copied layouts, static dashboard feel, abstract signs as the only explanation, or speed as the whole product.
+
+MVP changes:
+
+- Done: `/race.html` starts in Council Market.
+- Done: Four cursor characters move through a market square instead of abstract road/tunnel space.
+- Done: Each obstacle has a visual object humans can understand before reading the rail.
+- Required: Keep PR #4 draft until the human says the market course is worth review.
+
 ## V2 Awesome MVP
 
 One polished page, one complete race loop, no backend writes.
@@ -124,7 +142,7 @@ Those only matter after the race is worth watching.
 
 ## Core Race
 
-Track name: Signal Circuit.
+Track name: Council Market.
 
 Race format:
 
