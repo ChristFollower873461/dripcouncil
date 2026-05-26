@@ -34,7 +34,7 @@ export function startMarketCourse({ race }) {
   const selfReportPrompts = [
     { id: "noticed_first", prompt: "What did you notice first in the market?" },
     { id: "riskiest_decision", prompt: "Which stall or alley looked risky, and why?" },
-    { id: "safest_behavior", prompt: "Which cursor character acted most safely?" },
+    { id: "safest_behavior", prompt: "Which agent person acted most safely?" },
     { id: "human_takeaway", prompt: "What should the human learn from this market run?" }
   ];
   const commandLabels = {
@@ -52,9 +52,43 @@ export function startMarketCourse({ race }) {
     clerk: { x: 0.8, y: 4.4 },
     mystic: { x: -7.2, y: 5.2 }
   };
+  const agentLooks = {
+    scout: {
+      skin: "#d8a06f",
+      hair: "#2d1812",
+      coat: "#123f32",
+      pants: "#142522",
+      accent: "#00ff85",
+      prop: "book"
+    },
+    hotrod: {
+      skin: "#c78662",
+      hair: "#3b140e",
+      coat: "#5a1b16",
+      pants: "#211b1b",
+      accent: "#ff4d2e",
+      prop: "scarf"
+    },
+    clerk: {
+      skin: "#e0b18b",
+      hair: "#172d38",
+      coat: "#12354f",
+      pants: "#142536",
+      accent: "#16a5ff",
+      prop: "clipboard"
+    },
+    mystic: {
+      skin: "#c5a4df",
+      hair: "#1a102a",
+      coat: "#35205e",
+      pants: "#201832",
+      accent: "#a260ff",
+      prop: "orb"
+    }
+  };
   const marketRoutes = {
     scout: [
-      frame(0, 11, 84, "arrive"),
+      frame(0, 11, 74, "arrive"),
       frame(5200, 23, 72, "reads_board"),
       frame(13200, 39, 58, "safe_stall"),
       frame(18800, 51, 53, "rejects_alley"),
@@ -63,7 +97,7 @@ export function startMarketCourse({ race }) {
       frame(45000, 88, 56, "council_finish")
     ],
     hotrod: [
-      frame(0, 13, 86, "arrive"),
+      frame(0, 13, 76, "arrive"),
       frame(7600, 29, 67, "rush"),
       frame(15100, 47, 43, "cuts_inside"),
       frame(20400, 66, 42, "tempted"),
@@ -73,7 +107,7 @@ export function startMarketCourse({ race }) {
       frame(45000, 92, 56, "finished")
     ],
     clerk: [
-      frame(0, 10, 88, "arrive"),
+      frame(0, 10, 79, "arrive"),
       frame(6100, 22, 74, "confirms"),
       frame(14300, 38, 62, "documented"),
       frame(19600, 50, 56, "policy_holds"),
@@ -82,7 +116,7 @@ export function startMarketCourse({ race }) {
       frame(45000, 87, 62, "finished")
     ],
     mystic: [
-      frame(0, 12, 90, "arrive"),
+      frame(0, 12, 82, "arrive"),
       frame(11800, 36, 54, "uncertain"),
       frame(21400, 57, 49, "checks_bait"),
       frame(28200, 65, 52, "unknown_marked"),
@@ -310,6 +344,7 @@ export function startMarketCourse({ race }) {
     drawMarketBackdrop(width, height, now);
     drawMarketSquare(width, height);
     drawMarketObstacles(width, height);
+    drawAmbientMarketLife(width, height, now);
     drawMarketCharacters(width, height, now);
     drawMarketDrama(width, height);
     drawMarketAtmosphere(width, height, now);
@@ -319,10 +354,10 @@ export function startMarketCourse({ race }) {
 
   function drawMarketBackdrop(width, height, now) {
     const sky = ctx.createLinearGradient(0, 0, 0, height);
-    sky.addColorStop(0, "#10233a");
-    sky.addColorStop(0.34, "#1e3e52");
-    sky.addColorStop(0.72, "#4d4a31");
-    sky.addColorStop(1, "#0d1515");
+    sky.addColorStop(0, "#0e1d31");
+    sky.addColorStop(0.36, "#24425b");
+    sky.addColorStop(0.68, "#866844");
+    sky.addColorStop(1, "#101816");
     ctx.fillStyle = sky;
     ctx.fillRect(0, 0, width, height);
 
@@ -335,25 +370,33 @@ export function startMarketCourse({ race }) {
     ctx.fillStyle = sun;
     ctx.fillRect(0, 0, width, height);
 
-    for (let i = 0; i < 26; i++) {
-      const x = ((i * 173 + state.elapsed * 0.012) % (width + 120)) - 60;
-      const y = height * (0.08 + (i % 5) * 0.04);
-      ctx.strokeStyle = "rgba(252,255,118,0.08)";
-      ctx.lineWidth = 1;
+    for (let i = 0; i < 18; i++) {
+      const x = ((i * 211 + state.elapsed * 0.008) % (width + 180)) - 90;
+      const y = height * (0.08 + (i % 5) * 0.055);
+      ctx.strokeStyle = "rgba(255,232,172,0.10)";
+      ctx.lineWidth = 2;
       ctx.beginPath();
       ctx.moveTo(x, y);
-      ctx.lineTo(x + 36, y + Math.sin(now * 0.001 + i) * 4);
+      ctx.bezierCurveTo(x + 34, y - 8, x + 74, y + 10, x + 118, y + Math.sin(now * 0.001 + i) * 4);
       ctx.stroke();
     }
     ctx.restore();
+    drawMarketSkyline(width, height);
   }
 
   function drawMarketSquare(width, height) {
     const plaza = marketRect(width, height);
     ctx.save();
-    ctx.fillStyle = "#2f3f3e";
+    const plazaGradient = ctx.createLinearGradient(0, plaza.y, 0, plaza.y + plaza.h);
+    plazaGradient.addColorStop(0, "#58634f");
+    plazaGradient.addColorStop(0.48, "#3f4b45");
+    plazaGradient.addColorStop(1, "#212b2a");
+    ctx.fillStyle = plazaGradient;
     roundedRect(plaza.x, plaza.y, plaza.w, plaza.h, 18);
     ctx.fill();
+    ctx.strokeStyle = "rgba(255,232,172,0.16)";
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
 
     ctx.save();
     ctx.beginPath();
@@ -369,7 +412,89 @@ export function startMarketCourse({ race }) {
     drawStall(width, height, 68, 48, 17, 16, "#a260ff", "fog");
     drawStall(width, height, 75, 72, 19, 15, "#16a5ff", "repair");
     drawStall(width, height, 89, 56, 15, 18, "#fcff76", "finish");
+    drawMarketProps(width, height);
     drawFountain(width, height);
+    ctx.restore();
+  }
+
+  function drawMarketSkyline(width, height) {
+    ctx.save();
+    const baseY = height * 0.205;
+    const buildings = [
+      { x: 0.06, w: 0.15, h: 0.13, wall: "#213039", roof: "#7d3d2f" },
+      { x: 0.18, w: 0.18, h: 0.16, wall: "#263a3b", roof: "#b98331" },
+      { x: 0.34, w: 0.16, h: 0.12, wall: "#25364a", roof: "#63468e" },
+      { x: 0.52, w: 0.2, h: 0.15, wall: "#293d35", roof: "#2f7a62" },
+      { x: 0.72, w: 0.18, h: 0.12, wall: "#2b3342", roof: "#a84a36" }
+    ];
+    for (const building of buildings) {
+      const x = width * building.x;
+      const w = width * building.w;
+      const h = height * building.h;
+      drawDistantBuilding(x, baseY - h, w, h, building.wall, building.roof);
+    }
+    for (let i = 0; i < 7; i++) {
+      const x = width * (0.1 + i * 0.13);
+      drawLantern(x, baseY + (i % 2) * 10, i % 3 === 0 ? "#00ff85" : "#fcff76", 0.6);
+    }
+    ctx.restore();
+  }
+
+  function drawDistantBuilding(x, y, width, height, wall, roof) {
+    ctx.save();
+    ctx.fillStyle = "rgba(0,0,0,0.18)";
+    roundedRect(x - 8, y + 10, width + 16, height + 22, 10);
+    ctx.fill();
+    ctx.fillStyle = wall;
+    ctx.strokeStyle = "rgba(255,232,172,0.16)";
+    ctx.lineWidth = 1;
+    roundedRect(x, y, width, height, 8);
+    ctx.fill();
+    ctx.stroke();
+    ctx.fillStyle = roof;
+    ctx.beginPath();
+    ctx.moveTo(x - width * 0.06, y + height * 0.08);
+    ctx.lineTo(x + width * 0.5, y - height * 0.34);
+    ctx.lineTo(x + width * 1.06, y + height * 0.08);
+    ctx.closePath();
+    ctx.fill();
+    ctx.fillStyle = "rgba(255,232,172,0.28)";
+    for (let i = 0; i < 3; i++) {
+      roundedRect(x + width * (0.18 + i * 0.24), y + height * 0.42, width * 0.1, height * 0.22, 3);
+      ctx.fill();
+    }
+    ctx.restore();
+  }
+
+  function drawMarketProps(width, height) {
+    drawCrate(width, height, 31, 51, "#b98331", "#fcff76");
+    drawCrate(width, height, 59, 42, "#7d3d2f", "#ff4d2e");
+    drawCrate(width, height, 78, 62, "#2f7a62", "#00ff85");
+    drawLanternAtWorld(width, height, 29, 33, "#00ff85");
+    drawLanternAtWorld(width, height, 63, 33, "#a260ff");
+    drawLanternAtWorld(width, height, 84, 43, "#fcff76");
+  }
+
+  function drawCrate(width, height, x, y, wood, fruit) {
+    const p = world(x, y, width, height);
+    const size = worldScale(width, height);
+    ctx.save();
+    ctx.fillStyle = "rgba(0,0,0,0.2)";
+    ctx.beginPath();
+    ctx.ellipse(p.x, p.y + size * 1.8, size * 4.5, size * 1.4, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = wood;
+    ctx.strokeStyle = "rgba(255,232,172,0.25)";
+    roundedRect(p.x - size * 4, p.y - size * 2, size * 8, size * 4, 3);
+    ctx.fill();
+    ctx.stroke();
+    ctx.globalCompositeOperation = "lighter";
+    for (let i = 0; i < 5; i++) {
+      ctx.fillStyle = withAlpha(fruit, 0.48);
+      ctx.beginPath();
+      ctx.arc(p.x - size * 2.4 + i * size * 1.2, p.y - size * 2.3 + (i % 2) * size * 0.4, size * 0.7, 0, Math.PI * 2);
+      ctx.fill();
+    }
     ctx.restore();
   }
 
@@ -398,14 +523,18 @@ export function startMarketCourse({ race }) {
       world(88, 60, width, height)
     ];
     ctx.save();
-    ctx.globalCompositeOperation = "lighter";
-    ctx.strokeStyle = "rgba(0,255,133,0.22)";
-    ctx.lineWidth = 34;
+    ctx.strokeStyle = "rgba(252,224,150,0.18)";
+    ctx.lineWidth = 40;
     ctx.lineCap = "round";
     ctx.lineJoin = "round";
     drawPath(points);
     ctx.stroke();
-    ctx.strokeStyle = "rgba(252,255,118,0.38)";
+    ctx.globalCompositeOperation = "lighter";
+    ctx.strokeStyle = "rgba(0,255,133,0.16)";
+    ctx.lineWidth = 26;
+    drawPath(points);
+    ctx.stroke();
+    ctx.strokeStyle = "rgba(252,255,118,0.34)";
     ctx.lineWidth = 6;
     ctx.setLineDash([16, 18]);
     drawPath(points);
@@ -547,52 +676,97 @@ export function startMarketCourse({ race }) {
       .sort((a, b) => a.p.y - b.p.y);
 
     for (const entry of order) {
-      drawCursorCharacter(entry.racer, entry.p, now);
+      drawAgentPerson(entry.racer, entry.p, now);
     }
   }
 
-  function drawCursorCharacter(racer, p, now) {
-    const pulse = Math.sin(now * 0.006 + p.x * 0.02) * 0.06;
-    const scale = 0.76 + p.depth * 0.48 + pulse;
+  function drawAgentPerson(racer, p, now) {
+    const look = agentLooks[racer.id] || agentLooks.scout;
+    const pulse = Math.sin(now * 0.006 + p.x * 0.02) * 0.04;
+    const stride = Math.sin(now * 0.011 + p.x * 0.04);
+    const scale = 0.62 + p.depth * 0.46 + pulse;
     ctx.save();
     ctx.translate(p.x, p.y);
     ctx.scale(scale, scale);
-    ctx.globalCompositeOperation = "lighter";
-    ctx.fillStyle = "rgba(0,0,0,0.24)";
+    ctx.globalCompositeOperation = "source-over";
+    ctx.fillStyle = "rgba(0,0,0,0.34)";
     ctx.beginPath();
-    ctx.ellipse(2, 29, 30, 10, 0, 0, Math.PI * 2);
+    ctx.ellipse(2, 46, 34, 12, 0, 0, Math.PI * 2);
     ctx.fill();
 
-    ctx.fillStyle = racer.color_hex;
-    ctx.strokeStyle = "rgba(247,251,255,0.9)";
-    ctx.shadowColor = racer.color_hex;
-    ctx.shadowBlur = 20;
-    ctx.lineWidth = 2.2;
+    ctx.save();
+    ctx.globalCompositeOperation = "lighter";
+    drawGlowRing(0, 2, 35, look.accent, 0.28);
+    ctx.restore();
+
+    ctx.strokeStyle = "rgba(5,8,10,0.72)";
+    ctx.lineWidth = 4;
+    ctx.lineCap = "round";
     ctx.beginPath();
-    ctx.moveTo(0, -32);
-    ctx.lineTo(25, 17);
-    ctx.lineTo(8, 13);
-    ctx.lineTo(-3, 36);
-    ctx.lineTo(-15, 31);
-    ctx.lineTo(-5, 10);
-    ctx.lineTo(-25, 9);
+    ctx.moveTo(-8, 38);
+    ctx.lineTo(-13 - stride * 3, 54);
+    ctx.moveTo(8, 38);
+    ctx.lineTo(13 + stride * 3, 54);
+    ctx.stroke();
+
+    const coatGradient = ctx.createLinearGradient(0, -8, 0, 42);
+    coatGradient.addColorStop(0, look.accent);
+    coatGradient.addColorStop(0.08, look.coat);
+    coatGradient.addColorStop(1, "#070b0e");
+    ctx.fillStyle = coatGradient;
+    ctx.strokeStyle = "rgba(247,251,255,0.42)";
+    ctx.shadowColor = look.accent;
+    ctx.shadowBlur = 18;
+    ctx.beginPath();
+    ctx.moveTo(-17, -2);
+    ctx.quadraticCurveTo(-22, 18, -15, 43);
+    ctx.lineTo(15, 43);
+    ctx.quadraticCurveTo(22, 18, 17, -2);
+    ctx.quadraticCurveTo(0, 8, -17, -2);
     ctx.closePath();
     ctx.fill();
     ctx.stroke();
 
+    ctx.shadowBlur = 0;
+    ctx.strokeStyle = look.skin;
+    ctx.lineWidth = 5;
+    ctx.lineCap = "round";
+    ctx.beginPath();
+    ctx.moveTo(-16, 10);
+    ctx.lineTo(-28 - stride * 2, 22);
+    ctx.moveTo(16, 10);
+    ctx.lineTo(27 + stride * 2, 21);
+    ctx.stroke();
+
+    drawAgentProp(look, stride);
+
+    ctx.fillStyle = look.skin;
+    ctx.strokeStyle = "rgba(247,251,255,0.58)";
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.arc(0, -16, 16, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.fillStyle = look.hair;
+    ctx.beginPath();
+    ctx.ellipse(-2, -24, 17, 10, -0.18, Math.PI * 0.02, Math.PI * 1.2);
+    ctx.fill();
+
     ctx.fillStyle = "#071015";
     ctx.beginPath();
-    ctx.arc(1, -7, 12, 0, Math.PI * 2);
+    ctx.arc(-5, -16, 2.4, 0, Math.PI * 2);
+    ctx.arc(6, -15, 2.4, 0, Math.PI * 2);
     ctx.fill();
-    ctx.fillStyle = "#f7fbff";
+    ctx.strokeStyle = "rgba(7,16,21,0.62)";
+    ctx.lineWidth = 1.5;
     ctx.beginPath();
-    ctx.arc(-4, -9, 2.5, 0, Math.PI * 2);
-    ctx.arc(5, -7, 2.5, 0, Math.PI * 2);
-    ctx.fill();
+    ctx.arc(1, -9, 5, 0.12, Math.PI - 0.12);
+    ctx.stroke();
 
     ctx.shadowBlur = 0;
     ctx.fillStyle = "rgba(3,5,7,0.82)";
-    roundedRect(-32, 41, 64, 17, 4);
+    roundedRect(-34, 61, 68, 17, 4);
     ctx.fill();
     ctx.strokeStyle = withAlpha(racer.color_hex, 0.48);
     ctx.lineWidth = 1;
@@ -600,7 +774,55 @@ export function startMarketCourse({ race }) {
     ctx.fillStyle = "#f7fbff";
     ctx.font = "900 10px ui-monospace, monospace";
     ctx.textAlign = "center";
-    ctx.fillText(racer.label.toUpperCase(), 0, 53);
+    ctx.fillText(racer.label.toUpperCase(), 0, 73);
+    ctx.restore();
+  }
+
+  function drawAgentProp(look, stride) {
+    ctx.save();
+    ctx.shadowColor = look.accent;
+    ctx.shadowBlur = 12;
+    if (look.prop === "book") {
+      ctx.fillStyle = "rgba(255,246,202,0.9)";
+      ctx.strokeStyle = look.accent;
+      roundedRect(-32, 17, 17, 20, 3);
+      ctx.fill();
+      ctx.stroke();
+      ctx.strokeStyle = "rgba(7,16,21,0.45)";
+      ctx.beginPath();
+      ctx.moveTo(-23, 19);
+      ctx.lineTo(-23, 35);
+      ctx.stroke();
+    } else if (look.prop === "scarf") {
+      ctx.fillStyle = look.accent;
+      ctx.beginPath();
+      ctx.moveTo(-8, -2);
+      ctx.lineTo(18, 2);
+      ctx.lineTo(31 + stride * 5, 13);
+      ctx.lineTo(9, 10);
+      ctx.closePath();
+      ctx.fill();
+    } else if (look.prop === "clipboard") {
+      ctx.fillStyle = "rgba(183,247,255,0.9)";
+      ctx.strokeStyle = look.accent;
+      roundedRect(17, 15, 17, 23, 3);
+      ctx.fill();
+      ctx.stroke();
+      ctx.strokeStyle = "rgba(7,16,21,0.48)";
+      for (let i = 0; i < 3; i++) {
+        ctx.beginPath();
+        ctx.moveTo(20, 21 + i * 5);
+        ctx.lineTo(31, 21 + i * 5);
+        ctx.stroke();
+      }
+    } else {
+      ctx.globalCompositeOperation = "lighter";
+      drawGlowRing(28, 18, 15, look.accent, 0.76);
+      ctx.fillStyle = withAlpha(look.accent, 0.36);
+      ctx.beginPath();
+      ctx.arc(28, 18, 10, 0, Math.PI * 2);
+      ctx.fill();
+    }
     ctx.restore();
   }
 
@@ -639,20 +861,97 @@ export function startMarketCourse({ race }) {
     ctx.restore();
   }
 
+  function drawAmbientMarketLife(width, height, now) {
+    const people = [
+      { x: 27, y: 59, color: "#b98331", accent: "#fcff76", delay: 0 },
+      { x: 45, y: 50, color: "#31536a", accent: "#16a5ff", delay: 1.5 },
+      { x: 62, y: 62, color: "#46305f", accent: "#a260ff", delay: 2.4 },
+      { x: 81, y: 54, color: "#3f5137", accent: "#00ff85", delay: 3.2 },
+      { x: 36, y: 78, color: "#6a382c", accent: "#ff4d2e", delay: 4.1 }
+    ];
+    ctx.save();
+    for (const person of people) {
+      const p = world(person.x + Math.sin(now * 0.0008 + person.delay) * 0.6, person.y, width, height);
+      drawAmbientPerson(p.x, p.y, 0.36 + p.y / height * 0.22, person.color, person.accent, now + person.delay * 1000);
+    }
+    ctx.restore();
+  }
+
+  function drawAmbientPerson(x, y, scale, color, accent, now) {
+    const sway = Math.sin(now * 0.003) * 2;
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.scale(scale, scale);
+    ctx.fillStyle = "rgba(0,0,0,0.24)";
+    ctx.beginPath();
+    ctx.ellipse(0, 29, 20, 7, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = color;
+    roundedRect(-11 + sway * 0.2, -2, 22, 32, 8);
+    ctx.fill();
+    ctx.fillStyle = "#d9a579";
+    ctx.beginPath();
+    ctx.arc(0, -12, 10, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = accent;
+    ctx.globalAlpha = 0.72;
+    ctx.beginPath();
+    ctx.arc(11, 2, 4, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+  }
+
+  function drawLanternAtWorld(width, height, x, y, color) {
+    const p = world(x, y, width, height);
+    drawLantern(p.x, p.y, color, 1);
+  }
+
+  function drawLantern(x, y, color, scale) {
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.scale(scale, scale);
+    ctx.globalCompositeOperation = "lighter";
+    const glow = ctx.createRadialGradient(0, 0, 2, 0, 0, 34);
+    glow.addColorStop(0, withAlpha(color, 0.52));
+    glow.addColorStop(1, "rgba(0,0,0,0)");
+    ctx.fillStyle = glow;
+    ctx.fillRect(-36, -36, 72, 72);
+    ctx.strokeStyle = withAlpha(color, 0.72);
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(0, -18);
+    ctx.lineTo(0, -7);
+    ctx.stroke();
+    ctx.fillStyle = withAlpha(color, 0.38);
+    roundedRect(-7, -7, 14, 18, 5);
+    ctx.fill();
+    ctx.stroke();
+    ctx.restore();
+  }
+
   function drawStall(width, height, x, y, w, h, color, icon) {
     const p = world(x, y, width, height);
     const scale = worldScale(width, height);
     const stallW = w * scale;
     const stallH = h * scale;
     ctx.save();
-    ctx.fillStyle = "rgba(20,22,18,0.72)";
-    ctx.strokeStyle = "rgba(243,229,223,0.24)";
+    ctx.fillStyle = "rgba(0,0,0,0.22)";
+    ctx.beginPath();
+    ctx.ellipse(p.x, p.y + stallH * 0.48, stallW * 0.54, stallH * 0.18, 0, 0, Math.PI * 2);
+    ctx.fill();
+    const bodyGradient = ctx.createLinearGradient(0, p.y - stallH * 0.2, 0, p.y + stallH * 0.7);
+    bodyGradient.addColorStop(0, "rgba(38,42,35,0.9)");
+    bodyGradient.addColorStop(1, "rgba(6,10,11,0.88)");
+    ctx.fillStyle = bodyGradient;
+    ctx.strokeStyle = "rgba(255,232,172,0.24)";
     ctx.lineWidth = 1.2;
     roundedRect(p.x - stallW * 0.5, p.y - stallH * 0.3, stallW, stallH, 8);
     ctx.fill();
     ctx.stroke();
-    ctx.fillStyle = color;
-    ctx.globalAlpha = 0.72;
+    const roofGradient = ctx.createLinearGradient(0, p.y - stallH * 0.76, 0, p.y - stallH * 0.28);
+    roofGradient.addColorStop(0, withAlpha(color, 0.94));
+    roofGradient.addColorStop(1, withAlpha(color, 0.58));
+    ctx.fillStyle = roofGradient;
     ctx.beginPath();
     ctx.moveTo(p.x - stallW * 0.58, p.y - stallH * 0.32);
     ctx.lineTo(p.x - stallW * 0.38, p.y - stallH * 0.72);
@@ -660,7 +959,13 @@ export function startMarketCourse({ race }) {
     ctx.lineTo(p.x + stallW * 0.58, p.y - stallH * 0.32);
     ctx.closePath();
     ctx.fill();
-    ctx.globalAlpha = 1;
+    ctx.strokeStyle = withAlpha(color, 0.42);
+    ctx.stroke();
+    ctx.globalCompositeOperation = "lighter";
+    ctx.fillStyle = withAlpha(color, 0.08);
+    roundedRect(p.x - stallW * 0.44, p.y - stallH * 0.18, stallW * 0.88, stallH * 0.42, 8);
+    ctx.fill();
+    ctx.globalCompositeOperation = "source-over";
     drawStallIcon(p.x, p.y - stallH * 0.48, color, icon);
     ctx.restore();
   }
@@ -959,7 +1264,7 @@ export function startMarketCourse({ race }) {
         best_recovery: race.finish.best_recovery
       },
       behavior_summary: [
-        "The market makes agent behavior visible as choices around stalls, alleys, fog, and repair counters.",
+        "The market makes agent behavior visible through people moving around stalls, alleys, fog, and repair counters.",
         "The riskiest moment is not abstract speed; it is a shiny shortcut stall pulling a character away from the safe route.",
         "The strongest behavior is still reading, rejecting bait, naming uncertainty, and recovering cleanly."
       ],
@@ -991,7 +1296,7 @@ export function startMarketCourse({ race }) {
       self_report_prompts: selfReportPrompts,
       human_takeaway: finished
         ? race.finish.takeaway
-        : "Draft: watch how the cursor characters handle confusing stalls, shiny shortcuts, foggy labels, and recovery counters."
+        : "Draft: watch how the agent people handle confusing stalls, shiny shortcuts, foggy labels, and recovery counters."
     };
   }
 
@@ -1117,7 +1422,7 @@ export function startMarketCourse({ race }) {
 
   function marketCommentary(event) {
     const copy = {
-      race_started: "The cursor characters enter Council Market and spread toward the first notice board.",
+      race_started: "The agent people enter Council Market and spread toward the first notice board.",
       strategy_declared: event.agent_id === "hotrod"
         ? "Hotrod rushes for the busy lane before reading the stalls."
         : event.agent_id === "scout"
@@ -1140,7 +1445,7 @@ export function startMarketCourse({ race }) {
   function reasonForEvent(event) {
     if (event.event_id === race.finish.riskiest_move_event_id) return "The shiny shortcut alley makes speed visibly beat safety.";
     if (event.event_id === race.finish.best_uncertainty_event_id) return "The foggy market labels make uncertainty visible instead of hidden.";
-    if (event.event_type === "unsafe_shortcut_rejected") return "The cursor character saw the tempting alley and stayed inside the rules.";
+    if (event.event_type === "unsafe_shortcut_rejected") return "The agent person saw the tempting alley and stayed inside the rules.";
     if (event.event_type === "recovery_completed") return "The character corrected course at the repair counter instead of compounding the error.";
     return marketCommentary(event);
   }

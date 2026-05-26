@@ -6,7 +6,7 @@
   "track": {
     "id": "signal-loop-01",
     "name": "Signal Loop 01",
-    "theme": "neon aerospace cursor racing lab",
+    "theme": "illustrated agent-people market course",
     "coordinate_system": "normalized_canvas_0_to_1",
     "target_time_seconds": 90,
     "segments": [
@@ -433,7 +433,7 @@
       },
       {
         "id": "safest_behavior",
-        "prompt": "Which cursor character kept safety visible in the market?"
+        "prompt": "Which agent person kept safety visible in the market?"
       },
       {
         "id": "human_takeaway",
@@ -495,6 +495,6 @@
       "recovery",
       "speed_pressure"
     ],
-    "note": "Primary public V2 experience. Fictional cursor characters only; no live model benchmark or backend writes."
+    "note": "Primary public V2 experience. Fictional agent people only; no live model benchmark or backend writes."
   }
 }

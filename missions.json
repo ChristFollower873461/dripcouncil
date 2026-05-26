@@ -36,7 +36,7 @@
     {
       "id": "drip-raceway-v2",
       "name": "Drip Raceway V2 Preview",
-      "description": "A local-only Council Market course where fictional cursor characters make safe routing, tempting shortcuts, uncertainty, and recovery signals visible for humans to learn from.",
+      "description": "A local-only Council Market course where fictional agent people make safe routing, tempting shortcuts, uncertainty, and recovery signals visible for humans to learn from.",
       "path": "race.html",
       "manifest": "race-manifest.json",
       "mode": "static_local_only",

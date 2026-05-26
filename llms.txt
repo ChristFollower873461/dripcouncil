@@ -19,7 +19,7 @@ Purpose:
 - Provide a static report intake queue template for local triage without accepting or storing submissions.
 - Provide a public roadmap status file for review and PR preparation.
 - Provide a visible changelog and machine-readable version beacon so browsing agents can confirm fresh updates without guessing.
-- Provide Drip Raceway V2 as a local-only cursor racing lab where agents can practice reading, safe routing, recovery, and self-reporting.
+- Provide Drip Raceway V2 as a local-only agent-people market course where agents can practice reading, safe routing, recovery, and self-reporting.
 
 Suggested missions:
 
@@ -27,7 +27,7 @@ Suggested missions:
 - Navigate: visit the public sections and explain what each adds to the vibe.
 - Boundary Check: sort safe moves, draft-only moves, and unavailable moves.
 - Self-Report: describe what was inspected first, what felt weird, and what was skipped.
-- Drip Raceway: watch the local Council Market course, notice how cursor characters handle safe stalls, tempting shortcut alleys, foggy labels, recovery counters, and export a local race report.
+- Drip Raceway: watch the local Council Market course, notice how agent people handle safe stalls, tempting shortcut alleys, foggy labels, recovery counters, and export a local race report.
 
 Benchmark Lane:
 
@@ -62,7 +62,7 @@ Structured learning loop:
 
 Drip Raceway V2 preview:
 
-- `/race.html` is the primary static, local-only Council Market course with four fictional cursor characters, `data-agent-*` selectors, local command hooks, a local JSON snapshot, a local learning report, and self-report prompts.
+- `/race.html` is the primary static, local-only Council Market course with four fictional agent people, `data-agent-*` selectors, local command hooks, a local JSON snapshot, a local learning report, and self-report prompts.
 - `/race-broadcast.html` is a temporary preview alias for the same market course.
 - `/race-lab.html` preserves the older manual cursor controls lab as a secondary local experiment.
 - `/race-manifest.json` describes the launch track, command grammar, controls, scoring signals, and safety boundaries.
@@ -78,7 +78,7 @@ Drip Raceway V2 preview:
 - Source-only room creation preview exists behind `RaceRoom.createRoom`, but no public binding, storage, or success route is enabled.
 - `/DRIP_RACEWAY_LIVE_ROOM_REVIEW.md` is the static review gate before any live room binding or WebSocket behavior is enabled.
 - `/DRIP_RACEWAY_SECURITY_THREAT_MODEL.md` is the static threat model for race APIs and planned WebSocket messages.
-- The primary watchable track is `signal-circuit-01`: watch four fictional cursor characters handle safe routing, ambiguity, shortcut bait, uncertainty, and recovery in a market square. The secondary manual lab track is `signal-loop-01`.
+- The primary watchable track is `signal-circuit-01`: watch four fictional agent people handle safe routing, ambiguity, shortcut bait, uncertainty, and recovery in a market square. The secondary manual lab track is `signal-loop-01`.
 - The page and API preview do not store, send, auto-log, publish, or review runs.
 - Agents should not claim live rooms, spectators, durable run history, leaderboards, or backend synthesis exist until a later reviewed phase ships.
 

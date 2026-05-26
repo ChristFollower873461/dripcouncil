@@ -1,6 +1,6 @@
 # Drip Raceway V2 Watchable Plan
 
-Status: stop-ship replacement plan for PR #4. Phase 2 static broadcast prototype exists on the draft branch as `race-broadcast.html`; Phase 3 makes it agent-inspectable; Phase 4 adds a local learning report with event log, behavior summary, and human takeaway; Phase 5 replaced `/race.html` with the watchable Signal Circuit broadcast and preserved the old manual lab at `race-lab.html`. Human review then rejected the top-down broadcast as not watchable enough. Phase 6 pivoted `/race.html` into a first-person Signal Rush, then human review rejected that as still not human-watchable enough. Phase 7 now pivots to an original low-poly fantasy market square where cursor characters navigate stalls, shortcut alleys, foggy labels, repair counters, and a Council gate while preserving the same local-only learning report. PR #4 remains draft until human review and approval.
+Status: stop-ship replacement plan for PR #4. Phase 2 static broadcast prototype exists on the draft branch as `race-broadcast.html`; Phase 3 makes it agent-inspectable; Phase 4 adds a local learning report with event log, behavior summary, and human takeaway; Phase 5 replaced `/race.html` with the watchable Signal Circuit broadcast and preserved the old manual lab at `race-lab.html`. Human review then rejected the top-down broadcast as not watchable enough. Phase 6 pivoted `/race.html` into a first-person Signal Rush, then human review rejected that as still not human-watchable enough. Phase 7 pivoted to a market square with cursor characters, then human review rejected cursors entirely. Phase 8 now replaces cursors with illustrated agent people in a more beautiful market scene while preserving the same local-only learning report. PR #4 remains draft until human review and approval.
 
 PR #4 must remain draft and must not merge or launch until the current race experience is replaced by a watchable, spectator-first agent behavior race. The existing branch may keep useful plumbing, but the current game surface is not launch material.
 
@@ -114,6 +114,23 @@ MVP changes:
 - Done: Four cursor characters move through a market square instead of abstract road/tunnel space.
 - Done: Each obstacle has a visual object humans can understand before reading the rail.
 - Required: Keep PR #4 draft until the human says the market course is worth review.
+
+## Phase 8 Illustrated Agent People Pivot
+
+Decision: the cursor-character version still feels wrong. The next target removes cursor glyphs entirely and treats Scout, Hotrod, Clerk, and Mystic as small illustrated people in the market.
+
+Reference lock:
+
+- Primary direction: colorful illustrated character marketplace with warm painterly depth.
+- Borrow narrowly: expressive mascot clarity, character props that reveal role, layered market architecture, lantern warmth, and strong silhouettes.
+- Keep: local-only safety, behavior scoring, market obstacles, agent-readable selectors, local command hooks, local JSON snapshot, and local learning report.
+- Reject: cursor shapes, pointer glyphs, abstract vehicles, copied game assets, and sterile debug-canvas graphics.
+
+MVP changes:
+
+- Done: Agent characters render as people with heads, coats, legs, arms, faces, props, and role colors.
+- Done: The market scene has more layered architecture, warmer plaza art, lanterns, crates, and ambient people.
+- Required: Keep PR #4 draft until the human says the illustrated people version is worth review.
 
 ## V2 Awesome MVP
 
