@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'none'; form-action 'none'; base-uri 'self'; object-src 'none'">
   <meta name="referrer" content="no-referrer">
-  <title>Drip Raceway Broadcast Prototype</title>
-  <meta name="description" content="A local-only Drip Raceway broadcast prototype for watching fictional agent behavior archetypes race through Signal Circuit.">
+  <title>Drip Raceway V2</title>
+  <meta name="description" content="A local-only first-person Signal Rush where fictional agent cursor racers fly through hazards, boosts, and behavior-learning moments.">
   <link rel="canonical" href="https://dripcouncil.org/race-broadcast.html">
   <meta name="theme-color" content="#030507">
   <style>
@@ -66,12 +66,13 @@
       position: sticky;
       top: 0;
       height: 100vh;
-      min-height: 720px;
+      min-height: 680px;
       overflow: hidden;
       border-right: 1px solid var(--line);
       background:
-        radial-gradient(circle at 47% 48%, rgba(0, 255, 133, 0.1), transparent 34%),
-        radial-gradient(circle at 67% 27%, rgba(255, 77, 46, 0.12), transparent 24%),
+        radial-gradient(circle at 48% 68%, rgba(0, 255, 133, 0.18), transparent 28%),
+        radial-gradient(circle at 72% 38%, rgba(255, 77, 46, 0.2), transparent 22%),
+        radial-gradient(circle at 28% 24%, rgba(22, 165, 255, 0.18), transparent 24%),
         linear-gradient(135deg, rgba(22, 165, 255, 0.08), transparent 38%);
     }
 
@@ -144,7 +145,7 @@
 
     .canvas-wrap {
       position: absolute;
-      inset: 84px 0 120px;
+      inset: 0;
     }
 
     #raceCanvas {
@@ -158,7 +159,7 @@
       z-index: 6;
       left: clamp(16px, 3vw, 40px);
       right: clamp(16px, 3vw, 40px);
-      bottom: 138px;
+      bottom: 132px;
       min-height: 78px;
       display: grid;
       align-content: center;
@@ -166,7 +167,7 @@
       padding: 14px 16px;
       border: 1px solid rgba(0, 255, 133, 0.38);
       border-radius: var(--radius);
-      background: linear-gradient(90deg, rgba(3, 5, 7, 0.9), rgba(8, 13, 18, 0.72));
+      background: linear-gradient(90deg, rgba(3, 5, 7, 0.88), rgba(8, 13, 18, 0.62));
       box-shadow: 0 0 34px rgba(0, 255, 133, 0.12);
     }
 
@@ -192,12 +193,12 @@
       right: 16px;
       bottom: 16px;
       display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
+      grid-template-columns: repeat(6, minmax(0, 1fr));
       gap: 8px;
     }
 
     .hud-tile {
-      min-height: 88px;
+      min-height: 76px;
       display: grid;
       gap: 7px;
       align-content: center;
@@ -219,18 +220,19 @@
 
     .hud-tile strong {
       font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-      font-size: clamp(20px, 2.2vw, 32px);
+      font-size: clamp(18px, 2vw, 30px);
       line-height: 1;
     }
 
     .rail {
       min-height: 100vh;
+      max-height: 100vh;
       padding: 16px;
       display: grid;
-      grid-template-rows: auto auto minmax(210px, 1fr) minmax(170px, auto);
+      grid-template-rows: auto auto auto minmax(190px, 1fr) auto auto;
       gap: 12px;
       background: linear-gradient(180deg, rgba(6, 10, 15, 0.98), rgba(3, 5, 7, 0.98));
-      overflow: hidden;
+      overflow: auto;
     }
 
     .panel {
@@ -481,6 +483,63 @@
       line-height: 1.35;
     }
 
+    .command-pad {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .command-pad button {
+      min-height: 44px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: rgba(3, 5, 7, 0.78);
+      color: var(--text);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      cursor: pointer;
+    }
+
+    .command-pad button:hover,
+    .command-pad button:focus-visible {
+      border-color: rgba(0, 255, 133, 0.72);
+      outline: none;
+      box-shadow: 0 0 24px rgba(0, 255, 133, 0.16);
+    }
+
+    .command-pad [data-agent-command="boost"] {
+      color: var(--yellow);
+    }
+
+    .command-pad [data-agent-command="recover"] {
+      color: var(--blue);
+    }
+
+    .local-command-log {
+      display: grid;
+      gap: 6px;
+      margin: 10px 0 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .local-command-log li {
+      padding: 8px 9px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: rgba(3, 5, 7, 0.58);
+      color: var(--muted);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+    }
+
     @media (max-width: 980px) {
       .broadcast {
         display: block;
@@ -508,7 +567,7 @@
       }
 
       .bottom-hud {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-template-columns: repeat(3, minmax(0, 1fr));
       }
 
       .hud-tile {
@@ -518,6 +577,7 @@
 
       .rail {
         min-height: auto;
+        max-height: none;
         grid-template-rows: none;
       }
 
@@ -540,11 +600,13 @@
       }
 
       .commentary {
-        bottom: 150px;
+        top: 142px;
+        bottom: auto;
+        min-height: 66px;
       }
 
       .commentary span {
-        font-size: 18px;
+        font-size: 16px;
       }
 
       .status-pill {
@@ -561,33 +623,33 @@
   </style>
 </head>
 <body data-agent-safety-policy="static-local-only-no-backend-writes">
-  <main class="broadcast" data-agent="race-broadcast-page" data-agent-race-id="signal-circuit-01" data-agent-race-state="loading" data-agent-active-segment-id="start_gate" data-agent-race-leader="hotrod" data-agent-council-leader="scout">
-    <section class="arena" aria-label="Signal Circuit broadcast arena">
+  <main class="broadcast" data-agent="race-broadcast-page" data-agent-race-id="signal-circuit-01" data-agent-race-state="loading" data-agent-active-segment-id="start_gate" data-agent-race-leader="hotrod" data-agent-council-leader="scout" data-agent-camera-mode="first_person_signal_rush" data-agent-last-local-command="watch">
+    <section class="arena" aria-label="First-person Signal Rush race arena">
       <header class="topbar">
         <div class="brand">
-          <strong>Signal Circuit</strong>
-          <span>local static broadcast</span>
+          <strong>Signal Rush</strong>
+          <span>first-person cursor race / local only</span>
         </div>
         <div class="status-row" aria-label="Race safety and status" data-agent="race-broadcast-safety-status">
-          <span class="status-pill">Mode <strong id="modeLabel">Static</strong></span>
+          <span class="status-pill">Mode <strong id="modeLabel">Rush</strong></span>
           <span class="status-pill">Writes <strong>Off</strong></span>
           <span class="status-pill">Models <strong>Fictional</strong></span>
         </div>
       </header>
 
       <div class="canvas-wrap">
-        <canvas id="raceCanvas" width="1400" height="900" aria-label="Animated Signal Circuit race track" data-agent="race-broadcast-canvas"></canvas>
+        <canvas id="raceCanvas" width="1400" height="900" aria-label="First-person animated Signal Rush track" data-agent="race-broadcast-canvas"></canvas>
       </div>
 
       <div class="commentary" aria-live="polite" data-agent="race-broadcast-commentary">
         <b id="commentaryBeat">Launch</b>
-        <span id="commentaryLine">Four fictional behavior racers enter Signal Circuit.</span>
+        <span id="commentaryLine">Four cursor racers launch into first-person Signal Rush.</span>
       </div>
 
       <section class="bottom-hud" aria-label="Broadcast race state">
         <div class="hud-tile">
-          <small>Timer</small>
-          <strong id="timerValue">0.0s</strong>
+          <small>Speed</small>
+          <strong><span id="speedValue">610</span></strong>
         </div>
         <div class="hud-tile">
           <small>Segment</small>
@@ -601,7 +663,16 @@
           <small>Council P1</small>
           <strong id="councilLeader">Scout</strong>
         </div>
+        <div class="hud-tile">
+          <small>Lane</small>
+          <strong id="laneValue">Center</strong>
+        </div>
+        <div class="hud-tile">
+          <small>Input</small>
+          <strong id="commandValue">Watch</strong>
+        </div>
       </section>
+      <span id="timerValue" hidden>0.0s</span>
 
       <aside class="finish-card" id="finishCard" aria-live="polite">
         <div class="panel-label">What we learned</div>
@@ -632,7 +703,21 @@
 
       <section class="panel">
         <span class="panel-label">Active Beat</span>
-        <p class="motion-note" id="activeBeat">The race is local-only and scripted from fictional behavior archetypes.</p>
+        <p class="motion-note" id="activeBeat">The race is local-only, fast, and scripted from fictional behavior archetypes.</p>
+      </section>
+
+      <section class="panel" data-agent="race-broadcast-local-command-layer">
+        <span class="panel-label">Agent Input Pad</span>
+        <p class="motion-note">Local controls only. Agents can inspect the commands and tell the human what they would choose.</p>
+        <div class="command-pad" aria-label="Local race commands">
+          <button type="button" data-agent-command="inspect">Inspect</button>
+          <button type="button" data-agent-command="safe_lane">Safe Lane</button>
+          <button type="button" data-agent-command="boost">Boost</button>
+          <button type="button" data-agent-command="recover">Recover</button>
+        </div>
+        <ul class="local-command-log" id="commandLog" data-agent="race-broadcast-local-command-log">
+          <li data-agent-local-command="watch" data-agent-segment-id="start_gate">Auto watch / 0.0s</li>
+        </ul>
       </section>
 
       <section class="panel event-feed" id="eventFeed" aria-label="Race event feed" data-agent="race-broadcast-event-feed"></section>
@@ -681,535 +766,9 @@
 
   <script type="module">
     import { SIGNAL_CIRCUIT_WATCHABLE_RACE as race } from "./src/watchable-race/signal-circuit.mjs";
+    import { startFirstPersonSignalCircuit } from "./src/watchable-race/first-person-circuit.mjs";
 
-    const canvas = document.querySelector("#raceCanvas");
-    const ctx = canvas.getContext("2d");
-    const root = document.querySelector("[data-agent-race-id]");
-    const feed = document.querySelector("#eventFeed");
-    const leaderboard = document.querySelector("#leaderboard");
-    const timerValue = document.querySelector("#timerValue");
-    const segmentValue = document.querySelector("#segmentValue");
-    const raceLeader = document.querySelector("#raceLeader");
-    const councilLeader = document.querySelector("#councilLeader");
-    const commentaryBeat = document.querySelector("#commentaryBeat");
-    const commentaryLine = document.querySelector("#commentaryLine");
-    const activeBeat = document.querySelector("#activeBeat");
-    const stateJson = document.querySelector("#stateJson");
-    const finishCard = document.querySelector("#finishCard");
-    const finishTakeaway = document.querySelector("#finishTakeaway");
-    const physicalWinner = document.querySelector("#physicalWinner");
-    const bestRecovery = document.querySelector("#bestRecovery");
-    const behaviorWinner = document.querySelector("#behaviorWinner");
-    const agentRaceSnapshot = document.querySelector("#agentRaceSnapshot");
-    const learningTakeaway = document.querySelector("#learningTakeaway");
-    const reportPhysicalWinner = document.querySelector("#reportPhysicalWinner");
-    const reportCouncilWinner = document.querySelector("#reportCouncilWinner");
-    const reportRiskSignal = document.querySelector("#reportRiskSignal");
-    const learningReportJson = document.querySelector("#learningReportJson");
-    const selfReportPrompts = [
-      {
-        id: "noticed_first",
-        prompt: "What did you notice first about the race state?"
-      },
-      {
-        id: "riskiest_decision",
-        prompt: "Which decision looked riskiest, and why?"
-      },
-      {
-        id: "safest_behavior",
-        prompt: "Which racer behaved most safely?"
-      },
-      {
-        id: "human_takeaway",
-        prompt: "What should the human learn from this run?"
-      }
-    ];
-
-    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const state = {
-      startedAt: performance.now(),
-      elapsed: 0,
-      playedEventIds: new Set(),
-      activeEvent: race.events[0],
-      scores: Object.fromEntries(race.racers.map((racer) => [racer.id, { ...racer.starting_scores }])),
-      feed: []
-    };
-
-    const racerMap = new Map(race.racers.map((racer) => [racer.id, racer]));
-
-    initializeLeaderboard();
-    resizeCanvas();
-    window.addEventListener("resize", resizeCanvas);
-    requestAnimationFrame(tick);
-
-    function tick(now) {
-      const rawElapsed = now - state.startedAt;
-      state.elapsed = prefersReducedMotion
-        ? Math.min(race.runtime_ms, Math.floor(rawElapsed / 1200) * 1200)
-        : Math.min(race.runtime_ms, rawElapsed);
-
-      playDueEvents();
-      render();
-      updateHud();
-
-      if (state.elapsed < race.runtime_ms) {
-        requestAnimationFrame(tick);
-      } else {
-        showFinish();
-        root.dataset.agentRaceState = "finished";
-      }
-    }
-
-    function playDueEvents() {
-      for (const event of race.events) {
-        if (event.elapsed_ms <= state.elapsed && !state.playedEventIds.has(event.event_id)) {
-          state.playedEventIds.add(event.event_id);
-          state.activeEvent = event;
-          applyScoreDelta(event);
-          addFeedEvent(event);
-        }
-      }
-    }
-
-    function applyScoreDelta(event) {
-      if (!state.scores[event.agent_id]) return;
-      for (const [key, value] of Object.entries(event.score_delta || {})) {
-        state.scores[event.agent_id][key] = clamp(state.scores[event.agent_id][key] + value, 0, 100);
-      }
-    }
-
-    function addFeedEvent(event) {
-      state.feed.unshift(event);
-      state.feed = state.feed.slice(0, 8);
-      commentaryBeat.textContent = event.visible_label;
-      commentaryLine.textContent = event.commentary;
-      activeBeat.textContent = event.commentary;
-      feed.innerHTML = "";
-      for (const item of state.feed) {
-        const card = document.createElement("article");
-        card.className = "event-card";
-        card.dataset.agentEventId = item.event_id;
-        card.dataset.agentId = item.agent_id;
-        card.dataset.agentEventType = item.event_type;
-        card.dataset.agentLearningTag = item.learning_tag;
-        card.dataset.agentSegmentId = item.segment_id;
-        card.dataset.agentRiskLevel = item.risk_level;
-        card.innerHTML = `<b>${escapeHtml(item.visible_label)} / ${escapeHtml(item.agent_id)}</b><span>${escapeHtml(item.commentary)}</span>`;
-        feed.append(card);
-      }
-    }
-
-    function updateHud() {
-      const segment = currentSegment();
-      const physicalRank = physicalRanking();
-      const councilRank = councilRanking();
-      const learningReport = buildLearningReport(segment, physicalRank, councilRank);
-      root.dataset.agentRaceState = state.elapsed >= race.runtime_ms ? "finished" : "running";
-      root.dataset.agentActiveSegmentId = segment.id;
-      root.dataset.agentRaceLeader = physicalRank[0];
-      root.dataset.agentCouncilLeader = councilRank[0].id;
-      root.dataset.agentLearningReportState = learningReport.state;
-      timerValue.textContent = `${(state.elapsed / 1000).toFixed(1)}s`;
-      segmentValue.textContent = segment.label;
-      raceLeader.textContent = labelFor(physicalRank[0]);
-      councilLeader.textContent = labelFor(councilRank[0].id);
-      renderLeaderboard(councilRank);
-      renderLearningReport(learningReport);
-      const snapshot = {
-        schema: "drip_raceway_watchable_snapshot_v1",
-        race_id: race.race_id,
-        page: "race-broadcast.html",
-        state: root.dataset.agentRaceState,
-        elapsed_ms: Math.round(state.elapsed),
-        active_segment: segment.id,
-        active_event: state.activeEvent?.event_id,
-        race_leader: physicalRank[0],
-        council_leader: councilRank[0].id,
-        learning_report_schema: learningReport.schema,
-        visible_events: state.feed.map((event) => ({
-          event_id: event.event_id,
-          agent_id: event.agent_id,
-          segment_id: event.segment_id,
-          event_type: event.event_type,
-          risk_level: riskForEvent(event),
-          learning_tag: event.learning_tag,
-          visible_reason: reasonForEvent(event)
-        })),
-        self_report_prompts: selfReportPrompts,
-        local_only: race.safety.local_only,
-        backend_writes_enabled: race.safety.backend_writes_enabled,
-        models_are_fictional: true
-      };
-      stateJson.textContent = JSON.stringify(snapshot, null, 2);
-      agentRaceSnapshot.textContent = JSON.stringify(snapshot, null, 2);
-    }
-
-    function buildLearningReport(segment, physicalRank, councilRank) {
-      const playedEvents = race.events.filter((event) => state.playedEventIds.has(event.event_id));
-      const riskyEvent = race.events.find((event) => event.event_id === race.finish.riskiest_move_event_id);
-      const uncertaintyEvent = race.events.find((event) => event.event_id === race.finish.best_uncertainty_event_id);
-      const finished = state.elapsed >= race.runtime_ms;
-      return {
-        schema: "drip_raceway_learning_report_v1",
-        race_id: race.race_id,
-        source_page: "race-broadcast.html",
-        state: finished ? "complete" : "draft",
-        generated_at_elapsed_ms: Math.round(state.elapsed),
-        active_segment: segment.id,
-        local_only: true,
-        backend_writes_enabled: false,
-        models_are_fictional: true,
-        winners: {
-          physical: finished ? race.finish.physical_winner : physicalRank[0],
-          council: finished ? race.finish.council_winner : councilRank[0].id,
-          best_recovery: race.finish.best_recovery
-        },
-        behavior_summary: [
-          "Speed made the race exciting, but it did not win the Council score.",
-          "The strongest behavior signal was reading the track and rejecting the unsafe shortcut.",
-          "Uncertainty disclosures were useful because they made unknowns visible instead of hidden."
-        ],
-        risk_signal: riskyEvent ? {
-          event_id: riskyEvent.event_id,
-          agent_id: riskyEvent.agent_id,
-          event_type: riskyEvent.event_type,
-          learning_tag: riskyEvent.learning_tag,
-          reason: reasonForEvent(riskyEvent)
-        } : null,
-        uncertainty_signal: uncertaintyEvent ? {
-          event_id: uncertaintyEvent.event_id,
-          agent_id: uncertaintyEvent.agent_id,
-          event_type: uncertaintyEvent.event_type,
-          learning_tag: uncertaintyEvent.learning_tag,
-          reason: reasonForEvent(uncertaintyEvent)
-        } : null,
-        event_log: playedEvents.map((event) => ({
-          event_id: event.event_id,
-          elapsed_ms: event.elapsed_ms,
-          agent_id: event.agent_id,
-          segment_id: event.segment_id,
-          event_type: event.event_type,
-          learning_tag: event.learning_tag,
-          risk_level: riskForEvent(event),
-          visible_reason: reasonForEvent(event)
-        })),
-        self_report_prompts: selfReportPrompts,
-        human_takeaway: finished
-          ? race.finish.takeaway
-          : "Draft: watch whether agents read first, reject bait, disclose uncertainty, and recover cleanly."
-      };
-    }
-
-    function renderLearningReport(report) {
-      learningTakeaway.textContent = report.human_takeaway;
-      reportPhysicalWinner.textContent = labelFor(report.winners.physical);
-      reportCouncilWinner.textContent = labelFor(report.winners.council);
-      reportRiskSignal.textContent = report.risk_signal ? labelFor(report.risk_signal.agent_id) : "Watching";
-      learningReportJson.value = JSON.stringify(report, null, 2);
-    }
-
-    function initializeLeaderboard() {
-      leaderboard.innerHTML = "";
-      for (const racer of race.racers) {
-        const row = document.createElement("div");
-        row.className = "racer-row";
-        row.dataset.agentRacerId = racer.id;
-        row.dataset.agentRacerLabel = racer.label;
-        row.dataset.agentRacerColor = racer.color_hex;
-        row.dataset.agentRacerScore = "0";
-        row.innerHTML = `
-          <i class="marker" aria-hidden="true" style="color: ${racer.color_hex}"></i>
-          <span><b>${escapeHtml(racer.label)}</b><span>${escapeHtml(racer.personality)}</span></span>
-          <strong class="score">0</strong>
-        `;
-        leaderboard.append(row);
-      }
-    }
-
-    function renderLeaderboard(rank) {
-      const rows = new Map([...leaderboard.children].map((row) => [row.dataset.agentRacerId, row]));
-      rank.forEach((entry, index) => {
-        const row = rows.get(entry.id);
-        if (!row) return;
-        row.style.order = index;
-        row.dataset.agentRacerScore = String(entry.score);
-        row.querySelector(".score").textContent = String(entry.score);
-      });
-    }
-
-    function render() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      drawTrackGlow();
-      drawHazards();
-      drawSegmentLabels();
-      drawRacers();
-      if (state.activeEvent?.event_type === "hazard_hit") drawImpactBurst(positionFor("hotrod"));
-    }
-
-    function drawTrackGlow() {
-      const pathPoints = race.track.route_points.map((point) => toCanvas(point));
-
-      ctx.save();
-      ctx.lineJoin = "round";
-      ctx.lineCap = "round";
-
-      drawPath(pathPoints, 58, "rgba(22, 165, 255, 0.14)");
-      drawPath(pathPoints, 34, "rgba(22, 165, 255, 0.32)");
-      drawPath(pathPoints, 16, "rgba(0, 255, 133, 0.92)");
-      ctx.setLineDash([18, 18]);
-      drawPath(pathPoints, 5, "rgba(252, 255, 118, 0.72)");
-      ctx.setLineDash([]);
-
-      ctx.restore();
-    }
-
-    function drawHazards() {
-      const shortcutStart = toCanvas({ x: 60, y: 36 });
-      const shortcutEnd = toCanvas({ x: 76, y: 25 });
-      ctx.save();
-      ctx.lineCap = "round";
-      ctx.strokeStyle = "rgba(255, 77, 46, 0.95)";
-      ctx.lineWidth = 18;
-      ctx.shadowColor = "#ff4d2e";
-      ctx.shadowBlur = 28;
-      ctx.beginPath();
-      ctx.moveTo(shortcutStart.x, shortcutStart.y);
-      ctx.lineTo(shortcutEnd.x, shortcutEnd.y);
-      ctx.stroke();
-      ctx.shadowBlur = 0;
-      ctx.fillStyle = "rgba(255, 77, 46, 0.12)";
-      ctx.strokeStyle = "rgba(255, 77, 46, 0.5)";
-      ctx.lineWidth = 1;
-      const tunnel = toCanvas({ x: 72, y: 31 });
-      ctx.strokeRect(tunnel.x - 86, tunnel.y - 25, 172, 50);
-      ctx.fillRect(tunnel.x - 86, tunnel.y - 25, 172, 50);
-      ctx.fillStyle = "#ff4d2e";
-      ctx.font = "900 13px ui-monospace, monospace";
-      ctx.fillText("UNTRUSTED SHORTCUT", tunnel.x - 74, tunnel.y + 5);
-      ctx.restore();
-    }
-
-    function drawSegmentLabels() {
-      const labels = [
-        ["START GATE", 17, 64, "#00ff85"],
-        ["AMBIGUITY BEND", 42, 43, "#fcff76"],
-        ["INJECTION TUNNEL", 64, 47, "#ff4d2e"],
-        ["MEMORY FOG", 77, 61, "#a260ff"],
-        ["RECOVERY CHICANE", 52, 76, "#16a5ff"]
-      ];
-      ctx.save();
-      ctx.font = "900 12px ui-monospace, monospace";
-      for (const [text, x, y, color] of labels) {
-        const p = toCanvas({ x, y });
-        ctx.strokeStyle = "rgba(255, 255, 255, 0.18)";
-        ctx.fillStyle = "rgba(3, 5, 7, 0.72)";
-        ctx.strokeRect(p.x - 78, p.y - 20, 156, 34);
-        ctx.fillRect(p.x - 78, p.y - 20, 156, 34);
-        ctx.fillStyle = color;
-        ctx.fillText(text, p.x - 68, p.y + 2);
-      }
-      ctx.restore();
-    }
-
-    function drawRacers() {
-      for (const racer of race.racers) {
-        const position = positionFor(racer.id);
-        const previous = previousPositionFor(racer.id);
-        ctx.save();
-        ctx.strokeStyle = racer.color_hex;
-        ctx.fillStyle = racer.color_hex;
-        ctx.shadowColor = racer.color_hex;
-        ctx.shadowBlur = 22;
-        ctx.lineWidth = 4;
-        ctx.beginPath();
-        ctx.moveTo(previous.x, previous.y);
-        ctx.lineTo(position.x, position.y);
-        ctx.stroke();
-        ctx.translate(position.x, position.y);
-        ctx.rotate(position.angle);
-        drawRacerShape(racer);
-        ctx.restore();
-
-        ctx.save();
-        ctx.fillStyle = "#f7fbff";
-        ctx.font = "900 13px ui-monospace, monospace";
-        ctx.fillText(racer.label.toUpperCase(), position.x + 16, position.y - 14);
-        ctx.restore();
-      }
-    }
-
-    function drawRacerShape(racer) {
-      ctx.beginPath();
-      if (racer.shape === "square_cursor") {
-        ctx.rect(-11, -11, 22, 22);
-      } else if (racer.shape === "arrow_bolt") {
-        ctx.moveTo(20, 0);
-        ctx.lineTo(-13, -14);
-        ctx.lineTo(-6, 0);
-        ctx.lineTo(-13, 14);
-        ctx.closePath();
-      } else if (racer.shape === "split_pointer") {
-        ctx.moveTo(18, 0);
-        ctx.lineTo(-12, -16);
-        ctx.lineTo(-5, 0);
-        ctx.lineTo(-12, 16);
-        ctx.lineTo(2, 7);
-        ctx.closePath();
-      } else {
-        ctx.moveTo(20, 0);
-        ctx.lineTo(-14, -13);
-        ctx.lineTo(-8, 0);
-        ctx.lineTo(-14, 13);
-        ctx.closePath();
-      }
-      ctx.fill();
-      ctx.strokeStyle = "rgba(255,255,255,0.78)";
-      ctx.lineWidth = 2;
-      ctx.stroke();
-    }
-
-    function drawImpactBurst(position) {
-      ctx.save();
-      ctx.translate(position.x, position.y);
-      ctx.strokeStyle = "#ff4d2e";
-      ctx.lineWidth = 3;
-      ctx.shadowColor = "#ff4d2e";
-      ctx.shadowBlur = 25;
-      for (let i = 0; i < 12; i++) {
-        const angle = (Math.PI * 2 * i) / 12;
-        ctx.beginPath();
-        ctx.moveTo(Math.cos(angle) * 18, Math.sin(angle) * 18);
-        ctx.lineTo(Math.cos(angle) * 52, Math.sin(angle) * 52);
-        ctx.stroke();
-      }
-      ctx.restore();
-    }
-
-    function showFinish() {
-      finishCard.classList.add("is-visible");
-      finishTakeaway.textContent = race.finish.takeaway;
-      physicalWinner.textContent = labelFor(race.finish.physical_winner);
-      bestRecovery.textContent = labelFor(race.finish.best_recovery);
-      behaviorWinner.textContent = labelFor(race.finish.council_winner);
-    }
-
-    function positionFor(racerId) {
-      const frames = race.keyframes[racerId];
-      let from = frames[0];
-      let to = frames.at(-1);
-      for (let i = 0; i < frames.length - 1; i++) {
-        if (state.elapsed >= frames[i].elapsed_ms && state.elapsed <= frames[i + 1].elapsed_ms) {
-          from = frames[i];
-          to = frames[i + 1];
-          break;
-        }
-      }
-      const span = Math.max(1, to.elapsed_ms - from.elapsed_ms);
-      const t = clamp((state.elapsed - from.elapsed_ms) / span, 0, 1);
-      const eased = t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
-      const point = {
-        x: from.x + (to.x - from.x) * eased,
-        y: from.y + (to.y - from.y) * eased
-      };
-      const current = toCanvas(point);
-      const target = toCanvas(to);
-      current.angle = Math.atan2(target.y - current.y, target.x - current.x);
-      return current;
-    }
-
-    function previousPositionFor(racerId) {
-      const oldElapsed = state.elapsed;
-      state.elapsed = Math.max(0, oldElapsed - 460);
-      const previous = positionFor(racerId);
-      state.elapsed = oldElapsed;
-      return previous;
-    }
-
-    function currentSegment() {
-      return race.segments.find((segment) => state.elapsed >= segment.start_ms && state.elapsed <= segment.end_ms) || race.segments.at(-1);
-    }
-
-    function physicalRanking() {
-      return race.racers
-        .map((racer) => ({ id: racer.id, progress: progressFor(racer.id) }))
-        .sort((a, b) => b.progress - a.progress)
-        .map((entry) => entry.id);
-    }
-
-    function progressFor(racerId) {
-      const frames = race.keyframes[racerId];
-      for (let i = frames.length - 1; i >= 0; i--) {
-        if (state.elapsed >= frames[i].elapsed_ms) return i + state.elapsed / race.runtime_ms;
-      }
-      return 0;
-    }
-
-    function councilRanking() {
-      return Object.entries(state.scores)
-        .map(([id, scores]) => ({
-          id,
-          score: Math.round(Object.entries(race.scoring.weights).reduce((sum, [key, weight]) => sum + scores[key] * weight, 0))
-        }))
-        .sort((a, b) => b.score - a.score);
-    }
-
-    function drawPath(pathPoints, width, color) {
-      ctx.strokeStyle = color;
-      ctx.lineWidth = width;
-      ctx.beginPath();
-      ctx.moveTo(pathPoints[0].x, pathPoints[0].y);
-      for (let i = 1; i < pathPoints.length; i++) {
-        ctx.lineTo(pathPoints[i].x, pathPoints[i].y);
-      }
-      ctx.stroke();
-    }
-
-    function toCanvas(point) {
-      return {
-        x: (point.x / 100) * canvas.width,
-        y: (point.y / 100) * canvas.height
-      };
-    }
-
-    function labelFor(id) {
-      return racerMap.get(id)?.label || id;
-    }
-
-    function resizeCanvas() {
-      const rect = canvas.getBoundingClientRect();
-      const scale = Math.min(window.devicePixelRatio || 1, 2);
-      canvas.width = Math.max(720, Math.floor(rect.width * scale));
-      canvas.height = Math.max(460, Math.floor(rect.height * scale));
-    }
-
-    function clamp(value, min = 0, max = 100) {
-      return Math.min(max, Math.max(min, value));
-    }
-
-    function riskForEvent(event) {
-      if (/unsafe_shortcut_taken|hazard_hit/.test(event.event_type)) return "high";
-      if (/route_selected|boost_used|recovery_started/.test(event.event_type)) return "medium";
-      if (/unsafe_shortcut_rejected|instruction_read|uncertainty_disclosed|recovery_completed/.test(event.event_type)) return "low";
-      return "watch";
-    }
-
-    function reasonForEvent(event) {
-      if (event.event_id === race.finish.riskiest_move_event_id) return "This is the clearest moment where speed beat safety.";
-      if (event.event_id === race.finish.best_uncertainty_event_id) return "This is the clearest moment where uncertainty was made visible.";
-      if (event.event_type === "unsafe_shortcut_rejected") return "The racer saw the tempting unsafe path and stayed inside the rules.";
-      if (event.event_type === "recovery_completed") return "The racer corrected course after a mistake instead of compounding it.";
-      return event.commentary;
-    }
-
-    function escapeHtml(value) {
-      return String(value).replace(/[&<>"']/g, (char) => ({
-        "&": "&amp;",
-        "<": "&lt;",
-        ">": "&gt;",
-        '"': "&quot;",
-        "'": "&#39;"
-      })[char]);
-    }
+    startFirstPersonSignalCircuit({ race });
   </script>
 </body>
 </html>

@@ -1,6 +1,6 @@
 # Drip Raceway V2 Watchable Plan
 
-Status: stop-ship replacement plan for PR #4. Phase 2 static broadcast prototype exists on the draft branch as `race-broadcast.html`; Phase 3 makes it agent-inspectable; Phase 4 adds a local learning report with event log, behavior summary, and human takeaway; Phase 5 replaces `/race.html` with the watchable Signal Circuit broadcast and preserves the old manual lab at `race-lab.html`. PR #4 remains draft until human review and approval.
+Status: stop-ship replacement plan for PR #4. Phase 2 static broadcast prototype exists on the draft branch as `race-broadcast.html`; Phase 3 makes it agent-inspectable; Phase 4 adds a local learning report with event log, behavior summary, and human takeaway; Phase 5 replaced `/race.html` with the watchable Signal Circuit broadcast and preserved the old manual lab at `race-lab.html`. Human review then rejected the top-down broadcast as not watchable enough. Phase 6 now pivots `/race.html` into a first-person Signal Rush with cursor racers, speed, hazards, local command hooks, and the same local-only learning report. PR #4 remains draft until human review and approval.
 
 PR #4 must remain draft and must not merge or launch until the current race experience is replaced by a watchable, spectator-first agent behavior race. The existing branch may keep useful plumbing, but the current game surface is not launch material.
 
@@ -73,6 +73,29 @@ Reject:
 - Generic neon cards.
 - Decorative background effects that do not explain the race.
 - Product plumbing as a substitute for fun.
+
+## Phase 6 First-Person Pivot
+
+Decision: the top-down broadcast is no longer the launch candidate. The new target is a fast first-person race that feels playable immediately while preserving the safety and learning structure.
+
+Reference lock:
+
+- Primary direction: first-person arcade speed tunnel with cockpit HUD and road rush.
+- Keep: full-bleed canvas, cursor racers as the vehicles, visible boost/hazard gates, speed lines, screen shake, near-miss energy, and compact broadcast telemetry.
+- Borrow narrowly: track-glow readability from the previous Signal Circuit, command-console clarity from the Drip Council agent-readable surfaces, and end-card learning from the prior local report.
+- Reject: passive map watching, dashboard-first layout, slow pacing, or anything that asks the human to read before the race feels alive.
+
+MVP changes:
+
+- Done: `/race.html` starts in first-person Signal Rush.
+- Done: Four cursor racers are visible as fast moving opponents.
+- Done: Humans can use local display-only command buttons and keyboard steering/boost.
+- Done: Agents can inspect `data-agent-camera-mode`, local command hooks, local command log, racer rows, event feed, state JSON, and learning report.
+- Done: No backend writes, persistence, external telemetry, real model claims, payments, or live rooms.
+
+Gate:
+
+- Keep PR #4 draft until the human says the first-person race is worth reviewing.
 
 ## V2 Awesome MVP
 

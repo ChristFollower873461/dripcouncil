@@ -8,7 +8,7 @@
     "accounts": false,
     "payments_by_agents": false,
     "storage": "local browser state only",
-    "raceway": "local-only static preview; primary watchable broadcast at race.html; secondary manual lab at race-lab.html; disabled room-create gate rejects public creation; no live rooms, storage, automatic logging, or public leaderboard"
+    "raceway": "local-only static preview; primary first-person Signal Rush at race.html; secondary manual lab at race-lab.html; disabled room-create gate rejects public creation; no live rooms, storage, automatic logging, or public leaderboard"
   },
   "tracks": [
     {
@@ -36,7 +36,7 @@
     {
       "id": "drip-raceway-v2",
       "name": "Drip Raceway V2 Preview",
-      "description": "A local-only watchable Signal Circuit broadcast where fictional behavior racers reveal speed, safety, uncertainty, and recovery signals for humans to learn from.",
+      "description": "A local-only first-person Signal Rush where fictional cursor racers make speed, safety, uncertainty, and recovery signals visible for humans to learn from.",
       "path": "race.html",
       "manifest": "race-manifest.json",
       "mode": "static_local_only",
@@ -227,7 +227,7 @@
   "raceway_tracks": [
     {
       "id": "signal-circuit-01",
-      "name": "Signal Circuit 01",
+      "name": "Signal Rush 01",
       "path": "race.html",
       "preview_alias": "race-broadcast.html",
       "manifest": "race-manifest.json",

@@ -1,8 +1,8 @@
 {
   "schema": "drip_raceway_manifest_v1",
-  "version": "2.0.0-watchable-primary-preview",
+  "version": "2.1.0-first-person-rush-preview",
   "site": "https://dripcouncil.org/race.html",
-  "mode": "watchable_broadcast_with_read_only_api_preview",
+  "mode": "first_person_watchable_race_with_read_only_api_preview",
   "track": {
     "id": "signal-loop-01",
     "name": "Signal Loop 01",
@@ -401,12 +401,16 @@
     "local_page": "race.html",
     "track_id": "signal-circuit-01",
     "script": "src/watchable-race/signal-circuit.mjs",
+    "renderer": "src/watchable-race/first-person-circuit.mjs",
+    "camera_mode": "first_person_signal_rush",
     "snapshot_schema": "drip_raceway_watchable_snapshot_v1",
     "selectors": {
       "race_broadcast_page": "[data-agent='race-broadcast-page']",
       "race_broadcast_canvas": "[data-agent='race-broadcast-canvas']",
       "race_broadcast_commentary": "[data-agent='race-broadcast-commentary']",
       "race_broadcast_safety_status": "[data-agent='race-broadcast-safety-status']",
+      "race_broadcast_local_command_layer": "[data-agent='race-broadcast-local-command-layer']",
+      "race_broadcast_local_command_log": "[data-agent='race-broadcast-local-command-log']",
       "race_broadcast_leaderboard": "[data-agent='race-broadcast-leaderboard']",
       "race_broadcast_event_feed": "[data-agent='race-broadcast-event-feed']",
       "race_broadcast_self_report_booth": "[data-agent='race-broadcast-self-report-booth']",
@@ -421,15 +425,15 @@
     "self_report_prompts": [
       {
         "id": "noticed_first",
-        "prompt": "What did you notice first about the race state?"
+        "prompt": "What did you notice first at speed?"
       },
       {
         "id": "riskiest_decision",
-        "prompt": "Which decision looked riskiest, and why?"
+        "prompt": "Which decision looked risky from the cockpit?"
       },
       {
         "id": "safest_behavior",
-        "prompt": "Which racer behaved most safely?"
+        "prompt": "Which racer kept safety visible while moving fast?"
       },
       {
         "id": "human_takeaway",
@@ -444,7 +448,7 @@
       "models_are_fictional": true,
       "human_review_required_before_publication": true
     },
-    "note": "This is the primary watchable static broadcast prototype for fictional behavior archetypes. Agents may inspect and draft local reports, but must not claim live benchmarking, persistence, telemetry, or leaderboard publication happened.",
+    "note": "This is the primary first-person static race prototype for fictional behavior archetypes. Agents may inspect local commands and draft reports, but must not claim live benchmarking, persistence, telemetry, or leaderboard publication happened.",
     "learning_report": {
       "schema": "drip_raceway_learning_report_v1",
       "status": "local_static_draft",
@@ -454,6 +458,7 @@
         "copyable_json_report_text",
         "human_readable_takeaway",
         "local_event_log",
+        "local_command_log",
         "self_report_prompts"
       ],
       "external_writes": false,
@@ -477,9 +482,9 @@
   },
   "primary_track": {
     "id": "signal-circuit-01",
-    "name": "Signal Circuit",
+    "name": "Signal Rush",
     "page": "https://dripcouncil.org/race.html",
-    "mode": "static_local_broadcast",
+    "mode": "first_person_static_local_race",
     "runtime_ms": 45000,
     "snapshot_schema": "drip_raceway_watchable_snapshot_v1",
     "learning_report_schema": "drip_raceway_learning_report_v1",

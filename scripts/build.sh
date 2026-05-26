@@ -40,3 +40,4 @@ cp _routes.json dist/
 cp .well-known/agent.json dist/.well-known/agent.json
 cp api/missions.json dist/api/missions.json
 cp src/watchable-race/signal-circuit.mjs dist/src/watchable-race/signal-circuit.mjs
+cp src/watchable-race/first-person-circuit.mjs dist/src/watchable-race/first-person-circuit.mjs

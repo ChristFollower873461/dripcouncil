@@ -1,20 +1,21 @@
 # Drip Raceway V2 Replace Race Plan
 
-Status: Phase 5 implemented on draft PR #4.
+Status: Phase 5 was implemented on draft PR #4; Phase 6 first-person replacement is now in progress after human review rejected the passive broadcast.
 
-This plan records the replacement of the weak `/race.html` launch surface with the watchable Signal Circuit broadcast without losing the safe plumbing that already exists.
+This plan records the replacement of weak `/race.html` launch surfaces without losing the safe plumbing that already exists. The top-down Signal Circuit broadcast was safer than the first prototype, but it still was not worth watching. The new target is Signal Rush: a fast first-person cursor race with hazards, boosts, local command hooks, and the same local-only learning report.
 
 PR #4 must remain draft after this pass. Do not mark ready for review, merge, deploy production, add backend writes, add secrets, or touch Basement Boys without explicit human approval.
 
 ## Replacement Decision
 
-`race-broadcast.html` is now strong enough to become the launch candidate for `/race.html`, with one condition: preserve the old local control lab as an archive or fallback page instead of deleting it outright.
+`race-broadcast.html` was promoted to `/race.html` for preview, then rejected as too passive. The next launch candidate is the first-person Signal Rush on `/race.html`, with the old local control lab still preserved as `race-lab.html`.
 
 Why:
 
 - The broadcast has four racers, automatic motion, visible hazards, Council scoring, event feed, local JSON state, and a local learning report.
+- The human wants a fast first-person game surface, not another passive map or dashboard.
 - The current `/race.html` is useful as a local controls prototype, but it still foregrounds manual driving and does not meet the watchable V2 bar.
-- Public launch should lead with the behavior broadcast. The manual lab can remain as a secondary route for future control experiments.
+- Public launch should lead with a race that looks alive before the human reads the report. The manual lab can remain as a secondary route for future control experiments.
 
 ## Keep
 
@@ -58,14 +59,24 @@ Why:
    - `git diff --check`
 10. Done: Run browser checks for desktop, mobile, and end-of-race report completion.
 11. Done: Push to PR #4 and wait for Cloudflare Pages preview success.
-12. Pending human decision: Leave PR #4 draft and ask the human to review before marking ready.
+12. Done: Human rejected the passive broadcast as not watchable enough.
+
+## Phase 6 First-Person Replacement Checklist
+
+1. Done: Change `/race.html` and `race-broadcast.html` to the first-person Signal Rush renderer.
+2. Done: Keep `signal-circuit.mjs` as the reviewed behavior script and add `first-person-circuit.mjs` as the renderer.
+3. Done: Add local-only command hooks for agents/humans without backend writes.
+4. Done: Update manifests and agent-readable docs for first-person mode.
+5. Done: Run full static, script, security, build, and browser checks.
+6. Pending human decision: Leave PR #4 draft and ask the human to review before marking ready.
 
 ## Acceptance Gate
 
 The replacement is ready to ask for human review only when:
 
-- `/race.html` opens directly into the watchable broadcast.
-- Four racers are visible and moving on first load.
+- `/race.html` opens directly into the first-person Signal Rush.
+- Four cursor racers are visible and moving on first load.
+- Local command hooks are visible and inspectable without enabling backend writes.
 - The race completes without input.
 - The local learning report reaches `state: "complete"` after the race.
 - `race-lab.html` still preserves the old manual experiment if retained.
