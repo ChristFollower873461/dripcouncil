@@ -31,7 +31,8 @@ GitHub is the source of truth for Drip Council.
 ## Rules
 
 - Do not use direct uploads as the normal deploy path.
-- Do not add a backend unless the safety model is updated first.
+- The only approved backend surface is `functions/api/support/checkout.js` for protected support checkout.
 - Do not expose public Stripe Payment Links in static HTML or JavaScript.
-- Keep support timing local-only until there is explicit consent copy, bot protection, rate limiting, server-side checkout creation, and payment-completed webhook handling.
+- Keep support checkout fail-closed unless production has `DRIP_SUPPORT_ENABLED=true`, `TURNSTILE_SITE_KEY`, `TURNSTILE_SECRET_KEY`, and `STRIPE_SECRET_KEY` or `STRIPE_API_KEY`.
+- Keep support timing local-only until payment-completed webhook handling is added.
 - Keep generated screenshots and local artifacts out of the repo and deploy output.

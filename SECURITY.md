@@ -1,6 +1,6 @@
 # Security Policy
 
-Drip Council is a static site. It should not contain private keys, server credentials, hidden endpoints, or agent-write capabilities.
+Drip Council is a mostly static site with one protected support checkout endpoint. It should not contain private keys, server credentials, hidden endpoints beyond documented Cloudflare Pages Functions, or agent-write capabilities.
 
 ## Reporting
 
@@ -10,6 +10,8 @@ If you find a security issue, open a private GitHub security advisory or contact
 
 - Do not commit private credentials.
 - Do not expose public Stripe Payment Links in static HTML or JavaScript.
+- Create support payments only through `/api/support/checkout` after server-side Turnstile validation.
+- Keep the checkout endpoint fail-closed when secrets or safety config are missing.
 - Keep agent actions read-only or draft-only.
 - Keep the support page human-only, consent-gated, and transparent about what is measured.
 - Keep `agent.json` and `.well-known/agent.json` identical.

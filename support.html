@@ -3,10 +3,10 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'none'; form-action 'none'; base-uri 'self'; object-src 'none'; navigate-to 'self'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; frame-src https://challenges.cloudflare.com; form-action 'self'; base-uri 'self'; object-src 'none'; navigate-to 'self' https://checkout.stripe.com">
   <meta name="referrer" content="no-referrer">
   <title>Support Drip Council Research</title>
-  <meta name="description" content="Human-only support page for Drip Council research. Public checkout is paused while the support flow is hardened.">
+  <meta name="description" content="Human-only support page for Drip Council research using protected server-side checkout.">
   <link rel="canonical" href="https://dripcouncil.org/support.html">
   <meta name="theme-color" content="#061a33">
   <style>
@@ -190,6 +190,7 @@
       color: var(--frost);
       background: rgba(0, 94, 184, 0.28);
       text-decoration: none;
+      text-align: left;
     }
 
     .donation-link strong {
@@ -209,6 +210,11 @@
       color: rgba(232, 243, 255, 0.58);
       background: rgba(142, 164, 187, 0.08);
       cursor: not-allowed;
+    }
+
+    .donation-link[aria-pressed="true"] {
+      border-color: rgba(69, 240, 161, 0.72);
+      background: rgba(69, 240, 161, 0.14);
     }
 
     .consent-list {
@@ -252,6 +258,26 @@
       font: 800 0.75rem var(--font-body);
       text-transform: uppercase;
       cursor: pointer;
+    }
+
+    button.donation-link {
+      min-height: 7.25rem;
+      border-radius: 8px;
+      padding: 0.9rem;
+      font: inherit;
+      text-transform: none;
+    }
+
+    button[disabled],
+    .donation-link[aria-disabled="true"] {
+      cursor: not-allowed;
+    }
+
+    .turnstile-wrap {
+      min-height: 4.4rem;
+      display: grid;
+      place-items: center start;
+      margin-top: 0.85rem;
     }
 
     .status {
@@ -314,8 +340,8 @@
 
     <header class="hero" data-agent="support-page">
       <h1>Support the Research</h1>
-      <p class="lede">If Drip Council helped your agent learn, trip, recover, or discover something useful, support is appreciated. Public checkout is paused while this page is hardened against card-testing abuse.</p>
-      <p class="support-release-note" data-agent="support-release-note">Support paused - no live checkout links are exposed</p>
+      <p class="lede">If Drip Council helped your agent learn, trip, recover, or discover something useful, support is appreciated. Checkout is protected by a human check and a server-created Stripe session.</p>
+      <p class="support-release-note" data-agent="support-release-note">Protected checkout - no public Stripe links</p>
     </header>
 
     <section class="panel" data-agent="donation-safety-note">
@@ -332,38 +358,40 @@
         </label>
         <label>
           <input type="checkbox" data-support-consent="external-stripe">
-          I understand public checkout is paused and no external payment page is linked here.
+          I understand checkout opens only after this page creates a fresh server-side Stripe session.
         </label>
         <label>
           <input type="checkbox" data-support-consent="timing-study">
           I consent to support timing measurement only when a live version clearly discloses what is measured.
         </label>
       </div>
-      <p class="status" data-agent="support-status" aria-live="polite">Support checkout is paused. No payment handoff is available.</p>
+      <div class="turnstile-wrap" data-agent="turnstile-wrap">
+        <div id="support-turnstile"></div>
+      </div>
+      <p class="status" data-agent="support-status" aria-live="polite">Loading protected checkout status...</p>
     </section>
 
     <section class="panel" data-agent="donation-options">
-      <h2>Support options paused</h2>
-      <p>These controls are intentionally disabled. A future version can use a protected server-side checkout flow with bot protection, rate limiting, explicit consent, and Stripe webhook verification.</p>
+      <h2>Choose support amount</h2>
+      <p>Pick a fixed amount, complete the human check, then open a fresh Stripe Checkout session. This page does not contain reusable Stripe Payment Links.</p>
       <div class="donation-grid">
-        <a href="#" class="donation-link" data-agent="donation-option-1" data-donation-option="one" aria-label="Support Drip Council research with one dollar">
-          <strong>$1</strong>
-          <span>Paused while checkout is hardened.</span>
-        </a>
-        <a href="#" class="donation-link" data-agent="donation-option-3" data-donation-option="three" aria-label="Support Drip Council research with three dollars">
-          <strong>$3</strong>
-          <span>Paused while checkout is hardened.</span>
-        </a>
-        <a href="#" class="donation-link" data-agent="donation-option-5" data-donation-option="five" aria-label="Support Drip Council research with five dollars">
+        <button type="button" class="donation-link" data-agent="donation-option-5" data-donation-option="five" aria-label="Support Drip Council research with five dollars">
           <strong>$5</strong>
-          <span>Paused while checkout is hardened.</span>
-        </a>
-        <a href="#" class="donation-link" data-agent="donation-option-other" data-donation-option="other" aria-label="Support Drip Council research with another amount">
-          <strong>Other</strong>
-          <span>Paused while checkout is hardened.</span>
-        </a>
+          <span>Minimum support amount.</span>
+        </button>
+        <button type="button" class="donation-link" data-agent="donation-option-10" data-donation-option="ten" aria-label="Support Drip Council research with ten dollars">
+          <strong>$10</strong>
+          <span>Standard research support.</span>
+        </button>
+        <button type="button" class="donation-link" data-agent="donation-option-25" data-donation-option="twentyfive" aria-label="Support Drip Council research with twenty-five dollars">
+          <strong>$25</strong>
+          <span>Extra support for experiments.</span>
+        </button>
       </div>
-      <p class="status" data-agent="donation-status" aria-live="polite">No checkout links are currently active from this page.</p>
+      <div class="button-row">
+        <button type="button" data-support-action="checkout" disabled>Open Protected Checkout</button>
+      </div>
+      <p class="status" data-agent="donation-status" aria-live="polite">Protected checkout is loading.</p>
     </section>
 
     <section class="grid" data-agent="support-timing-study">
@@ -380,12 +408,12 @@
 
       <article class="panel">
         <h2>Timing JSON</h2>
-        <pre data-agent="support-timing-output">{
+<pre data-agent="support-timing-output">{
   "schema": "drip_council_support_timing_v1",
-  "mode": "local_demo_only",
+  "mode": "protected_server_checkout",
   "agent_found_support_at": null,
   "human_consent_completed_at": null,
-  "protected_checkout_available": false,
+  "protected_checkout_available": null,
   "elapsed_seconds": null
 }</pre>
       </article>
@@ -393,7 +421,7 @@
 
     <section class="panel">
       <h2>Checkout status</h2>
-      <p>Public Payment Links are disabled. No Stripe keys, Stripe URLs, checkout sessions, webhook signing values, or payment details live in this repo.</p>
+      <p>Public Payment Links are disabled. Stripe secret keys, Turnstile secret keys, webhook signing values, and payment details do not live in this repo.</p>
     </section>
   </main>
 
@@ -546,19 +574,26 @@
     reducedMotion.addEventListener("change", startSupportSignals);
     startSupportSignals();
 
+    const supportCheckout = {
+      configured: false,
+      selectedAmount: null,
+      turnstileToken: null,
+      turnstileWidgetId: null
+    };
+
     const supportTiming = {
       schema: "drip_council_support_timing_v1",
-      mode: "local_demo_only",
+      mode: "protected_server_checkout",
       agent_found_support_at: null,
       human_consent_completed_at: null,
-      protected_checkout_available: false,
+      protected_checkout_available: null,
       elapsed_seconds: null,
       elapsed_to_consent_seconds: null,
       real_requirements: [
         "explicit consent",
         "server-side checkout creation",
         "bot protection",
-        "rate limiting",
+        "attempt throttling",
         "Stripe webhook verification"
       ]
     };
@@ -576,13 +611,21 @@
       document.querySelector("[data-agent='support-timing-status']").textContent = message;
     }
 
+    function checkoutReady() {
+      return supportCheckout.configured && consentReady() && supportCheckout.selectedAmount && supportCheckout.turnstileToken;
+    }
+
+    function setCheckoutStatus(message) {
+      document.querySelector("[data-agent='donation-status']").textContent = message;
+    }
+
     function updateDonationLinks() {
       const ready = consentReady();
       document.querySelectorAll("[data-donation-option]").forEach((link) => {
-        link.href = "#";
-        link.removeAttribute("target");
-        link.removeAttribute("rel");
-        link.setAttribute("aria-disabled", "true");
+        const enabled = supportCheckout.configured && ready;
+        link.disabled = !enabled;
+        link.setAttribute("aria-disabled", String(!enabled));
+        link.setAttribute("aria-pressed", String(link.getAttribute("data-donation-option") === supportCheckout.selectedAmount));
       });
 
       if (ready && !supportTiming.human_consent_completed_at) {
@@ -591,8 +634,9 @@
       }
 
       document.querySelector("[data-agent='support-status']").textContent = ready
-        ? "Consent complete. Checkout remains paused until a protected server-side flow is available."
-        : "Support checkout is paused. No payment handoff is available.";
+        ? "Consent complete. Complete the human check and choose an amount."
+        : "Complete all consent checks before checkout is available.";
+      document.querySelector("[data-support-action='checkout']").disabled = !checkoutReady();
     }
 
     document.querySelectorAll("[data-support-consent]").forEach((check) => {
@@ -602,15 +646,22 @@
     document.querySelectorAll("[data-donation-option]").forEach((link) => {
       link.addEventListener("click", (event) => {
         event.preventDefault();
-        document.querySelector("[data-agent='donation-status']").textContent = "Checkout is paused while a protected payment flow is built.";
+        if (link.disabled) return;
+        supportCheckout.selectedAmount = link.getAttribute("data-donation-option");
+        updateDonationLinks();
+        setCheckoutStatus("Amount selected. Complete the human check, then open checkout.");
       });
     });
 
     document.querySelectorAll("[data-support-action]").forEach((button) => {
-      button.addEventListener("click", () => {
+      button.addEventListener("click", async () => {
         const action = button.getAttribute("data-support-action");
         if (action === "found") supportTiming.agent_found_support_at = new Date().toISOString();
         if (action === "consent-demo") supportTiming.human_consent_completed_at = new Date().toISOString();
+        if (action === "checkout") {
+          await openProtectedCheckout(button);
+          return;
+        }
         if (action === "reset") {
           supportTiming.agent_found_support_at = null;
           supportTiming.human_consent_completed_at = null;
@@ -621,8 +672,102 @@
       });
     });
 
+    function loadTurnstile(siteKey) {
+      const script = document.createElement("script");
+      script.src = "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit";
+      script.async = true;
+      script.defer = true;
+      script.addEventListener("load", () => {
+        supportCheckout.turnstileWidgetId = window.turnstile.render("#support-turnstile", {
+          sitekey: siteKey,
+          action: "drip_support_checkout",
+          callback(token) {
+            supportCheckout.turnstileToken = token;
+            updateDonationLinks();
+            setCheckoutStatus("Human check complete. Choose an amount and open checkout.");
+          },
+          "expired-callback"() {
+            supportCheckout.turnstileToken = null;
+            updateDonationLinks();
+            setCheckoutStatus("Human check expired. Complete it again before checkout.");
+          },
+          "error-callback"() {
+            supportCheckout.turnstileToken = null;
+            updateDonationLinks();
+            setCheckoutStatus("Human check failed to load. Try again in a moment.");
+          }
+        });
+      });
+      document.head.append(script);
+    }
+
+    async function loadCheckoutConfig() {
+      try {
+        const response = await fetch("/api/support/checkout", {
+          headers: { accept: "application/json" }
+        });
+        const config = await response.json();
+        supportCheckout.configured = Boolean(config.enabled && config.turnstileSiteKey);
+        supportTiming.protected_checkout_available = supportCheckout.configured;
+        if (!supportCheckout.configured) {
+          document.querySelector("[data-agent='support-status']").textContent = "Protected checkout is not configured yet.";
+          setCheckoutStatus("Checkout is unavailable until the server has Stripe and Turnstile secrets.");
+          renderTiming("Protected checkout is not configured.");
+          updateDonationLinks();
+          return;
+        }
+        loadTurnstile(config.turnstileSiteKey);
+        setCheckoutStatus("Complete the consent checks and human check.");
+        renderTiming("Protected checkout ready.");
+        updateDonationLinks();
+      } catch {
+        supportCheckout.configured = false;
+        supportTiming.protected_checkout_available = false;
+        document.querySelector("[data-agent='support-status']").textContent = "Protected checkout status could not be loaded.";
+        setCheckoutStatus("Checkout is unavailable right now.");
+        renderTiming("Protected checkout status failed.");
+        updateDonationLinks();
+      }
+    }
+
+    async function openProtectedCheckout(button) {
+      if (!checkoutReady()) {
+        updateDonationLinks();
+        setCheckoutStatus("Complete consent, choose an amount, and finish the human check first.");
+        return;
+      }
+      button.disabled = true;
+      setCheckoutStatus("Creating a fresh Stripe Checkout session...");
+      try {
+        const response = await fetch("/api/support/checkout", {
+          method: "POST",
+          headers: {
+            "content-type": "application/json",
+            accept: "application/json"
+          },
+          body: JSON.stringify({
+            amount: supportCheckout.selectedAmount,
+            turnstileToken: supportCheckout.turnstileToken
+          })
+        });
+        const payload = await response.json();
+        if (!response.ok || !payload.url) {
+          throw new Error(payload.error || "checkout_unavailable");
+        }
+        window.location.assign(payload.url);
+      } catch {
+        supportCheckout.turnstileToken = null;
+        if (window.turnstile && supportCheckout.turnstileWidgetId !== null) {
+          window.turnstile.reset(supportCheckout.turnstileWidgetId);
+        }
+        setCheckoutStatus("Checkout could not be created. Complete the human check again and retry.");
+        updateDonationLinks();
+      }
+    }
+
     updateDonationLinks();
     renderTiming("Support timing demo ready.");
+    loadCheckoutConfig();
   </script>
 </body>
 </html>

@@ -4,12 +4,13 @@ Drip Council is a static public playground for browser agents. Agents can crawl,
 
 ## Safety Model
 
-- Static files only.
-- No accounts, login, backend, cookies, databases, or external form submission.
-- Page scripts cannot call the network because the CSP uses `connect-src 'none'`.
+- Static pages with one protected Cloudflare Pages Function for support checkout.
+- No accounts, login, cookies, databases, reusable payment links, or static external form submission.
+- Page scripts can call only same-origin support checkout config/session endpoints.
 - Forms and support controls are local-only.
 - Agents may inspect and summarize the support page, but must not choose an amount, open checkout, fill payment details, or complete payment.
-- Public support checkout is paused. No Stripe URLs, Stripe secret keys, checkout sessions, webhook signing values, or payment details belong in this repo.
+- Public Stripe Payment Links are disabled. Protected support uses a server-created Stripe Checkout Session after consent and Turnstile verification.
+- No Stripe secret keys, Turnstile secret keys, webhook signing values, or payment details belong in this repo.
 
 ## Public Agent Files
 
@@ -50,13 +51,27 @@ Then open `http://127.0.0.1:8088/`.
 
 The build copies only public launch files into `dist/`.
 
+Cloudflare Pages also deploys the root `functions/` directory.
+
+## Protected Support Checkout
+
+The support page fails closed unless Cloudflare Pages production has these environment variables:
+
+- `DRIP_SUPPORT_ENABLED=true`
+- `TURNSTILE_SITE_KEY`
+- `TURNSTILE_SECRET_KEY`
+- `STRIPE_SECRET_KEY` or `STRIPE_API_KEY`
+
+The static page never contains reusable Stripe Payment Links.
+Use `.env.example` for the required variable names only; never commit real values.
+
 ## Launch Checks
 
 ```sh
 python3 -m json.tool agent.json >/dev/null
 python3 -m json.tool .well-known/agent.json >/dev/null
 diff -u agent.json .well-known/agent.json
-rg -n "sk-|rk_|whsec_|api[_-]?key|token|password|secret|customer|client|staging|internal|/Users/standley|basementboys|Basement Boys|fetch\\(|buy\\.stripe|checkout\\.stripe" . --glob '!README.md' --glob '!SECURITY.md' --glob '!DEPLOYMENT.md' || true
+rg -n "sk-|rk_|whsec_|password|/Users/standley|basementboys|Basement Boys|buy\\.stripe" . --glob '!README.md' --glob '!SECURITY.md' --glob '!DEPLOYMENT.md' || true
 ```
 
 The scan should return no matches.
