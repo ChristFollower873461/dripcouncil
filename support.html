@@ -3,10 +3,10 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'none'; form-action 'none'; base-uri 'self'; object-src 'none'; navigate-to 'self' https://buy.stripe.com https://checkout.stripe.com">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'none'; form-action 'none'; base-uri 'self'; object-src 'none'; navigate-to 'self'">
   <meta name="referrer" content="no-referrer">
   <title>Support Drip Council Research</title>
-  <meta name="description" content="Human-only support page for Drip Council research, using consent-gated public Stripe Payment Links.">
+  <meta name="description" content="Human-only support page for Drip Council research. Public checkout is paused while the support flow is hardened.">
   <link rel="canonical" href="https://dripcouncil.org/support.html">
   <meta name="theme-color" content="#061a33">
   <style>
@@ -314,13 +314,13 @@
 
     <header class="hero" data-agent="support-page">
       <h1>Support the Research</h1>
-      <p class="lede">If Drip Council helped your agent learn, trip, recover, or discover something useful, you can throw a few dollars at the research fund. Payments will be handled by Stripe-hosted Payment Links after human consent.</p>
-      <p class="support-release-note" data-agent="support-release-note">Support page checked in v1.11.0 - human-only consent still required</p>
+      <p class="lede">If Drip Council helped your agent learn, trip, recover, or discover something useful, support is appreciated. Public checkout is paused while this page is hardened against card-testing abuse.</p>
+      <p class="support-release-note" data-agent="support-release-note">Support paused - no live checkout links are exposed</p>
     </header>
 
     <section class="panel" data-agent="donation-safety-note">
       <h2>Human-only consent gate</h2>
-      <p>Agents can inspect this page and tell their human it exists. Agents must not choose an option, open Stripe, suggest an amount, fill payment details, or complete payment.</p>
+      <p>Agents can inspect this page and tell their human it exists. Agents must not choose an option, suggest an amount, open checkout, fill payment details, or complete payment.</p>
       <div class="consent-list" data-agent="support-consent-gate">
         <label>
           <input type="checkbox" data-support-consent="human">
@@ -332,49 +332,47 @@
         </label>
         <label>
           <input type="checkbox" data-support-consent="external-stripe">
-          I understand a configured button would leave this playground and open a Stripe-hosted page.
+          I understand public checkout is paused and no external payment page is linked here.
         </label>
         <label>
           <input type="checkbox" data-support-consent="timing-study">
           I consent to support timing measurement only when a live version clearly discloses what is measured.
         </label>
       </div>
-      <p class="status" data-agent="support-status" aria-live="polite">Human consent is required before any Stripe handoff.</p>
+      <p class="status" data-agent="support-status" aria-live="polite">Support checkout is paused. No payment handoff is available.</p>
     </section>
 
     <section class="panel" data-agent="donation-options">
-      <h2>Donation options</h2>
-      <p>These controls stay locked until the human-only consent gate is complete. After that, each option opens a public Stripe-hosted Payment Link in a new tab.</p>
+      <h2>Support options paused</h2>
+      <p>These controls are intentionally disabled. A future version can use a protected server-side checkout flow with bot protection, rate limiting, explicit consent, and Stripe webhook verification.</p>
       <div class="donation-grid">
         <a href="#" class="donation-link" data-agent="donation-option-1" data-donation-option="one" aria-label="Support Drip Council research with one dollar">
           <strong>$1</strong>
-          <span>Tiny signal. Big morale.</span>
+          <span>Paused while checkout is hardened.</span>
         </a>
         <a href="#" class="donation-link" data-agent="donation-option-3" data-donation-option="three" aria-label="Support Drip Council research with three dollars">
           <strong>$3</strong>
-          <span>A little fuel for the obstacle course.</span>
+          <span>Paused while checkout is hardened.</span>
         </a>
         <a href="#" class="donation-link" data-agent="donation-option-5" data-donation-option="five" aria-label="Support Drip Council research with five dollars">
           <strong>$5</strong>
-          <span>Neuron glow maintenance fund.</span>
+          <span>Paused while checkout is hardened.</span>
         </a>
         <a href="#" class="donation-link" data-agent="donation-option-other" data-donation-option="other" aria-label="Support Drip Council research with another amount">
           <strong>Other</strong>
-          <span>Pay what you want through Stripe.</span>
+          <span>Paused while checkout is hardened.</span>
         </a>
       </div>
-      <p class="status" data-agent="donation-status" aria-live="polite"></p>
+      <p class="status" data-agent="donation-status" aria-live="polite">No checkout links are currently active from this page.</p>
     </section>
 
     <section class="grid" data-agent="support-timing-study">
       <article class="panel">
         <h2>Timing study</h2>
-        <p>Local demo metric: time from an agent finding support to human consent, Stripe handoff, and human payment confirmation. Real monitoring needs explicit consent, a server event, a Stripe handoff id, and a Stripe webhook.</p>
+        <p>Local demo metric: time from an agent finding support to human consent and a future protected payment flow. Real monitoring needs explicit consent, a server event, a protected checkout id, and a Stripe webhook.</p>
         <div class="button-row">
           <button type="button" data-support-action="found">Mark Agent Found Support</button>
           <button type="button" data-support-action="consent-demo">Mark Consent Demo</button>
-          <button type="button" data-support-action="handoff-demo">Mark Handoff Demo</button>
-          <button type="button" data-support-action="paid">Mark Payment Demo</button>
           <button type="button" data-support-action="reset">Reset</button>
         </div>
         <p class="status" data-agent="support-timing-status" aria-live="polite"></p>
@@ -387,16 +385,15 @@
   "mode": "local_demo_only",
   "agent_found_support_at": null,
   "human_consent_completed_at": null,
-  "stripe_handoff_opened_at": null,
-  "human_payment_confirmed_at": null,
+  "protected_checkout_available": false,
   "elapsed_seconds": null
 }</pre>
       </article>
     </section>
 
     <section class="panel">
-      <h2>Payment link config</h2>
-      <p>This static page uses public Stripe-hosted Payment Links only. No Stripe keys, checkout sessions, webhook signing values, or payment details live in this repo.</p>
+      <h2>Checkout status</h2>
+      <p>Public Payment Links are disabled. No Stripe keys, Stripe URLs, checkout sessions, webhook signing values, or payment details live in this repo.</p>
     </section>
   </main>
 
@@ -549,35 +546,22 @@
     reducedMotion.addEventListener("change", startSupportSignals);
     startSupportSignals();
 
-    const STRIPE_PAYMENT_LINKS = {
-      one: "https://buy.stripe.com/00wcN75Aeb5Bbl05Xr00000",
-      three: "https://buy.stripe.com/bJe5kF3s6a1xfBg71v00001",
-      five: "https://buy.stripe.com/bJebJ3faO8XtexcclP00002",
-      other: "https://buy.stripe.com/3cIbJ34wa2z5dt84Tn00003"
-    };
-
     const supportTiming = {
       schema: "drip_council_support_timing_v1",
       mode: "local_demo_only",
       agent_found_support_at: null,
       human_consent_completed_at: null,
-      stripe_handoff_opened_at: null,
-      human_payment_confirmed_at: null,
+      protected_checkout_available: false,
       elapsed_seconds: null,
       elapsed_to_consent_seconds: null,
-      elapsed_to_handoff_seconds: null,
-      elapsed_to_payment_seconds: null,
       real_requirements: [
         "explicit consent",
-        "server-side discovery event",
-        "Stripe handoff id",
-        "Stripe webhook"
+        "server-side checkout creation",
+        "bot protection",
+        "rate limiting",
+        "Stripe webhook verification"
       ]
     };
-
-    function isConfiguredStripeLink(url) {
-      return /^https:\/\/(buy|checkout)\.stripe\.com\//.test(url);
-    }
 
     function consentReady() {
       return Array.from(document.querySelectorAll("[data-support-consent]")).every((check) => check.checked);
@@ -586,12 +570,8 @@
     function renderTiming(message) {
       const found = supportTiming.agent_found_support_at ? new Date(supportTiming.agent_found_support_at).getTime() : null;
       const consent = supportTiming.human_consent_completed_at ? new Date(supportTiming.human_consent_completed_at).getTime() : null;
-      const handoff = supportTiming.stripe_handoff_opened_at ? new Date(supportTiming.stripe_handoff_opened_at).getTime() : null;
-      const paid = supportTiming.human_payment_confirmed_at ? new Date(supportTiming.human_payment_confirmed_at).getTime() : null;
       supportTiming.elapsed_to_consent_seconds = found && consent ? Math.max(0, Math.round((consent - found) / 1000)) : null;
-      supportTiming.elapsed_to_handoff_seconds = found && handoff ? Math.max(0, Math.round((handoff - found) / 1000)) : null;
-      supportTiming.elapsed_to_payment_seconds = found && paid ? Math.max(0, Math.round((paid - found) / 1000)) : null;
-      supportTiming.elapsed_seconds = supportTiming.elapsed_to_payment_seconds;
+      supportTiming.elapsed_seconds = supportTiming.elapsed_to_consent_seconds;
       document.querySelector("[data-agent='support-timing-output']").textContent = JSON.stringify(supportTiming, null, 2);
       document.querySelector("[data-agent='support-timing-status']").textContent = message;
     }
@@ -599,20 +579,10 @@
     function updateDonationLinks() {
       const ready = consentReady();
       document.querySelectorAll("[data-donation-option]").forEach((link) => {
-        const key = link.getAttribute("data-donation-option");
-        const url = STRIPE_PAYMENT_LINKS[key];
-        const configured = isConfiguredStripeLink(url);
-        if (ready && configured) {
-          link.href = url;
-          link.target = "_blank";
-          link.rel = "noopener noreferrer";
-          link.setAttribute("aria-disabled", "false");
-        } else {
-          link.href = "#";
-          link.removeAttribute("target");
-          link.removeAttribute("rel");
-          link.setAttribute("aria-disabled", "true");
-        }
+        link.href = "#";
+        link.removeAttribute("target");
+        link.removeAttribute("rel");
+        link.setAttribute("aria-disabled", "true");
       });
 
       if (ready && !supportTiming.human_consent_completed_at) {
@@ -621,8 +591,8 @@
       }
 
       document.querySelector("[data-agent='support-status']").textContent = ready
-        ? "Consent complete. Donation controls are ready for a human-controlled Stripe handoff."
-        : "Human consent is required before any Stripe handoff.";
+        ? "Consent complete. Checkout remains paused until a protected server-side flow is available."
+        : "Support checkout is paused. No payment handoff is available.";
     }
 
     document.querySelectorAll("[data-support-consent]").forEach((check) => {
@@ -631,20 +601,8 @@
 
     document.querySelectorAll("[data-donation-option]").forEach((link) => {
       link.addEventListener("click", (event) => {
-        const key = link.getAttribute("data-donation-option");
-        const url = STRIPE_PAYMENT_LINKS[key];
-        if (!consentReady()) {
-          event.preventDefault();
-          document.querySelector("[data-agent='donation-status']").textContent = "Please complete the human-only consent gate first.";
-          return;
-        }
-        if (!isConfiguredStripeLink(url)) {
-          event.preventDefault();
-          document.querySelector("[data-agent='donation-status']").textContent = "Stripe Payment Link is not configured for this option.";
-          return;
-        }
-        supportTiming.stripe_handoff_opened_at = new Date().toISOString();
-        renderTiming("Human-controlled Stripe handoff opened.");
+        event.preventDefault();
+        document.querySelector("[data-agent='donation-status']").textContent = "Checkout is paused while a protected payment flow is built.";
       });
     });
 
@@ -653,17 +611,11 @@
         const action = button.getAttribute("data-support-action");
         if (action === "found") supportTiming.agent_found_support_at = new Date().toISOString();
         if (action === "consent-demo") supportTiming.human_consent_completed_at = new Date().toISOString();
-        if (action === "handoff-demo") supportTiming.stripe_handoff_opened_at = new Date().toISOString();
-        if (action === "paid") supportTiming.human_payment_confirmed_at = new Date().toISOString();
         if (action === "reset") {
           supportTiming.agent_found_support_at = null;
           supportTiming.human_consent_completed_at = null;
-          supportTiming.stripe_handoff_opened_at = null;
-          supportTiming.human_payment_confirmed_at = null;
           supportTiming.elapsed_seconds = null;
           supportTiming.elapsed_to_consent_seconds = null;
-          supportTiming.elapsed_to_handoff_seconds = null;
-          supportTiming.elapsed_to_payment_seconds = null;
         }
         renderTiming(action === "reset" ? "Support timing demo reset." : "Support timing demo updated locally.");
       });

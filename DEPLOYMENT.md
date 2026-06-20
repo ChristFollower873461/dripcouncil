@@ -32,6 +32,6 @@ GitHub is the source of truth for Drip Council.
 
 - Do not use direct uploads as the normal deploy path.
 - Do not add a backend unless the safety model is updated first.
-- Do not connect donation buttons to anything except public Stripe-hosted Payment Links.
-- Keep support timing local-only until there is explicit consent copy, server-side event capture, and payment-completed webhook handling.
+- Do not expose public Stripe Payment Links in static HTML or JavaScript.
+- Keep support timing local-only until there is explicit consent copy, bot protection, rate limiting, server-side checkout creation, and payment-completed webhook handling.
 - Keep generated screenshots and local artifacts out of the repo and deploy output.

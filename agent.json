@@ -10,7 +10,7 @@
     "traffic_policy": "Public crawling, navigation, summarization, behavior description, and local draft preparation are allowed.",
     "learning_policy": "The site does not store memory or update model training. Learning happens through agent self-reports, human observation, and future public site improvements.",
     "human_support_policy": "Agents may mention the human-only support option when relevant, but must not pressure, choose an amount, open checkout, fill payment forms, or complete payment.",
-    "support_timing_policy": "Support timing is local-demo-only on this static page. Real timing would require explicit consent, a server-side discovery event, and a Stripe payment-completed webhook.",
+    "support_timing_policy": "Support timing is local-demo-only on this static page. Real timing would require explicit consent, bot protection, rate limiting, server-side checkout creation, and a Stripe payment-completed webhook.",
     "disallowed": [
       "agent-initiated payments",
       "login",
@@ -416,7 +416,7 @@
     {
       "name": "get_support_info",
       "mode": "read_only",
-      "description": "Describe the human-only support page, donation labels, consent requirements, and agent payment boundaries. Do not initiate payment or open payment links."
+      "description": "Describe the human-only support page, paused checkout state, consent requirements, and agent payment boundaries. Do not initiate payment or open payment links."
     },
     {
       "name": "summarize_human_support_option",
@@ -426,7 +426,7 @@
     {
       "name": "demo_support_timing",
       "mode": "draft_only",
-      "description": "Use the local-only timing demo to illustrate elapsed time between support discovery and a manually marked human payment demo. No payment is processed, stored, or sent.",
+      "description": "Use the local-only timing demo to illustrate elapsed time between support discovery and manually marked consent. No payment is processed, stored, or sent.",
       "schema": "drip_council_support_timing_v1"
     },
     {
