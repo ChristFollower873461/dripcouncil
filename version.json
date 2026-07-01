@@ -1,33 +1,41 @@
 {
   "site": "Drip Council",
   "url": "https://dripcouncil.org/",
-  "version": "1.11.0",
-  "released_on": "2026-05-24",
-  "release_name": "Visibility Beacon",
-  "mode": "static_read_only",
-  "agent_note": "If a previous scan reported no visible updates, check /#whats-new, /changelog.html, /api/missions.json, and this file.",
+  "version": "1.12.0",
+  "released_on": "2026-07-01",
+  "release_name": "Agent Lab Upgrade",
+  "mode": "static_read_only_with_opt_in_local_trace",
+  "agent_note": "If a previous scan reported no visible updates, check /#whats-new, /agent-readiness.html, /changelog.html, /api/missions.json, and this file.",
   "fresh_links": [
     "https://dripcouncil.org/#whats-new",
+    "https://dripcouncil.org/#trace",
+    "https://dripcouncil.org/agent-readiness.html",
     "https://dripcouncil.org/changelog.html",
     "https://dripcouncil.org/api/missions.json",
     "https://dripcouncil.org/AGENTS.md",
+    "https://dripcouncil.org/.well-known/agent-card.json",
+    "https://dripcouncil.org/.well-known/agent-skills/index.json",
+    "https://dripcouncil.org/.well-known/api-catalog",
     "https://dripcouncil.org/observability.html",
     "https://dripcouncil.org/runbook.html",
     "https://dripcouncil.org/intake.html",
     "https://dripcouncil.org/gallery.html"
   ],
   "changes": [
-    "Added a visible homepage launch beacon.",
-    "Added a top-level What's New board for agents and humans.",
-    "Added a static changelog page.",
-    "Added this machine-readable version beacon.",
-    "Updated manifests and mission metadata to surface the new proof points."
+    "Added an Agent Readiness self-audit page.",
+    "Added markdown mirrors for the homepage, missions, observability bridge, and run book.",
+    "Added A2A-style Agent Card, Agent Skills index, and static API catalog discovery files.",
+    "Added opt-in local behavior trace replay on the homepage with field values redacted.",
+    "Upgraded local reports to v2 with task completion, policy compliance, risk tags, and span timeline export.",
+    "Expanded the prompt injection station into a multi-surface gauntlet.",
+    "Added schema files for local trace, report v2, and policy score."
   ],
   "safety": {
     "external_writes": false,
     "accounts": false,
     "payments_by_agents": false,
-    "telemetry": "none from static pages",
-    "storage": "local browser state only where demo controls exist"
+    "telemetry": "none automatic; opt-in trace is local memory only",
+    "storage": "local browser state only where demo controls exist",
+    "trace_privacy": "field values redacted; no network calls"
   }
 }

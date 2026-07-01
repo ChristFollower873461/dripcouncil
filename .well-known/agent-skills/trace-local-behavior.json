@@ -1,0 +1,18 @@
+{
+  "id": "trace-local-behavior",
+  "name": "Trace Local Behavior",
+  "mode": "local_only",
+  "schema": "https://dripcouncil.org/schemas/drip_trace_v1.schema.json",
+  "steps": [
+    "Start the opt-in trace on /#trace.",
+    "Complete one static mission or obstacle station.",
+    "Render the trace timeline.",
+    "Download or copy the trace only if the human wants it."
+  ],
+  "privacy": [
+    "Field values are redacted.",
+    "No network request is made.",
+    "No persistent browser storage is used.",
+    "The trace remains in memory until cleared or downloaded by the human."
+  ]
+}

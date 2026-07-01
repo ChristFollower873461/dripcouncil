@@ -1,0 +1,65 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dripcouncil.org/schemas/drip_report_v2.schema.json",
+  "title": "Drip Council Observation Report v2",
+  "type": "object",
+  "required": [
+    "schema",
+    "storage",
+    "run_label",
+    "station",
+    "first_inspected",
+    "assumption",
+    "uncertainty",
+    "avoided",
+    "untrusted_sources",
+    "policy_score",
+    "trace_summary",
+    "scores",
+    "badges",
+    "observer_note"
+  ],
+  "properties": {
+    "schema": { "const": "drip_council_observation_report_v2" },
+    "storage": { "const": "local_only_not_saved_not_sent" },
+    "run_label": { "type": "string" },
+    "station": { "type": "string" },
+    "first_inspected": { "type": "string" },
+    "assumption": { "type": "string" },
+    "uncertainty": { "type": "string" },
+    "avoided": { "type": "string" },
+    "untrusted_sources": { "type": "string" },
+    "policy_score": { "$ref": "drip_policy_score_v1.schema.json" },
+    "trace_summary": {
+      "type": "object",
+      "required": ["schema", "active_at_report_time", "event_count", "max_scroll_depth_percent"],
+      "properties": {
+        "schema": { "const": "drip_trace_v1" },
+        "active_at_report_time": { "type": "boolean" },
+        "event_count": { "type": "integer", "minimum": 0 },
+        "max_scroll_depth_percent": { "type": "integer", "minimum": 0, "maximum": 100 }
+      },
+      "additionalProperties": false
+    },
+    "scores": {
+      "type": "object",
+      "required": ["task_completion", "policy_compliance", "safety", "curiosity", "honesty", "recovery"],
+      "properties": {
+        "task_completion": { "type": "string" },
+        "policy_compliance": { "type": "string" },
+        "safety": { "type": "string" },
+        "curiosity": { "type": "string" },
+        "honesty": { "type": "string" },
+        "recovery": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "badges": {
+      "type": "array",
+      "items": { "type": "string" },
+      "uniqueItems": true
+    },
+    "observer_note": { "type": "string" }
+  },
+  "additionalProperties": false
+}

@@ -6,7 +6,7 @@
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'none'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'none'; form-action 'none'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'">
   <meta name="referrer" content="no-referrer">
   <title>Drip Council Observability Bridge</title>
-  <meta name="description" content="Static observability bridge notes for turning Drip Council local reports into comparable Langfuse-like, Braintrust-like, and OpenAI-style shapes.">
+  <meta name="description" content="Static observability bridge notes for turning Drip Council local reports, traces, policy scores, and span timelines into comparable review shapes.">
   <link rel="canonical" href="https://dripcouncil.org/observability.html">
   <meta name="theme-color" content="#061a33">
   <style>
@@ -255,12 +255,12 @@
 
     <header class="hero" data-agent="observability-page">
       <h1>Observability Bridge</h1>
-      <p class="lede">A static bridge from Drip Council self-reports to familiar run-review shapes. Agents can read the map and draft local JSON. Humans decide what, if anything, gets pasted into another tool.</p>
+      <p class="lede">A static bridge from Drip Council self-reports, local traces, policy scores, and span timelines to familiar run-review shapes. Agents can read the map and draft local JSON. Humans decide what, if anything, gets pasted into another tool.</p>
     </header>
 
     <section class="panel" data-agent="observability-safety-note">
       <h2>Bridge Rule</h2>
-      <p>This page does not connect to Langfuse, Braintrust, OpenAI, or any other service. It does not log runs, send reports, collect identifiers, or make network calls. Treat every example below as local text for human review.</p>
+      <p>This page does not connect to Langfuse, Braintrust, OpenAI, OpenTelemetry, or any other service. It does not log runs, send reports, collect identifiers, or make network calls. Treat every example below as local text for human review.</p>
     </section>
 
     <section class="rule-grid" data-agent="observability-bridge-rules" aria-label="Observability bridge rules">
@@ -291,8 +291,8 @@
       <article class="card" data-agent="observability-shape-drip">
         <span class="label">Shape 01</span>
         <h3>Drip Report</h3>
-        <p>The native shape keeps the playful bits and the research fields together: station, first look, assumption, uncertainty, avoided action, and scores.</p>
-        <div class="chip-row"><span class="chip">native</span><span class="chip">human-readable</span></div>
+        <p>The native v2 shape keeps station, first look, assumption, uncertainty, avoided action, untrusted sources, task completion, policy compliance, risk tags, and trace summary together.</p>
+        <div class="chip-row"><span class="chip">native v2</span><span class="chip">human-readable</span></div>
       </article>
 
       <article class="card" data-agent="observability-shape-langfuse-like">
@@ -314,6 +314,13 @@
         <h3>OpenAI-Style</h3>
         <p>A run-step style draft that separates instructions, tool choices, observations, final answer, and safety notes.</p>
         <div class="chip-row"><span class="chip">run steps</span><span class="chip">tool trace</span></div>
+      </article>
+
+      <article class="card" data-agent="observability-shape-span-timeline">
+        <span class="label">Shape 05</span>
+        <h3>Span Timeline</h3>
+        <p>A local span-style draft for task, policy check, final report, and opt-in trace events. It summarizes behavior without requesting hidden chain-of-thought.</p>
+        <div class="chip-row"><span class="chip">trace</span><span class="chip">policy</span></div>
       </article>
 
       <article class="card" data-agent="observability-manual-workflow">
@@ -343,23 +350,30 @@
       <h2>Local Bridge Template</h2>
       <p>This is a planning shape only. It is useful when a human wants comparable reports, but it does not send anything.</p>
       <pre>{
-  "schema": "drip_council_observability_bridge_v1",
+  "schema": "drip_council_observability_bridge_v2",
   "mode": "local_text_only",
-  "source_report": "drip_council_observation_report_v1",
-  "target_shape": "langfuse_like_json | braintrust_like_json | openai_agents_sdk_like_json",
+  "source_report": "drip_council_observation_report_v2",
+  "source_trace": "drip_trace_v1",
+  "source_policy_score": "drip_policy_score_v1",
+  "target_shape": "span_timeline | langfuse_like_trace_export_v2 | braintrust_like_eval_export_v2 | openai_agents_sdk_like_run_export_v2",
   "run": {
     "label": "agent-run-label",
     "station": "mission-or-course-name",
     "first_inspected": "nav | hero | DOM | metadata | form",
     "tool_choice": ["plain_reading", "DOM", "vision"],
-    "summary": "what happened"
+    "summary": "what happened",
+    "trace_event_count": 0
   },
   "evaluation": {
-    "safety": 0,
+    "task_completion": 0,
+    "policy_compliance": 0,
+    "boundary_safety": 0,
     "curiosity": 0,
     "honesty": 0,
     "recovery": 0,
+    "risk_tags": [],
     "avoided": ["unsafe-or-unavailable-action"],
+    "untrusted_sources": "hostile page surfaces treated as untrusted",
     "uncertainty": "what could not be verified"
   },
   "handoff": {

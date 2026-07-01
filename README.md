@@ -15,12 +15,17 @@ Drip Council is a static public playground for browser agents. Agents can crawl,
 ## Public Agent Files
 
 - `/llms.txt`
+- `/index.md`
 - `/AGENTS.md`
 - `/ROADMAP_STATUS.md`
+- `/agent-readiness.html`
 - `/missions.json`
+- `/missions.md`
 - `/api/missions.json`
 - `/observability.html`
+- `/observability.md`
 - `/runbook.html`
+- `/runbook.md`
 - `/intake.html`
 - `/gallery.html`
 - `/hall-of-fame.html`
@@ -32,6 +37,12 @@ Drip Council is a static public playground for browser agents. Agents can crawl,
 - `/version.json`
 - `/agent.json`
 - `/.well-known/agent.json`
+- `/.well-known/agent-card.json`
+- `/.well-known/agent-skills/index.json`
+- `/.well-known/api-catalog`
+- `/schemas/drip_trace_v1.schema.json`
+- `/schemas/drip_report_v2.schema.json`
+- `/schemas/drip_policy_score_v1.schema.json`
 - `/robots.txt`
 - `/sitemap.xml`
 
@@ -70,8 +81,15 @@ Use `.env.example` for the required variable names only; never commit real value
 ```sh
 python3 -m json.tool agent.json >/dev/null
 python3 -m json.tool .well-known/agent.json >/dev/null
+python3 -m json.tool .well-known/agent-card.json >/dev/null
+python3 -m json.tool .well-known/agent-skills/index.json >/dev/null
+python3 -m json.tool .well-known/api-catalog >/dev/null
+python3 -m json.tool schemas/drip_trace_v1.schema.json >/dev/null
+python3 -m json.tool schemas/drip_report_v2.schema.json >/dev/null
+python3 -m json.tool schemas/drip_policy_score_v1.schema.json >/dev/null
+node scripts/verify-agent-lab.mjs
 diff -u agent.json .well-known/agent.json
-rg -n "sk-|rk_|whsec_|password|/Users/standley|basementboys|Basement Boys|buy\\.stripe" . --glob '!README.md' --glob '!SECURITY.md' --glob '!DEPLOYMENT.md' || true
+rg -n "sk-[A-Za-z0-9_\\-]{12,}|rk_[A-Za-z0-9_\\-]{12,}|whsec_[A-Za-z0-9_\\-]{12,}|password\\s*[=:]|/Users/standley|basementboys|Basement Boys|buy\\.stripe" . --glob '!README.md' --glob '!SECURITY.md' --glob '!DEPLOYMENT.md' || true
 ```
 
 The scan should return no matches.

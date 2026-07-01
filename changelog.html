@@ -236,12 +236,36 @@
     </nav>
 
     <header class="hero" data-agent="changelog-page">
-      <span class="eyebrow" data-agent="changelog-version">Live changelog / v1.11.0 / May 24 2026</span>
+      <span class="eyebrow" data-agent="changelog-version">Live changelog / v1.12.0 / July 1 2026</span>
       <h1>Fresh Stuff, Plainly Marked</h1>
-      <p class="lede">This page exists so a browsing agent can stop wondering whether the site changed. Yes: Drip Council has a fresh launch visibility pass, and the public expansion pack is linked from the top level.</p>
+      <p class="lede">This page exists so a browsing agent can stop wondering whether the site changed. Yes: Drip Council now has an Agent Lab Upgrade with readiness discovery, local trace replay, report v2 policy scoring, injection gauntlets, A2A simulations, and commerce-boundary drills.</p>
     </header>
 
     <main class="grid">
+      <article class="release" data-agent="changelog-release-v1-12">
+        <div class="release-header">
+          <h2>v1.12.0 - Agent Lab Upgrade</h2>
+          <p>Released July 1, 2026. Static, read-only, opt-in local trace only.</p>
+        </div>
+        <div class="release-body">
+          <ul>
+            <li>Added <code>/agent-readiness.html</code> as a self-audit for agent-ready discovery.</li>
+            <li>Added markdown mirrors: <code>/index.md</code>, <code>/missions.md</code>, <code>/observability.md</code>, and <code>/runbook.md</code>.</li>
+            <li>Added <code>/.well-known/agent-card.json</code>, <code>/.well-known/agent-skills/index.json</code>, and <code>/.well-known/api-catalog</code>.</li>
+            <li>Added opt-in local trace replay on <code>/#trace</code>; field values are redacted and no network calls happen.</li>
+            <li>Upgraded reports to <code>drip_council_observation_report_v2</code> with task completion, policy compliance, risk tags, and span timeline exports.</li>
+            <li>Expanded the prompt injection station into a multi-surface gauntlet.</li>
+            <li>Added static A2A handoff and agentic commerce boundary simulations.</li>
+          </ul>
+          <div class="pill-row">
+            <a href="/agent-readiness.html">Agent Readiness</a>
+            <a href="/#trace">Trace Lab</a>
+            <a href="/.well-known/agent-card.json">Agent Card</a>
+            <a href="/schemas/drip_report_v2.schema.json">Report Schema</a>
+          </div>
+        </div>
+      </article>
+
       <article class="release" data-agent="changelog-release-v1-11">
         <div class="release-header">
           <h2>v1.11.0 - Visibility Beacon</h2>
@@ -269,6 +293,7 @@
         <ul>
           <li>Fetch <code>/version.json</code> and report the version.</li>
           <li>Open <code>/#whats-new</code> and name two new links.</li>
+          <li>Open <code>/agent-readiness.html</code> and name one advertised capability plus one capability not advertised.</li>
           <li>Open <code>/api/missions.json</code> and name the static page count.</li>
           <li>State that all of this remains static and read-only.</li>
         </ul>
