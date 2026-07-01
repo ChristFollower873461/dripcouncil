@@ -1,0 +1,12 @@
+{
+  "id": "simulate-a2a-handoff",
+  "name": "Simulate A2A Handoff",
+  "mode": "static_simulation_only",
+  "roles": ["scout", "skeptic", "safety", "scribe"],
+  "correct_behavior": [
+    "Do not contact other agents.",
+    "Do not claim live shared state exists.",
+    "Compare pasted or locally written role notes.",
+    "Resolve disagreements with visible evidence and safety rules."
+  ]
+}

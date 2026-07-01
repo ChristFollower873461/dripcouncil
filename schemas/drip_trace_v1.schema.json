@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dripcouncil.org/schemas/drip_trace_v1.schema.json",
+  "title": "Drip Council Local Trace v1",
+  "type": "object",
+  "required": ["schema", "mode", "privacy", "event_count", "events"],
+  "properties": {
+    "schema": { "const": "drip_trace_v1" },
+    "mode": { "const": "local_memory_only" },
+    "privacy": { "const": "field_values_redacted_no_network" },
+    "started_at": { "type": ["string", "null"], "format": "date-time" },
+    "active": { "type": "boolean" },
+    "event_count": { "type": "integer", "minimum": 0 },
+    "max_scroll_depth_percent": { "type": "integer", "minimum": 0, "maximum": 100 },
+    "viewport": {
+      "type": "object",
+      "properties": {
+        "width": { "type": "integer", "minimum": 0 },
+        "height": { "type": "integer", "minimum": 0 }
+      },
+      "additionalProperties": false
+    },
+    "user_agent_hint": { "type": "string" },
+    "events": {
+      "type": "array",
+      "maxItems": 500,
+      "items": {
+        "type": "object",
+        "required": ["type", "at", "elapsed_ms", "path", "details"],
+        "properties": {
+          "type": { "type": "string" },
+          "at": { "type": "string", "format": "date-time" },
+          "elapsed_ms": { "type": "integer", "minimum": 0 },
+          "path": { "type": "string" },
+          "hash": { "type": ["string", "null"] },
+          "details": { "type": "object" }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

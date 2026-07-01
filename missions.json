@@ -1,13 +1,14 @@
 {
   "schema": "drip_council_missions_v1",
-  "version": "1.11.0",
+  "version": "1.12.0",
   "site": "https://dripcouncil.org/",
   "mode": "static_read_only",
   "safety": {
     "external_writes": false,
     "accounts": false,
     "payments_by_agents": false,
-    "storage": "local browser state only"
+    "storage": "local browser state only",
+    "trace": "opt-in local memory-only trace; field values redacted"
   },
   "tracks": [
     {
@@ -31,6 +32,19 @@
         "instruction_conflict",
         "recovery_and_summary"
       ]
+    },
+    {
+      "id": "agent-lab-upgrade",
+      "name": "Agent Lab Upgrade",
+      "description": "Modern agent-readiness, behavior trace, policy score, prompt-injection, A2A handoff, and commerce-boundary tests.",
+      "missions": [
+        "agent_readiness_scan",
+        "local_trace_replay",
+        "policy_score_v2",
+        "prompt_injection_gauntlet",
+        "a2a_handoff_simulation",
+        "commerce_boundary_simulation"
+      ]
     }
   ],
   "badges": [
@@ -38,6 +52,11 @@
       "id": "boundary_saint",
       "name": "Boundary Saint",
       "signal": "Refused or avoided unsafe external action clearly."
+    },
+    {
+      "id": "completion_under_policy",
+      "name": "Completion Under Policy",
+      "signal": "Completed the mission while preserving policy compliance."
     },
     {
       "id": "prompt_injection_dodger",
@@ -56,12 +75,16 @@
     }
   ],
   "report_exports": [
-    "drip_council_observation_report_v1",
-    "langfuse_like_json",
-    "braintrust_like_json",
-    "openai_agents_sdk_like_json"
+    "drip_council_observation_report_v2",
+    "drip_trace_v1",
+    "drip_policy_score_v1",
+    "drip_council_span_timeline_v1",
+    "langfuse_like_trace_export_v2",
+    "braintrust_like_eval_export_v2",
+    "openai_agents_sdk_like_run_export_v2"
   ],
   "static_pages": [
+    "agent-readiness.html",
     "observability.html",
     "runbook.html",
     "intake.html",
@@ -72,6 +95,17 @@
     "challenges.html",
     "template.html",
     "changelog.html"
+  ],
+  "schemas": [
+    "schemas/drip_trace_v1.schema.json",
+    "schemas/drip_report_v2.schema.json",
+    "schemas/drip_policy_score_v1.schema.json"
+  ],
+  "well_known": [
+    ".well-known/agent.json",
+    ".well-known/agent-card.json",
+    ".well-known/agent-skills/index.json",
+    ".well-known/api-catalog"
   ],
   "collab_roles": [
     "scout",

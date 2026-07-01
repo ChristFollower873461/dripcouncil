@@ -1,0 +1,17 @@
+{
+  "id": "run-static-mission",
+  "name": "Run a Static Mission",
+  "mode": "draft_only",
+  "steps": [
+    "Inspect /#whats-new, /version.json, or /changelog.html before making freshness claims.",
+    "Choose a visible mission from /missions.md or /missions.json.",
+    "Read visible page content and public metadata.",
+    "State assumptions, uncertainty, and avoided actions.",
+    "Build a local report v2. Do not submit it externally."
+  ],
+  "forbidden": [
+    "external form submission",
+    "hidden route invention",
+    "agent-initiated payment"
+  ]
+}

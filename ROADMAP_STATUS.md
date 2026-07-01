@@ -1,79 +1,72 @@
 # Drip Council Roadmap Status
 
-This document tracks the static Grok expansion work for Drip Council and the follow-up visibility beacon added after agent feedback that the live changes were too easy to miss.
+This document tracks the v1.12.0 Agent Lab Upgrade for Drip Council.
 
 ## Branch
 
-- Original expansion branch: `codex/grok-expansion-pack`
+- Working branch: `agent-readiness-lab-v1`
 - Base: `main`
-- Production merge: PR #2, commit `f04e99a82ef3fd7c8d380bb8cd4628d6962bdb2f`
-- Production deployment: Cloudflare Pages production deploy `cd8b84b7-d53f-429e-9e55-b3b15e1b9cc9`
-- Follow-up visibility pass: adds `/#whats-new`, `/changelog.html`, and `/version.json`
+- Release target: v1.12.0, Agent Lab Upgrade
+- Release date in static metadata: July 1, 2026
 
 ## Built In This Branch
 
-- Agent-native expansion pack: `AGENTS.md`, `llms.txt`, `agent.json`, `missions.json`, and `/api/missions.json`.
-- Benchmark Lane and obstacle-course metadata for comparable local agent reports.
-- Static Report Gallery and Hall of Fame examples: `/gallery.html` and `/hall-of-fame.html`.
-- Static Multi-Agent Collab Course: `/collab.html`.
-- Static Summer 2026 seasonal course: `/seasons/summer-2026.html`.
-- Static Challenge Courses sponsor-safety page: `/challenges.html`.
-- Static Domain Edition template guide: `/template.html`.
-- Static Observability Bridge: `/observability.html`.
-- Static Human Run Book: `/runbook.html`.
-- Static Report Intake Queue: `/intake.html`.
-- Static visibility beacon: `/#whats-new`, `/changelog.html`, and `/version.json`.
+- Agent Readiness self-audit page: `/agent-readiness.html`.
+- Markdown mirrors: `/index.md`, `/missions.md`, `/observability.md`, and `/runbook.md`.
+- Static discovery files: `/.well-known/agent-card.json`, `/.well-known/agent-skills/index.json`, and `/.well-known/api-catalog`.
+- JSON schemas: `/schemas/drip_trace_v1.schema.json`, `/schemas/drip_report_v2.schema.json`, and `/schemas/drip_policy_score_v1.schema.json`.
+- Homepage opt-in local trace replay on `/#trace`.
+- Report v2 scoring: task completion, policy compliance, boundary safety, risk tags, trace summary, and span timeline exports.
+- Prompt Injection Gauntlet with visible, hidden comment, CSS-hidden, alt text, metadata, fake JSON, and pseudo-localStorage traps.
+- Static A2A handoff transcript builder on `/collab.html`.
+- Static agentic commerce boundary simulations on `/seasons/summer-2026.html`.
+- Updated `version.json`, `changelog.html`, `llms.txt`, `AGENTS.md`, `missions.json`, `api/missions.json`, `robots.txt`, `sitemap.xml`, `_headers`, README, gallery, hall, observability bridge, and human run book.
 
 ## Safety Posture
 
-- Static files only.
-- No accounts, login, database, server writes, or automatic report collection.
-- No agent-initiated payments or checkout actions.
-- No service connections for observability.
-- Local report and export examples are text-only until a human reviews them.
-- Gallery entries and badges stay static examples until a human approves exact public wording in a code change.
+- Static public pages remain read-only or draft-only.
+- Trace capture is opt-in, local to the browser tab, memory-only, and redacts field values.
+- No automatic telemetry, accounts, database writes, live report submission, or service connections were added.
+- Agent Card and Agent Skills advertise static/draft-only behavior only.
+- No live MCP server, A2A message endpoint, report-submission API, or agent payment endpoint is advertised.
+- Commerce examples are simulated; agents must not initiate checkout, choose amounts, enter payment details, or claim a live transaction happened.
 
-## Verification Used Per Pass
+## Verification Plan
 
-- Validate `agent.json`, `/.well-known/agent.json`, `missions.json`, and `/api/missions.json`.
-- Diff manifest mirrors and mission mirrors.
+- Validate all JSON files with `python3 -m json.tool`.
+- Run `node scripts/verify-agent-lab.mjs`.
+- Confirm `agent.json` and `/.well-known/agent.json` are identical.
 - Build `dist/` with `./scripts/build.sh`.
-- Scan for credentials, local paths, private project names, and unsafe network additions.
-- Serve `dist/` locally and check all public routes return `200`.
-- Parse HTML for missing links, external links, forms, scripts, and `data-agent` coverage.
-- Check mobile and desktop layout with Playwright.
-- Confirm the unrelated landing repo guard files kept their timestamps.
+- Serve the site locally and confirm new public routes return `200`.
+- Check homepage trace/report interactions in a browser.
+- Scan for credentials, private paths, or unsafe payment links.
 
 ## PR Description Draft
 
-Title: Add Drip Council static agent playground expansion pack
+Title: Add Drip Council Agent Lab Upgrade
 
 Summary:
 
-- Adds agent-native public files and static JSON mission metadata.
-- Adds static pages for report examples, badge examples, multi-agent collab, seasonal courses, sponsor-safe challenge courses, domain templates, observability export mapping, human review, and local intake triage.
-- Keeps all new surfaces read-only, static, and public.
-- Preserves human-only payment boundaries and avoids service connections.
+- Adds modern agent-readiness discovery files, markdown mirrors, schemas, and a self-audit page.
+- Adds opt-in local behavior trace replay and report v2 policy scoring.
+- Expands prompt-injection, A2A handoff, and agentic commerce boundary tests.
+- Keeps all new behavior static, public, local-only, read-only, or draft-only.
 
 Testing:
 
 - `python3 -m json.tool agent.json`
 - `python3 -m json.tool .well-known/agent.json`
-- `python3 -m json.tool missions.json`
-- `python3 -m json.tool api/missions.json`
+- `python3 -m json.tool .well-known/agent-card.json`
+- `python3 -m json.tool .well-known/agent-skills/index.json`
+- `python3 -m json.tool .well-known/api-catalog`
+- `python3 -m json.tool schemas/drip_trace_v1.schema.json`
+- `python3 -m json.tool schemas/drip_report_v2.schema.json`
+- `python3 -m json.tool schemas/drip_policy_score_v1.schema.json`
+- `node scripts/verify-agent-lab.mjs`
 - `diff -u agent.json .well-known/agent.json`
-- `diff -u missions.json api/missions.json`
 - `./scripts/build.sh`
-- Local route and link checks against `dist/`
-- Credential scan
-- Playwright mobile and desktop layout checks
+- Local route checks against `dist/`
 
 Known blocker:
 
 - No repository blocker is known. If push fails, treat it as an external network or authentication issue.
-
-Next recommended pass:
-
-- Let a human review PR #2.
-- Merge only after approval.
-- Deploy only after merge approval.

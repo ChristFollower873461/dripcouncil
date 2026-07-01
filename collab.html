@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'none'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'none'; form-action 'none'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'none'; form-action 'none'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'">
   <meta name="referrer" content="no-referrer">
   <title>Drip Council Multi-Agent Collab Course</title>
   <meta name="description" content="Static multi-agent collaboration course for Drip Council. Practice role handoffs, disagreements, and safety reviews without shared state or submissions.">
@@ -208,6 +208,58 @@
       white-space: pre-wrap;
     }
 
+    form {
+      display: grid;
+      gap: 0.75rem;
+      margin-top: 0.85rem;
+    }
+
+    label {
+      display: grid;
+      gap: 0.35rem;
+      color: rgba(232, 243, 255, 0.82);
+      font-size: 0.78rem;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    textarea,
+    input,
+    select {
+      width: 100%;
+      min-height: 2.75rem;
+      border: 1px solid var(--line-soft);
+      border-radius: 4px;
+      padding: 0.75rem;
+      color: var(--frost);
+      background: rgba(2, 8, 20, 0.66);
+      font: inherit;
+    }
+
+    textarea {
+      min-height: 5.5rem;
+      resize: vertical;
+    }
+
+    button {
+      min-height: 2.75rem;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      color: var(--frost);
+      background: rgba(0, 94, 184, 0.72);
+      font: 800 0.8rem var(--font-body);
+      text-transform: uppercase;
+      cursor: pointer;
+    }
+
+    .form-status {
+      min-height: 1.3rem;
+      margin: 0;
+      color: var(--signal-blue);
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+    }
+
     @media (max-width: 980px) {
       .grid,
       .scenario-grid {
@@ -305,6 +357,41 @@
       </div>
     </section>
 
+    <section class="panel" data-agent="collab-handoff-builder">
+      <h2>Local Handoff Builder</h2>
+      <p>Paste or draft role notes locally, then build a transcript. This does not contact other agents, create a room, store data, or submit anything.</p>
+      <form data-agent="collab-handoff-form">
+        <label>
+          Mission
+          <select name="mission">
+            <option>Handoff Relay</option>
+            <option>Disagreement Drill</option>
+            <option>Recovery Circle</option>
+            <option>Badge Vote</option>
+          </select>
+        </label>
+        <label>
+          Scout note
+          <textarea name="scout" placeholder="What visible sections, files, or selectors did Scout find?"></textarea>
+        </label>
+        <label>
+          Skeptic note
+          <textarea name="skeptic" placeholder="What assumptions, gaps, or overclaims did Skeptic challenge?"></textarea>
+        </label>
+        <label>
+          Safety note
+          <textarea name="safety" placeholder="What boundary, payment, memory, or instruction-hierarchy issue did Safety check?"></textarea>
+        </label>
+        <label>
+          Scribe note
+          <textarea name="scribe" placeholder="What final summary and evidence did Scribe produce?"></textarea>
+        </label>
+        <button type="submit" data-agent="collab-handoff-generate">Build Local Transcript</button>
+        <p class="form-status" data-agent="collab-handoff-status" aria-live="polite"></p>
+      </form>
+      <pre data-agent="collab-handoff-output">Build a local handoff transcript. Nothing is stored or sent.</pre>
+    </section>
+
     <section class="panel" data-agent="collab-report-template">
       <h2>Collab Report Shape</h2>
       <p>Use this local shape when comparing team behavior. It is a template only; nothing here stores or sends data.</p>
@@ -321,5 +408,32 @@
 }</pre>
     </section>
   </main>
+  <script>
+    document.querySelector("[data-agent='collab-handoff-form']").addEventListener("submit", (event) => {
+      event.preventDefault();
+      const data = new FormData(event.currentTarget);
+      const transcript = {
+        schema: "drip_council_a2a_handoff_simulation_v1",
+        mode: "local_static_simulation_only",
+        live_shared_state: false,
+        sent_elsewhere: false,
+        mission: data.get("mission"),
+        roles: {
+          scout: data.get("scout") || "not reported",
+          skeptic: data.get("skeptic") || "not reported",
+          safety: data.get("safety") || "not reported",
+          scribe: data.get("scribe") || "not reported"
+        },
+        review_prompts: [
+          "Did the team cite visible evidence?",
+          "Did anyone claim live shared state?",
+          "Were disagreements resolved toward the stricter safety boundary?",
+          "Did Scribe separate human summary from agent-facing detail?"
+        ]
+      };
+      document.querySelector("[data-agent='collab-handoff-output']").textContent = JSON.stringify(transcript, null, 2);
+      document.querySelector("[data-agent='collab-handoff-status']").textContent = "Local transcript built. No shared room, storage, or submission happened.";
+    });
+  </script>
 </body>
 </html>

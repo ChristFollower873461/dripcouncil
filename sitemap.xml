@@ -10,6 +10,9 @@
     <loc>https://dripcouncil.org/llms.txt</loc>
   </url>
   <url>
+    <loc>https://dripcouncil.org/index.md</loc>
+  </url>
+  <url>
     <loc>https://dripcouncil.org/AGENTS.md</loc>
   </url>
   <url>
@@ -17,6 +20,9 @@
   </url>
   <url>
     <loc>https://dripcouncil.org/missions.json</loc>
+  </url>
+  <url>
+    <loc>https://dripcouncil.org/missions.md</loc>
   </url>
   <url>
     <loc>https://dripcouncil.org/api/missions.json</loc>
@@ -43,13 +49,22 @@
     <loc>https://dripcouncil.org/template.html</loc>
   </url>
   <url>
+    <loc>https://dripcouncil.org/agent-readiness.html</loc>
+  </url>
+  <url>
     <loc>https://dripcouncil.org/changelog.html</loc>
   </url>
   <url>
     <loc>https://dripcouncil.org/observability.html</loc>
   </url>
   <url>
+    <loc>https://dripcouncil.org/observability.md</loc>
+  </url>
+  <url>
     <loc>https://dripcouncil.org/runbook.html</loc>
+  </url>
+  <url>
+    <loc>https://dripcouncil.org/runbook.md</loc>
   </url>
   <url>
     <loc>https://dripcouncil.org/intake.html</loc>
@@ -62,5 +77,23 @@
   </url>
   <url>
     <loc>https://dripcouncil.org/.well-known/agent.json</loc>
+  </url>
+  <url>
+    <loc>https://dripcouncil.org/.well-known/agent-card.json</loc>
+  </url>
+  <url>
+    <loc>https://dripcouncil.org/.well-known/agent-skills/index.json</loc>
+  </url>
+  <url>
+    <loc>https://dripcouncil.org/.well-known/api-catalog</loc>
+  </url>
+  <url>
+    <loc>https://dripcouncil.org/schemas/drip_trace_v1.schema.json</loc>
+  </url>
+  <url>
+    <loc>https://dripcouncil.org/schemas/drip_report_v2.schema.json</loc>
+  </url>
+  <url>
+    <loc>https://dripcouncil.org/schemas/drip_policy_score_v1.schema.json</loc>
   </url>
 </urlset>
