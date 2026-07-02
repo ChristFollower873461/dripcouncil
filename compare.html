@@ -1,0 +1,539 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'none'; form-action 'none'; base-uri 'self'; object-src 'none'; navigate-to 'self' blob:">
+  <meta name="referrer" content="no-referrer">
+  <title>Drip Council Compare Runs</title>
+  <meta name="description" content="Local-only Drip Council dashboard for comparing report v2 JSON files across agent runs.">
+  <link rel="canonical" href="https://dripcouncil.org/compare.html">
+  <link rel="describedby" href="/llms.txt">
+  <style>
+    :root {
+      --void: #020814;
+      --deep: #061a33;
+      --panel: rgba(3, 15, 32, 0.78);
+      --line: rgba(42, 168, 255, 0.32);
+      --line-soft: rgba(142, 164, 187, 0.2);
+      --blue: #2aa8ff;
+      --green: #45f0a1;
+      --amber: #ffd166;
+      --risk: #ff6b7a;
+      --paper: #f4f8ff;
+      --steel: #8ea4bb;
+      --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      --font-body: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      --font-display: Orbitron, "Arial Black", system-ui, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      background: var(--void);
+      color: var(--paper);
+      scroll-behavior: smooth;
+    }
+
+    body {
+      min-width: 320px;
+      margin: 0;
+      font-family: var(--font-body);
+      background:
+        radial-gradient(circle at 8% 0%, rgba(255, 209, 102, 0.12), transparent 24rem),
+        radial-gradient(circle at 86% 8%, rgba(69, 240, 161, 0.12), transparent 24rem),
+        linear-gradient(180deg, var(--void), var(--deep));
+    }
+
+    a {
+      color: inherit;
+    }
+
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 5;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+      justify-content: center;
+      padding: 0.75rem;
+      border-bottom: 1px solid var(--line-soft);
+      background: rgba(2, 8, 20, 0.78);
+      backdrop-filter: blur(14px);
+    }
+
+    .nav a,
+    button,
+    .file-label {
+      min-height: 2.35rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 0.75rem;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      color: var(--paper);
+      background: rgba(0, 94, 184, 0.42);
+      font: 800 0.72rem var(--font-body);
+      text-decoration: none;
+      text-transform: uppercase;
+      cursor: pointer;
+    }
+
+    .shell {
+      width: min(74rem, calc(100% - 2rem));
+      margin: 0 auto;
+      padding: 2rem 0 4rem;
+    }
+
+    .hero,
+    .panel {
+      border: 1px solid var(--line-soft);
+      border-radius: 8px;
+      background: var(--panel);
+      box-shadow: inset 0 1px 0 rgba(244, 248, 255, 0.08), 0 28px 80px rgba(0, 0, 0, 0.24);
+    }
+
+    .hero {
+      padding: 1.2rem;
+    }
+
+    .hero h1,
+    .panel h2,
+    .metric strong {
+      margin: 0;
+      font-family: var(--font-display);
+      letter-spacing: 0;
+      text-transform: uppercase;
+    }
+
+    .hero h1 {
+      font-size: clamp(2rem, 6vw, 4.8rem);
+      line-height: 0.95;
+    }
+
+    .hero p,
+    .panel p,
+    .run-list span,
+    .metric span {
+      color: var(--steel);
+      line-height: 1.55;
+    }
+
+    .status-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 1rem;
+    }
+
+    .pill {
+      min-height: 1.9rem;
+      display: inline-flex;
+      align-items: center;
+      padding: 0 0.6rem;
+      border: 1px solid rgba(69, 240, 161, 0.5);
+      border-radius: 999px;
+      color: var(--green);
+      background: rgba(69, 240, 161, 0.08);
+      font: 800 0.68rem var(--font-mono);
+      text-transform: uppercase;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: minmax(18rem, 0.8fr) minmax(0, 1.2fr);
+      gap: 0.8rem;
+      margin-top: 0.8rem;
+    }
+
+    .panel {
+      min-width: 0;
+      padding: 1rem;
+    }
+
+    .drop-zone {
+      display: grid;
+      place-items: center;
+      min-height: 12rem;
+      padding: 1rem;
+      border: 1px dashed rgba(42, 168, 255, 0.58);
+      border-radius: 8px;
+      background: rgba(2, 8, 20, 0.48);
+      text-align: center;
+    }
+
+    .drop-zone.is-over {
+      border-color: var(--green);
+      background: rgba(69, 240, 161, 0.08);
+    }
+
+    input[type="file"] {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip: rect(0 0 0 0);
+      white-space: nowrap;
+    }
+
+    textarea,
+    pre {
+      width: 100%;
+      border: 1px solid var(--line-soft);
+      border-radius: 8px;
+      color: var(--paper);
+      background: rgba(2, 8, 20, 0.7);
+      font: 0.78rem/1.55 var(--font-mono);
+    }
+
+    textarea {
+      min-height: 9rem;
+      margin-top: 0.8rem;
+      padding: 0.8rem;
+      resize: vertical;
+    }
+
+    pre {
+      min-height: 14rem;
+      max-height: 30rem;
+      overflow: auto;
+      margin: 0.8rem 0 0;
+      padding: 0.85rem;
+      white-space: pre-wrap;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 0.75rem;
+    }
+
+    .metric-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0.65rem;
+      margin-top: 0.8rem;
+    }
+
+    .metric {
+      min-height: 6.2rem;
+      padding: 0.75rem;
+      border: 1px solid var(--line-soft);
+      border-radius: 8px;
+      background: rgba(2, 8, 20, 0.5);
+    }
+
+    .metric strong {
+      display: block;
+      color: var(--blue);
+      font-size: 1.35rem;
+    }
+
+    .metric[data-tone="safe"] strong {
+      color: var(--green);
+    }
+
+    .metric[data-tone="warn"] strong {
+      color: var(--amber);
+    }
+
+    .metric[data-tone="risk"] strong {
+      color: var(--risk);
+    }
+
+    .run-list {
+      display: grid;
+      gap: 0.55rem;
+      margin-top: 0.8rem;
+    }
+
+    .run-item {
+      display: grid;
+      gap: 0.35rem;
+      padding: 0.72rem;
+      border: 1px solid var(--line-soft);
+      border-radius: 8px;
+      background: rgba(3, 15, 32, 0.64);
+    }
+
+    .run-item strong {
+      color: var(--paper);
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+    }
+
+    .empty {
+      color: var(--amber);
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+    }
+
+    @media (max-width: 900px) {
+      .grid,
+      .metric-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto;
+      }
+
+      *,
+      *::before,
+      *::after {
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav class="nav" data-agent="compare-navigation" aria-label="Compare navigation">
+    <a href="/">Run Lab</a>
+    <a href="/#report">Reports</a>
+    <a href="/#agent-files">Agent Files</a>
+    <a href="/version.json">Version</a>
+  </nav>
+
+  <main class="shell">
+    <header class="hero" data-agent="compare-runs-page">
+      <h1>Compare Runs</h1>
+      <p>Drop report v2 JSON files here, or paste a report export, and this page will compare agent behavior locally. No upload, no storage, no network.</p>
+      <div class="status-row">
+        <span class="pill">local only</span>
+        <span class="pill">report v2</span>
+        <span class="pill">nothing sent</span>
+      </div>
+    </header>
+
+    <section class="grid" aria-label="Compare runs workspace">
+      <article class="panel" data-agent="compare-input-panel">
+        <h2>Load Reports</h2>
+        <div class="drop-zone" data-agent="compare-drop-zone">
+          <div>
+            <p>Drop one or more <code>drip_council_observation_report_v2</code> JSON files.</p>
+            <label class="file-label" for="report-files">Choose Files</label>
+            <input id="report-files" type="file" accept="application/json,.json" multiple data-agent="compare-file-input">
+          </div>
+        </div>
+        <textarea data-agent="compare-paste-input" placeholder="Paste a Drip report JSON object, array, or local export wrapper."></textarea>
+        <div class="actions">
+          <button type="button" data-compare-action="parse">Parse Paste</button>
+          <button type="button" data-compare-action="download">Download Aggregate</button>
+          <button type="button" data-compare-action="clear">Clear</button>
+        </div>
+        <p class="empty" data-agent="compare-status" aria-live="polite">Waiting for local report JSON.</p>
+      </article>
+
+      <article class="panel" data-agent="compare-results-panel">
+        <h2>Aggregate View</h2>
+        <div class="metric-grid" data-agent="compare-metrics">
+          <div class="metric"><strong data-metric="runs">0</strong><span>runs loaded</span></div>
+          <div class="metric" data-tone="safe"><strong data-metric="under-policy">0%</strong><span>completion under policy</span></div>
+          <div class="metric" data-tone="risk"><strong data-metric="risks">0</strong><span>risk tags selected</span></div>
+          <div class="metric"><strong data-metric="events">0</strong><span>average trace events</span></div>
+          <div class="metric" data-tone="warn"><strong data-metric="badge">none</strong><span>top badge</span></div>
+          <div class="metric"><strong data-metric="first">none</strong><span>most common first inspected</span></div>
+        </div>
+        <div class="run-list" data-agent="compare-run-list">
+          <p class="empty">No runs loaded yet. The dashboard is politely empty.</p>
+        </div>
+        <pre data-agent="compare-output">{
+  "schema": "drip_council_compare_runs_v1",
+  "status": "waiting_for_local_reports"
+}</pre>
+      </article>
+    </section>
+  </main>
+
+  <script>
+    let reports = [];
+
+    function countBy(values) {
+      return values.reduce((acc, value) => {
+        const key = value || "not reported";
+        acc[key] = (acc[key] || 0) + 1;
+        return acc;
+      }, {});
+    }
+
+    function topEntry(values, fallback = "none") {
+      const entries = Object.entries(countBy(values)).sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
+      return entries.length ? entries[0][0] : fallback;
+    }
+
+    function topCountKey(counts, fallback = "none") {
+      const entries = Object.entries(counts || {}).sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
+      return entries.length ? entries[0][0] : fallback;
+    }
+
+    function normalizeReport(value, source = "local") {
+      if (!value || typeof value !== "object") return [];
+      if (Array.isArray(value)) return value.flatMap((item, index) => normalizeReport(item, `${source}[${index}]`));
+      const candidates = [
+        value,
+        value.output,
+        value.metadata && value.metadata.report,
+        value.trace && value.trace.metadata && value.trace.metadata.report,
+        value.run && value.run.metadata
+      ].filter(Boolean);
+      const report = candidates.find((item) => item && item.schema === "drip_council_observation_report_v2");
+      if (!report) return [];
+      return [{
+        ...report,
+        _source: source
+      }];
+    }
+
+    function aggregate() {
+      const total = reports.length;
+      const underPolicy = reports.filter((report) => report.policy_score && report.policy_score.completion_under_policy).length;
+      const allRiskTags = reports.flatMap((report) => report.policy_score && report.policy_score.risk_tags ? report.policy_score.risk_tags : []);
+      const allBadges = reports.flatMap((report) => report.badges || []);
+      const eventCounts = reports.map((report) => Number(report.trace_summary && report.trace_summary.event_count) || 0);
+      const avgEvents = total ? Math.round(eventCounts.reduce((sum, value) => sum + value, 0) / total) : 0;
+      return {
+        schema: "drip_council_compare_runs_v1",
+        mode: "local_only_not_uploaded_not_saved",
+        run_count: total,
+        completion_under_policy_rate: total ? Math.round((underPolicy / total) * 100) : 0,
+        selected_risk_tags: countBy(allRiskTags),
+        badge_counts: countBy(allBadges),
+        average_trace_event_count: avgEvents,
+        most_common_first_inspected: topEntry(reports.map((report) => report.first_inspected), "none"),
+        stations: countBy(reports.map((report) => report.station)),
+        runs: reports.map((report) => ({
+          source: report._source,
+          run_label: report.run_label,
+          station: report.station,
+          completion_under_policy: Boolean(report.policy_score && report.policy_score.completion_under_policy),
+          risk_tags: report.policy_score && report.policy_score.risk_tags ? report.policy_score.risk_tags : [],
+          badges: report.badges || [],
+          trace_event_count: Number(report.trace_summary && report.trace_summary.event_count) || 0,
+          first_inspected: report.first_inspected
+        }))
+      };
+    }
+
+    function setMetric(name, value) {
+      const metric = document.querySelector(`[data-metric="${name}"]`);
+      if (metric) metric.textContent = value;
+    }
+
+    function render() {
+      const data = aggregate();
+      setMetric("runs", data.run_count);
+      setMetric("under-policy", `${data.completion_under_policy_rate}%`);
+      setMetric("risks", Object.values(data.selected_risk_tags).reduce((sum, value) => sum + value, 0));
+      setMetric("events", data.average_trace_event_count);
+      setMetric("badge", topCountKey(data.badge_counts, "none"));
+      setMetric("first", data.most_common_first_inspected);
+      const list = document.querySelector("[data-agent='compare-run-list']");
+      list.innerHTML = "";
+      if (!reports.length) {
+        const empty = document.createElement("p");
+        empty.className = "empty";
+        empty.textContent = "No runs loaded yet. The dashboard is politely empty.";
+        list.appendChild(empty);
+      } else {
+        data.runs.forEach((run) => {
+          const item = document.createElement("div");
+          item.className = "run-item";
+          const title = document.createElement("strong");
+          title.textContent = `${run.run_label || "unlabeled run"} / ${run.station || "unknown station"}`;
+          const detail = document.createElement("span");
+          detail.textContent = `${run.completion_under_policy ? "completion under policy" : "needs review"} / ${run.trace_event_count} events / risks: ${run.risk_tags.length ? run.risk_tags.join(", ") : "none"}`;
+          item.append(title, detail);
+          list.appendChild(item);
+        });
+      }
+      document.querySelector("[data-agent='compare-output']").textContent = JSON.stringify(data, null, 2);
+      document.querySelector("[data-agent='compare-status']").textContent = reports.length
+        ? `${reports.length} local report${reports.length === 1 ? "" : "s"} loaded. Nothing was uploaded.`
+        : "Waiting for local report JSON.";
+    }
+
+    function addParsed(value, source) {
+      const found = normalizeReport(value, source);
+      reports = reports.concat(found);
+      render();
+      return found.length;
+    }
+
+    async function readFiles(files) {
+      let loaded = 0;
+      for (const file of files) {
+        try {
+          const text = await file.text();
+          loaded += addParsed(JSON.parse(text), file.name);
+        } catch (error) {
+          document.querySelector("[data-agent='compare-status']").textContent = `Could not parse ${file.name}: ${error.message}`;
+        }
+      }
+      if (loaded === 0) {
+        document.querySelector("[data-agent='compare-status']").textContent = "No report v2 objects found in those files.";
+      }
+    }
+
+    function downloadJson(payload, filename) {
+      const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = filename;
+      link.rel = "noopener";
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 0);
+    }
+
+    const dropZone = document.querySelector("[data-agent='compare-drop-zone']");
+    const fileInput = document.querySelector("[data-agent='compare-file-input']");
+    fileInput.addEventListener("change", () => readFiles(fileInput.files));
+    ["dragenter", "dragover"].forEach((eventName) => {
+      dropZone.addEventListener(eventName, (event) => {
+        event.preventDefault();
+        dropZone.classList.add("is-over");
+      });
+    });
+    ["dragleave", "drop"].forEach((eventName) => {
+      dropZone.addEventListener(eventName, (event) => {
+        event.preventDefault();
+        dropZone.classList.remove("is-over");
+      });
+    });
+    dropZone.addEventListener("drop", (event) => readFiles(event.dataTransfer.files));
+
+    document.querySelector("[data-compare-action='parse']").addEventListener("click", () => {
+      const input = document.querySelector("[data-agent='compare-paste-input']");
+      try {
+        const loaded = addParsed(JSON.parse(input.value), "pasted-json");
+        if (!loaded) {
+          document.querySelector("[data-agent='compare-status']").textContent = "Parsed JSON, but no report v2 object was found.";
+        }
+      } catch (error) {
+        document.querySelector("[data-agent='compare-status']").textContent = `Paste parse failed: ${error.message}`;
+      }
+    });
+
+    document.querySelector("[data-compare-action='download']").addEventListener("click", () => {
+      downloadJson(aggregate(), "drip_council_compare_runs_v1.json");
+    });
+
+    document.querySelector("[data-compare-action='clear']").addEventListener("click", () => {
+      reports = [];
+      document.querySelector("[data-agent='compare-paste-input']").value = "";
+      render();
+    });
+
+    render();
+  </script>
+</body>
+</html>

@@ -1,6 +1,6 @@
 # Drip Council
 
-Drip Council is a static public playground for browser agents. Agents can crawl, inspect, navigate, summarize, try harmless local-only missions, and generate local observation reports so humans can learn from their behavior.
+Drip Council is a static public playground for browser agents. Agents can crawl, inspect, navigate, summarize, use the Run Lab, try harmless local-only missions, generate local observation reports, and compare local report JSON so humans can learn from their behavior.
 
 ## Safety Model
 
@@ -8,6 +8,7 @@ Drip Council is a static public playground for browser agents. Agents can crawl,
 - No accounts, login, cookies, databases, reusable payment links, or static external form submission.
 - Page scripts can call only same-origin support checkout config/session endpoints.
 - Forms and support controls are local-only.
+- Run Lab traces and compare-runs analysis stay in the browser; no report upload endpoint exists.
 - Agents may inspect and summarize the support page, but must not choose an amount, open checkout, fill payment details, or complete payment.
 - Public Stripe Payment Links are disabled. Protected support uses a server-created Stripe Checkout Session after consent and Turnstile verification.
 - No Stripe secret keys, Turnstile secret keys, webhook signing values, or payment details belong in this repo.
@@ -19,6 +20,8 @@ Drip Council is a static public playground for browser agents. Agents can crawl,
 - `/AGENTS.md`
 - `/ROADMAP_STATUS.md`
 - `/agent-readiness.html`
+- `/ui-map.json`
+- `/compare.html`
 - `/missions.json`
 - `/missions.md`
 - `/api/missions.json`
@@ -84,6 +87,7 @@ python3 -m json.tool .well-known/agent.json >/dev/null
 python3 -m json.tool .well-known/agent-card.json >/dev/null
 python3 -m json.tool .well-known/agent-skills/index.json >/dev/null
 python3 -m json.tool .well-known/api-catalog >/dev/null
+python3 -m json.tool ui-map.json >/dev/null
 python3 -m json.tool schemas/drip_trace_v1.schema.json >/dev/null
 python3 -m json.tool schemas/drip_report_v2.schema.json >/dev/null
 python3 -m json.tool schemas/drip_policy_score_v1.schema.json >/dev/null

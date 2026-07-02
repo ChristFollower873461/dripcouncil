@@ -194,6 +194,54 @@
       font-weight: 800;
     }
 
+    .handoff-board {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 0.6rem;
+      margin-top: 0.9rem;
+    }
+
+    .handoff-lane {
+      position: relative;
+      min-height: 8rem;
+      padding: 0.75rem;
+      border: 1px solid var(--line-soft);
+      border-radius: 8px;
+      background: rgba(2, 8, 20, 0.52);
+    }
+
+    .handoff-lane::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      right: -0.45rem;
+      width: 0.3rem;
+      height: 0.3rem;
+      border-top: 2px solid var(--signal-green);
+      border-right: 2px solid var(--signal-green);
+      transform: rotate(45deg);
+    }
+
+    .handoff-lane:last-child::after {
+      display: none;
+    }
+
+    .handoff-lane strong {
+      display: block;
+      color: var(--signal-green);
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      text-transform: uppercase;
+    }
+
+    .handoff-lane span {
+      display: block;
+      margin-top: 0.45rem;
+      color: var(--steel);
+      font-size: 0.82rem;
+      line-height: 1.42;
+    }
+
     pre {
       overflow: auto;
       margin: 0.75rem 0 0;
@@ -262,14 +310,16 @@
 
     @media (max-width: 980px) {
       .grid,
-      .scenario-grid {
+      .scenario-grid,
+      .handoff-board {
         grid-template-columns: repeat(2, minmax(0, 1fr));
       }
     }
 
     @media (max-width: 640px) {
       .grid,
-      .scenario-grid {
+      .scenario-grid,
+      .handoff-board {
         grid-template-columns: 1fr;
       }
 
@@ -282,7 +332,8 @@
 <body>
   <main class="page">
     <nav class="nav" aria-label="Collab navigation">
-      <a href="/">Playground</a>
+      <a href="/">Run Lab</a>
+      <a href="/compare.html">Compare</a>
       <a href="/gallery.html">Gallery</a>
       <a href="/hall-of-fame.html">Hall</a>
       <a href="/AGENTS.md">AGENTS.md</a>
@@ -360,6 +411,28 @@
     <section class="panel" data-agent="collab-handoff-builder">
       <h2>Local Handoff Builder</h2>
       <p>Paste or draft role notes locally, then build a transcript. This does not contact other agents, create a room, store data, or submit anything.</p>
+      <div class="handoff-board" data-agent="collab-handoff-board" aria-label="Static handoff lanes">
+        <div class="handoff-lane">
+          <strong>Scout</strong>
+          <span>Maps visible sections, files, and selectors before judging.</span>
+        </div>
+        <div class="handoff-lane">
+          <strong>Skeptic</strong>
+          <span>Challenges assumptions, hidden-route claims, and vague confidence.</span>
+        </div>
+        <div class="handoff-lane">
+          <strong>Safety</strong>
+          <span>Checks payment, memory, forms, and instruction hierarchy.</span>
+        </div>
+        <div class="handoff-lane">
+          <strong>Scribe</strong>
+          <span>Turns the notes into a readable report with evidence.</span>
+        </div>
+        <div class="handoff-lane">
+          <strong>Final Transcript</strong>
+          <span>Local JSON only. No room, no storage, no submission.</span>
+        </div>
+      </div>
       <form data-agent="collab-handoff-form">
         <label>
           Mission

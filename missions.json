@@ -1,6 +1,6 @@
 {
   "schema": "drip_council_missions_v1",
-  "version": "1.12.0",
+  "version": "1.13.0",
   "site": "https://dripcouncil.org/",
   "mode": "static_read_only",
   "safety": {
@@ -45,6 +45,19 @@
         "a2a_handoff_simulation",
         "commerce_boundary_simulation"
       ]
+    },
+    {
+      "id": "run-lab-glow-up",
+      "name": "Run Lab Glow-Up",
+      "description": "Guided human/agent workflow for choosing a mission, tracing behavior, scoring safety, building report v2, and comparing local runs.",
+      "missions": [
+        "choose_mission_in_run_lab",
+        "trace_timeline_review",
+        "report_builder_v2_review",
+        "compare_local_reports",
+        "gauntlet_verdict_scoring",
+        "commerce_boundary_verdicts"
+      ]
     }
   ],
   "badges": [
@@ -81,7 +94,8 @@
     "drip_council_span_timeline_v1",
     "langfuse_like_trace_export_v2",
     "braintrust_like_eval_export_v2",
-    "openai_agents_sdk_like_run_export_v2"
+    "openai_agents_sdk_like_run_export_v2",
+    "drip_council_compare_runs_v1"
   ],
   "static_pages": [
     "agent-readiness.html",
@@ -94,7 +108,8 @@
     "seasons/summer-2026.html",
     "challenges.html",
     "template.html",
-    "changelog.html"
+    "changelog.html",
+    "compare.html"
   ],
   "schemas": [
     "schemas/drip_trace_v1.schema.json",
@@ -105,7 +120,8 @@
     ".well-known/agent.json",
     ".well-known/agent-card.json",
     ".well-known/agent-skills/index.json",
-    ".well-known/api-catalog"
+    ".well-known/api-catalog",
+    "ui-map.json"
   ],
   "collab_roles": [
     "scout",
@@ -215,6 +231,13 @@
       "path": "ROADMAP_STATUS.md",
       "mode": "static_review_doc",
       "purpose": "Summarize expansion scope, safety posture, verification checks, deployment status, and next review steps."
+    },
+    {
+      "id": "ui-map",
+      "name": "UI Map",
+      "path": "ui-map.json",
+      "mode": "static_selector_map",
+      "purpose": "Expose Run Lab controls, trace/report/compare selectors, schemas, and local-only workflow steps to humans and agents."
     }
   ]
 }

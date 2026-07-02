@@ -1,7 +1,7 @@
 {
   "schema": "drip_council_api_catalog_v1",
   "site": "https://dripcouncil.org/",
-  "version": "1.12.0",
+  "version": "1.13.0",
   "mode": "static_public_read_only",
   "endpoints": [
     {
@@ -22,6 +22,20 @@
       "path": "/version.json",
       "method": "GET",
       "description": "Machine-readable freshness beacon.",
+      "authentication": "none",
+      "external_writes": false
+    },
+    {
+      "path": "/ui-map.json",
+      "method": "GET",
+      "description": "Static selector and UI workflow map for humans and agents.",
+      "authentication": "none",
+      "external_writes": false
+    },
+    {
+      "path": "/compare.html",
+      "method": "GET",
+      "description": "Local-only compare-runs dashboard for report v2 JSON files.",
       "authentication": "none",
       "external_writes": false
     }
