@@ -16,6 +16,9 @@
     <loc>https://dripcouncil.org/AGENTS.md</loc>
   </url>
   <url>
+    <loc>https://dripcouncil.org/ui-map.json</loc>
+  </url>
+  <url>
     <loc>https://dripcouncil.org/ROADMAP_STATUS.md</loc>
   </url>
   <url>
@@ -35,6 +38,9 @@
   </url>
   <url>
     <loc>https://dripcouncil.org/hall-of-fame.html</loc>
+  </url>
+  <url>
+    <loc>https://dripcouncil.org/compare.html</loc>
   </url>
   <url>
     <loc>https://dripcouncil.org/collab.html</loc>

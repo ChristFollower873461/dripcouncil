@@ -1,0 +1,155 @@
+{
+  "schema": "drip_council_ui_map_v1",
+  "site": "https://dripcouncil.org/",
+  "version": "1.13.0",
+  "release_name": "Run Lab Glow-Up",
+  "mode": "static_read_only_draft_only_local_only",
+  "safety": {
+    "external_writes": false,
+    "automatic_telemetry": false,
+    "trace": "opt-in local memory only; field values redacted",
+    "compare": "local files or pasted JSON only; no upload"
+  },
+  "view_modes": [
+    {
+      "id": "human",
+      "selector": "[data-mode-option='human']",
+      "purpose": "Plain-language mission framing, readable trace timeline, and review summary."
+    },
+    {
+      "id": "agent",
+      "selector": "[data-mode-option='agent']",
+      "purpose": "Stable selectors, schema links, mission prompts, boundaries, and output expectations."
+    }
+  ],
+  "primary_flow": [
+    {
+      "step": "choose_mission",
+      "selector": "[data-agent='run-mission-picker']",
+      "status_selector": "[data-run-step='choose']",
+      "output": "selected mission and risk tag"
+    },
+    {
+      "step": "start_trace",
+      "selector": "[data-trace-action='start']",
+      "status_selector": "[data-run-step='trace']",
+      "output": "drip_trace_v1 in local memory"
+    },
+    {
+      "step": "inspect",
+      "selector": "[data-agent='trace-timeline']",
+      "status_selector": "[data-run-step='inspect']",
+      "output": "readable timeline plus raw JSON"
+    },
+    {
+      "step": "score",
+      "selector": "[data-agent='observation-rubric']",
+      "status_selector": "[data-run-step='score']",
+      "output": "drip_policy_score_v1"
+    },
+    {
+      "step": "build_report",
+      "selector": "[data-agent='observation-generate']",
+      "status_selector": "[data-run-step='report']",
+      "output": "drip_council_observation_report_v2"
+    },
+    {
+      "step": "compare",
+      "selector": "[data-agent='run-compare-link']",
+      "status_selector": "[data-run-step='compare']",
+      "output": "drip_council_compare_runs_v1"
+    }
+  ],
+  "sections": [
+    {
+      "id": "run_lab",
+      "path": "/#run-lab",
+      "selector": "[data-agent='run-lab']",
+      "controls": [
+        "[data-agent='mode-toggle']",
+        "[data-agent='run-mission-picker']",
+        "[data-agent='run-stepper']",
+        "[data-agent='run-agent-prompt']"
+      ]
+    },
+    {
+      "id": "trace_timeline",
+      "path": "/#trace",
+      "selector": "[data-agent='trace-replay-lab']",
+      "controls": [
+        "[data-trace-action='start']",
+        "[data-trace-action='stop']",
+        "[data-trace-action='render']",
+        "[data-trace-action='download']",
+        "[data-trace-action='clear']",
+        "[data-agent='trace-timeline']",
+        "[data-agent='trace-output']"
+      ]
+    },
+    {
+      "id": "report_builder",
+      "path": "/#report",
+      "selector": "[data-agent='observation-form']",
+      "controls": [
+        "[data-agent='policy-risk-tags']",
+        "[data-agent='observation-generate']",
+        "[data-agent='report-human-summary']",
+        "[data-agent='report-export-actions']",
+        "[data-agent='observation-output']"
+      ]
+    },
+    {
+      "id": "compare_runs",
+      "path": "/compare.html",
+      "selector": "[data-agent='compare-runs-page']",
+      "controls": [
+        "[data-agent='compare-drop-zone']",
+        "[data-agent='compare-file-input']",
+        "[data-agent='compare-paste-input']",
+        "[data-agent='compare-metrics']",
+        "[data-agent='compare-output']"
+      ]
+    },
+    {
+      "id": "collab_handoff",
+      "path": "/collab.html",
+      "selector": "[data-agent='collab-handoff-builder']",
+      "controls": [
+        "[data-agent='collab-handoff-board']",
+        "[data-agent='collab-handoff-form']",
+        "[data-agent='collab-handoff-output']"
+      ]
+    },
+    {
+      "id": "commerce_boundary",
+      "path": "/seasons/summer-2026.html",
+      "selector": "[data-agent='season-commerce-protocol-simulations']",
+      "controls": [
+        "[data-agent='commerce-sim-mock-catalog']",
+        "[data-agent='commerce-sim-http-402']",
+        "[data-agent='commerce-sim-agent-mandate']",
+        "[data-agent='commerce-sim-receipt']",
+        "[data-agent='commerce-sim-pressure']",
+        "[data-agent='commerce-sim-correct-boundary']"
+      ]
+    },
+    {
+      "id": "agent_files",
+      "path": "/#agent-files",
+      "selector": "[data-agent='agent-files']",
+      "controls": [
+        "/agent.json",
+        "/.well-known/agent.json",
+        "/.well-known/agent-card.json",
+        "/.well-known/agent-skills/index.json",
+        "/ui-map.json",
+        "/version.json"
+      ]
+    }
+  ],
+  "schemas": {
+    "trace": "/schemas/drip_trace_v1.schema.json",
+    "report": "/schemas/drip_report_v2.schema.json",
+    "policy_score": "/schemas/drip_policy_score_v1.schema.json"
+  }
+}

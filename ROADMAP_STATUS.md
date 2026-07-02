@@ -1,31 +1,31 @@
 # Drip Council Roadmap Status
 
-This document tracks the v1.12.0 Agent Lab Upgrade for Drip Council.
+This document tracks the v1.13.0 Run Lab Glow-Up for Drip Council.
 
 ## Branch
 
-- Working branch: `agent-readiness-lab-v1`
+- Working branch: `run-lab-glow-up-v1-13`
 - Base: `main`
-- Release target: v1.12.0, Agent Lab Upgrade
+- Release target: v1.13.0, Run Lab Glow-Up
 - Release date in static metadata: July 1, 2026
 
 ## Built In This Branch
 
-- Agent Readiness self-audit page: `/agent-readiness.html`.
-- Markdown mirrors: `/index.md`, `/missions.md`, `/observability.md`, and `/runbook.md`.
-- Static discovery files: `/.well-known/agent-card.json`, `/.well-known/agent-skills/index.json`, and `/.well-known/api-catalog`.
-- JSON schemas: `/schemas/drip_trace_v1.schema.json`, `/schemas/drip_report_v2.schema.json`, and `/schemas/drip_policy_score_v1.schema.json`.
-- Homepage opt-in local trace replay on `/#trace`.
-- Report v2 scoring: task completion, policy compliance, boundary safety, risk tags, trace summary, and span timeline exports.
-- Prompt Injection Gauntlet with visible, hidden comment, CSS-hidden, alt text, metadata, fake JSON, and pseudo-localStorage traps.
-- Static A2A handoff transcript builder on `/collab.html`.
-- Static agentic commerce boundary simulations on `/seasons/summer-2026.html`.
-- Updated `version.json`, `changelog.html`, `llms.txt`, `AGENTS.md`, `missions.json`, `api/missions.json`, `robots.txt`, `sitemap.xml`, `_headers`, README, gallery, hall, observability bridge, and human run book.
+- Homepage Run Lab on `/#run-lab` with human/agent mode, mission picker, stepper, safety prompts, and copy-safe agent prompt.
+- Readable trace timeline, metrics, raw JSON tabs, and local privacy cues on `/#trace`.
+- Report builder v2 polish: live human summary, schema links, risk tags, badges, and export shapes.
+- Local-only compare dashboard on `/compare.html` for report v2 JSON files and supported local export wrappers.
+- UI selector/workflow map at `/ui-map.json`.
+- Prompt Injection Gauntlet verdict scoring.
+- Static A2A handoff board polish on `/collab.html`.
+- Static commerce-boundary verdict cards on `/seasons/summer-2026.html`.
+- Updated `version.json`, `changelog.html`, `llms.txt`, `AGENTS.md`, `index.md`, `missions.md`, `missions.json`, `api/missions.json`, `sitemap.xml`, `_headers`, README, agent manifests, Agent Card, Agent Skills, API catalog, and build script.
 
 ## Safety Posture
 
 - Static public pages remain read-only or draft-only.
 - Trace capture is opt-in, local to the browser tab, memory-only, and redacts field values.
+- Compare-runs analysis uses local files or pasted JSON only and has no upload or storage endpoint.
 - No automatic telemetry, accounts, database writes, live report submission, or service connections were added.
 - Agent Card and Agent Skills advertise static/draft-only behavior only.
 - No live MCP server, A2A message endpoint, report-submission API, or agent payment endpoint is advertised.
@@ -38,18 +38,18 @@ This document tracks the v1.12.0 Agent Lab Upgrade for Drip Council.
 - Confirm `agent.json` and `/.well-known/agent.json` are identical.
 - Build `dist/` with `./scripts/build.sh`.
 - Serve the site locally and confirm new public routes return `200`.
-- Check homepage trace/report interactions in a browser.
+- Check homepage Run Lab, trace/report interactions, compare dashboard, collab board, and seasonal course in a browser.
 - Scan for credentials, private paths, or unsafe payment links.
 
 ## PR Description Draft
 
-Title: Add Drip Council Agent Lab Upgrade
+Title: Add Drip Council Run Lab Glow-Up
 
 Summary:
 
-- Adds modern agent-readiness discovery files, markdown mirrors, schemas, and a self-audit page.
-- Adds opt-in local behavior trace replay and report v2 policy scoring.
-- Expands prompt-injection, A2A handoff, and agentic commerce boundary tests.
+- Adds guided Run Lab UX for humans and agents.
+- Adds readable trace timeline, report builder polish, and local compare-runs dashboard.
+- Expands prompt-injection, A2A handoff, and agentic commerce boundary clarity.
 - Keeps all new behavior static, public, local-only, read-only, or draft-only.
 
 Testing:
@@ -59,6 +59,7 @@ Testing:
 - `python3 -m json.tool .well-known/agent-card.json`
 - `python3 -m json.tool .well-known/agent-skills/index.json`
 - `python3 -m json.tool .well-known/api-catalog`
+- `python3 -m json.tool ui-map.json`
 - `python3 -m json.tool schemas/drip_trace_v1.schema.json`
 - `python3 -m json.tool schemas/drip_report_v2.schema.json`
 - `python3 -m json.tool schemas/drip_policy_score_v1.schema.json`

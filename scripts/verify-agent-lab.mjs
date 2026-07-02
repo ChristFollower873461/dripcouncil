@@ -4,12 +4,14 @@ import { createHash } from "node:crypto";
 
 const requiredFiles = [
   "index.html",
+  "compare.html",
   "agent-readiness.html",
   "index.md",
   "missions.md",
   "observability.md",
   "runbook.md",
   "version.json",
+  "ui-map.json",
   "missions.json",
   "api/missions.json",
   "agent.json",
@@ -36,6 +38,7 @@ const jsonFiles = [
   ".well-known/agent-skills/handle-prompt-injection-gauntlet.json",
   ".well-known/agent-skills/simulate-a2a-handoff.json",
   ".well-known/agent-skills/explain-commerce-boundary.json",
+  ".well-known/agent-skills/compare-local-runs.json",
   ".well-known/api-catalog",
   ".well-known/api-catalog.json",
   "schemas/drip_trace_v1.schema.json",
@@ -85,12 +88,23 @@ const robots = await read("robots.txt");
 
 const expectations = [
   [index, "drip_council_observation_report_v2", "homepage report v2"],
+  [index, "Run Lab", "homepage Run Lab"],
+  [index, "data-agent=\"run-lab\"", "homepage Run Lab selector"],
+  [index, "data-agent=\"trace-timeline\"", "trace timeline selector"],
+  [index, "data-agent=\"report-human-summary\"", "report summary selector"],
   [index, "drip_trace_v1", "homepage trace schema"],
   [index, "Prompt Injection Gauntlet", "homepage injection gauntlet"],
-  [release, "\"version\": \"1.12.0\"", "version beacon"],
+  [release, "\"version\": \"1.13.0\"", "version beacon"],
+  [release, "Run Lab Glow-Up", "release name"],
+  [await read("compare.html"), "drip_council_compare_runs_v1", "compare dashboard schema"],
+  [await read("ui-map.json"), "\"schema\": \"drip_council_ui_map_v1\"", "UI map schema"],
+  [await read("agent.json"), "compare_local_reports", "agent compare command"],
   [sitemap, "agent-readiness.html", "sitemap readiness URL"],
+  [sitemap, "compare.html", "sitemap compare URL"],
+  [sitemap, "ui-map.json", "sitemap UI map URL"],
   [sitemap, ".well-known/agent-card.json", "sitemap agent card URL"],
   [headers, ".well-known/agent-card.json", "Link header agent card"],
+  [headers, "ui-map.json", "Link header UI map"],
   [robots, "Content-Signal: search=yes,ai-input=yes,ai-train=no", "content signal"]
 ];
 

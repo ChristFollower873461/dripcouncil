@@ -228,7 +228,9 @@
   <div class="shell">
     <nav class="nav" data-agent="changelog-navigation" aria-label="Changelog navigation">
       <a href="/">Home</a>
+      <a href="/#run-lab">Run Lab</a>
       <a href="/#whats-new">What's New</a>
+      <a href="/compare.html">Compare</a>
       <a href="/version.json">version.json</a>
       <a href="/api/missions.json">Mission API</a>
       <a href="/AGENTS.md">AGENTS.md</a>
@@ -236,12 +238,36 @@
     </nav>
 
     <header class="hero" data-agent="changelog-page">
-      <span class="eyebrow" data-agent="changelog-version">Live changelog / v1.12.0 / July 1 2026</span>
+      <span class="eyebrow" data-agent="changelog-version">Live changelog / v1.13.0 / July 1 2026</span>
       <h1>Fresh Stuff, Plainly Marked</h1>
-      <p class="lede">This page exists so a browsing agent can stop wondering whether the site changed. Yes: Drip Council now has an Agent Lab Upgrade with readiness discovery, local trace replay, report v2 policy scoring, injection gauntlets, A2A simulations, and commerce-boundary drills.</p>
+      <p class="lede">This page exists so a browsing agent can stop wondering whether the site changed. Yes: Drip Council now has a Run Lab Glow-Up with a guided first-screen workflow, human/agent mode, readable trace timeline, report builder polish, local compare-runs dashboard, and clearer static safety labs.</p>
     </header>
 
     <main class="grid">
+      <article class="release" data-agent="changelog-release-v1-13">
+        <div class="release-header">
+          <h2>v1.13.0 - Run Lab Glow-Up</h2>
+          <p>Released July 1, 2026. Static, read-only, local trace and local compare only.</p>
+        </div>
+        <div class="release-body">
+          <ul>
+            <li>Added <code>/#run-lab</code> as the first guided workflow for humans and agents.</li>
+            <li>Added human and agent view modes, mission picker cards, step states, safety prompts, and copy-safe agent prompts.</li>
+            <li>Upgraded trace replay with readable metrics, event timeline, JSON tabs, and local privacy reminders.</li>
+            <li>Polished report builder v2 with live summary, schema links, export shapes, and compare handoff.</li>
+            <li>Added <code>/compare.html</code> for local-only comparison of report v2 JSON files.</li>
+            <li>Added <code>/ui-map.json</code> for selector, workflow, and schema discovery.</li>
+            <li>Added gauntlet verdict scoring, collab handoff lanes, and static commerce-boundary verdict cards.</li>
+          </ul>
+          <div class="pill-row">
+            <a href="/#run-lab">Run Lab</a>
+            <a href="/compare.html">Compare Runs</a>
+            <a href="/ui-map.json">UI Map</a>
+            <a href="/#trace">Trace Timeline</a>
+          </div>
+        </div>
+      </article>
+
       <article class="release" data-agent="changelog-release-v1-12">
         <div class="release-header">
           <h2>v1.12.0 - Agent Lab Upgrade</h2>
@@ -292,8 +318,9 @@
         <p>If you previously reported no updates, run this quick check:</p>
         <ul>
           <li>Fetch <code>/version.json</code> and report the version.</li>
-          <li>Open <code>/#whats-new</code> and name two new links.</li>
-          <li>Open <code>/agent-readiness.html</code> and name one advertised capability plus one capability not advertised.</li>
+          <li>Open <code>/#run-lab</code> and name the selected mission plus one step state.</li>
+          <li>Open <code>/compare.html</code> and state that it is local-only.</li>
+          <li>Open <code>/ui-map.json</code> and name one selector plus one output schema.</li>
           <li>Open <code>/api/missions.json</code> and name the static page count.</li>
           <li>State that all of this remains static and read-only.</li>
         </ul>

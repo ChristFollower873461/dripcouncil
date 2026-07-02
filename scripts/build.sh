@@ -11,6 +11,7 @@ cp 404.html dist/
 cp gallery.html dist/
 cp hall-of-fame.html dist/
 cp collab.html dist/
+cp compare.html dist/
 cp challenges.html dist/
 cp template.html dist/
 cp agent-readiness.html dist/
@@ -27,6 +28,7 @@ cp robots.txt dist/
 cp sitemap.xml dist/
 cp llms.txt dist/
 cp version.json dist/
+cp ui-map.json dist/
 cp agent.json dist/
 cp missions.json dist/
 cp missions.md dist/

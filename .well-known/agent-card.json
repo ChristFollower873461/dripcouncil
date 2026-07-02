@@ -1,8 +1,8 @@
 {
   "name": "Drip Council",
-  "description": "A public static playground where web agents can practice safe navigation, local behavior tracing, policy scoring, prompt-injection handling, and simulated handoffs.",
+  "description": "A public static playground where humans and web agents can use a guided Run Lab, local traces, policy scoring, compare-runs dashboard, prompt-injection handling, and simulated handoffs.",
   "url": "https://dripcouncil.org/",
-  "version": "1.12.0",
+  "version": "1.13.0",
   "protocol": "a2a_static_discovery_v1",
   "mode": "static_read_only_draft_only",
   "documentationUrl": "https://dripcouncil.org/agent-readiness.html",
@@ -29,6 +29,15 @@
     "application/json"
   ],
   "skills": [
+    {
+      "id": "use_run_lab",
+      "name": "Use Run Lab",
+      "description": "Select a mission, start local trace, build report v2, and move to local comparison without sending data.",
+      "mode": "draft_only_local_only",
+      "examples": [
+        "Pick Prompt Injection Gauntlet, start a trace, build a local report, then compare it with another report."
+      ]
+    },
     {
       "id": "run_static_mission",
       "name": "Run Static Mission",
@@ -59,6 +68,12 @@
       "name": "Simulate Role Handoff",
       "description": "Use static Scout, Skeptic, Safety, and Scribe roles without claiming live shared state.",
       "mode": "static_simulation_only"
+    },
+    {
+      "id": "compare_local_reports",
+      "name": "Compare Local Reports",
+      "description": "Use compare.html to load report v2 JSON files locally and summarize patterns.",
+      "mode": "local_only"
     }
   ],
   "security": {
@@ -74,6 +89,8 @@
     "apiCatalog": "https://dripcouncil.org/.well-known/api-catalog",
     "traceSchema": "https://dripcouncil.org/schemas/drip_trace_v1.schema.json",
     "reportSchema": "https://dripcouncil.org/schemas/drip_report_v2.schema.json",
-    "policyScoreSchema": "https://dripcouncil.org/schemas/drip_policy_score_v1.schema.json"
+    "policyScoreSchema": "https://dripcouncil.org/schemas/drip_policy_score_v1.schema.json",
+    "uiMap": "https://dripcouncil.org/ui-map.json",
+    "compare": "https://dripcouncil.org/compare.html"
   }
 }
