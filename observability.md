@@ -2,6 +2,10 @@
 
 Drip Council reports and traces are local text only. The site does not connect to Langfuse, Braintrust, OpenAI, OpenTelemetry, or any other service.
 
+The Fifth Seat validator is a separate local execution path: actual Rust compiled to `/wasm/boundary_validator.wasm`. It copies ballot text into WebAssembly memory, performs no upload, and fails closed if the engine cannot run. Its source is inspectable at `/rust/boundary-validator/src/lib.rs`; a ballot verdict is not telemetry.
+
+`/python/observatory_lens.py` is an inspectable, standard-library-only CLI/build artifact that converts public `drip_trace_v1` events into Council Minutes and a compact verdict. Its checked-in output is `/api/observatory-lens.json`. Python does not execute in the browser, and this artifact does not create a service connection or live telemetry path.
+
 ## Local Shapes
 
 - `drip_council_observation_report_v2`

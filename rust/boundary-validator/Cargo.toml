@@ -1,0 +1,19 @@
+[package]
+name = "boundary-validator"
+version = "1.0.0"
+edition = "2024"
+publish = false
+description = "Local-only Rust/WASM validator for Drip Council drip_ballot_v1 ballots"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+serde_json = "1.0"
+
+[profile.release]
+codegen-units = 1
+lto = true
+opt-level = "z"
+panic = "abort"
+strip = "symbols"

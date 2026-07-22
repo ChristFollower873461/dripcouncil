@@ -1,11 +1,13 @@
 {
   "schema": "drip_council_ui_map_v1",
   "site": "https://dripcouncil.org/",
-  "version": "2.0.0",
-  "release_name": "Council Worlds",
-  "mode": "static_read_only_draft_only_local_only",
+  "version": "2.1.0",
+  "release_name": "Council Worlds: Rust Boundary",
+  "mode": "static_read_only_draft_only_local_only_with_human_only_support_checkout",
   "safety": {
-    "external_writes": false,
+    "external_writes": true,
+    "external_write_scope": "human-only support checkout after explicit confirmation; no agent write path",
+    "agent_external_writes": false,
     "automatic_telemetry": false,
     "evidence": "human-visible public evidence only",
     "reasoning": "concise visible-evidence rationales; never private chain-of-thought",
@@ -27,6 +29,12 @@
       "world": "OBSERVATORY.py",
       "path": "/observatory.html",
       "purpose": "Replay a fixed sample trace and inspect readable Council Minutes; not live agent telemetry.",
+      "implementation": {
+        "browser": "local fixed-sample replay",
+        "python_source": "/python/observatory_lens.py",
+        "python_artifact": "/api/observatory-lens.json",
+        "python_runtime": "stdlib-only CLI/build artifact; Python does not execute in the browser"
+      },
       "selectors": {
         "world": "[data-agent='observatory-world']",
         "mode": "[data-agent='observation-mode']",
@@ -38,9 +46,19 @@
     {
       "world": "BOUNDARY.rs / Fifth Seat",
       "path": "/fifth-seat.html",
-      "purpose": "Load, validate, and locally seat a bounded public ballot.",
+      "purpose": "Load, validate, and locally seat a bounded public ballot with actual Rust compiled to WebAssembly.",
+      "implementation": {
+        "language": "Rust",
+        "compile_target": "wasm32-unknown-unknown",
+        "source": "/rust/boundary-validator/src/lib.rs",
+        "manifest": "/rust/boundary-validator/Cargo.toml",
+        "module": "/wasm/boundary_validator.wasm",
+        "network_upload": false,
+        "failure_mode": "fail closed with no valid verdict"
+      },
       "selectors": {
         "page": "[data-agent='fifth-seat-page']",
+        "engine": "[data-agent='validator-engine']",
         "panel": "[data-agent='fifth-seat-ballot-panel']",
         "input": "[data-agent='ballot-input']",
         "result": "[data-agent='seat-result']"
@@ -62,7 +80,12 @@
   ],
   "machine_routes": [
     {"path": "/api/council-sessions.json", "purpose": "current public case and sample Council trail"},
+    {"path": "/api/observatory-lens.json", "purpose": "checked-in output from the stdlib-only Python Observatory build lens"},
     {"path": "/schemas/drip_ballot_v1.schema.json", "purpose": "local Fifth Seat ballot contract"},
+    {"path": "/python/observatory_lens.py", "purpose": "inspectable Python CLI/build lens; not executed in the browser"},
+    {"path": "/rust/boundary-validator/src/lib.rs", "purpose": "inspectable Rust ballot validator source"},
+    {"path": "/rust/boundary-validator/Cargo.toml", "purpose": "Rust ballot validator crate manifest"},
+    {"path": "/wasm/boundary_validator.wasm", "purpose": "compiled browser-executable ballot validator"},
     {"path": "/agent.json", "purpose": "agent orientation and safety policy"},
     {"path": "/version.json", "purpose": "freshness beacon"}
   ],

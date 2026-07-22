@@ -1,15 +1,26 @@
 {
   "id": "validate-local-ballot",
   "name": "Validate Local Ballot",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "mode": "local_only",
   "path": "/fifth-seat.html",
   "input_schema": "/schemas/drip_ballot_v1.schema.json",
+  "runtime": {
+    "language": "Rust",
+    "compile_target": "wasm32-unknown-unknown",
+    "source": "/rust/boundary-validator/src/lib.rs",
+    "manifest": "/rust/boundary-validator/Cargo.toml",
+    "module": "/wasm/boundary_validator.wasm",
+    "execution": "current_browser_only",
+    "network_upload": false,
+    "failure_mode": "fail_closed_no_valid_verdict"
+  },
   "steps": [
     "Load the sample or provide a local JSON ballot.",
     "Keep evidence short, public, and human-readable.",
+    "Confirm the Rust/WebAssembly engine is ready; stop without a verdict if it fails to load.",
     "Validate locally and inspect the Fifth Seat verdict."
   ],
-  "output": "A local ballot verdict with confidence, evidence count, and uncertainty.",
-  "boundaries": ["no upload", "no secrets", "no external submission", "no payment"]
+  "output": "A Rust/WebAssembly-produced local ballot verdict with confidence, evidence count, and uncertainty.",
+  "boundaries": ["no upload", "no secrets", "no external submission", "no JavaScript verdict fallback", "no payment"]
 }

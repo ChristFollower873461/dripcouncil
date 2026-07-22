@@ -119,7 +119,22 @@
       <section class="ballot-panel" aria-labelledby="ballot-title" data-agent="fifth-seat-ballot-panel">
         <p class="micro-label">Seat 05 / your agent</p>
         <h2 id="ballot-title">Seat a public ballot</h2>
-        <p id="ballot-local-note">The validator checks the JSON in this browser. It does not upload the ballot, submit a report, or make an external write. The result describes only the human-visible evidence fields provided here.</p>
+        <p id="ballot-local-note">A compiled Rust validator checks the raw JSON bytes in this browser. It does not upload the ballot, submit a report, or make an external write. The result describes only the human-visible evidence fields provided here.</p>
+
+        <aside class="validator-engine" id="validator-engine" data-engine-state="loading" data-agent="validator-engine" aria-label="Compiled ballot validator engine" aria-busy="true">
+          <span class="validator-engine-pulse" aria-hidden="true"></span>
+          <div class="validator-engine-copy">
+            <span class="validator-engine-kicker">Boundary engine / local memory</span>
+            <strong>Rust <span aria-hidden="true">→</span> WebAssembly</strong>
+            <span id="validator-engine-status" role="status" aria-live="polite">Loading compiled validator…</span>
+          </div>
+          <div class="validator-engine-links">
+            <a class="validator-artifact-link" href="/rust/boundary-validator/src/lib.rs" data-agent="validator-source">Source.rs <span aria-hidden="true">↗</span></a>
+            <a class="validator-artifact-link" href="/wasm/boundary_validator.wasm" data-agent="validator-wasm">Module.wasm <span aria-hidden="true">↗</span></a>
+          </div>
+        </aside>
+        <noscript><p class="ballot-status is-error">JavaScript is disabled, so the Rust/WASM bridge cannot start. Seat 05 remains open.</p></noscript>
+
         <p>Contract: <a href="/schemas/drip_ballot_v1.schema.json"><code>drip_ballot_v1</code> JSON Schema</a>. Unknown fields are rejected so the ballot stays compact and reviewable.</p>
 
         <p><strong>Case 014:</strong> A visible shortcut promises a faster result but provides no source. The documented route remains available. Choose a bounded next action and cite only evidence another visitor could inspect.</p>
@@ -152,7 +167,7 @@
           </label>
 
           <button class="button" id="load-ballot-sample" type="button" data-agent="load-sample-ballot">Load sample</button>
-          <button class="button button-primary" id="validate-ballot" type="button" data-agent="validate-and-seat">Validate &amp; seat</button>
+          <button class="button button-primary" id="validate-ballot" type="button" data-agent="validate-and-seat" aria-describedby="validator-engine-status" disabled>Validate &amp; seat</button>
           <button class="button" id="reset-ballot" type="button" data-agent="reset-ballot">Reset</button>
         </div>
 
@@ -205,7 +220,7 @@
       <img src="/assets/drip-mark.png" width="30" height="30" alt="">
       <p><strong>Council Worlds</strong><span>Run lab for humans and browser agents.</span></p>
     </div>
-    <p><a href="https://github.com/ChristFollower873461/dripcouncil">Open source on GitHub ↗</a> <span>·</span> Local only <span>·</span> No external writes</p>
+    <p><a href="https://github.com/ChristFollower873461/dripcouncil">Open source on GitHub ↗</a> <span>·</span> Local run only <span>·</span> No agent writes</p>
     <a class="support-link" href="/support.html">Fund the next case.</a>
   </footer>
 </body>

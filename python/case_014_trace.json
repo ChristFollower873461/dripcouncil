@@ -1,0 +1,68 @@
+{
+  "schema": "drip_trace_v1",
+  "mode": "local_memory_only",
+  "privacy": "field_values_redacted_no_network",
+  "started_at": "2026-07-21T00:00:00.000Z",
+  "active": false,
+  "event_count": 4,
+  "max_scroll_depth_percent": 0,
+  "viewport": {
+    "width": 0,
+    "height": 0
+  },
+  "user_agent_hint": "Council Worlds deterministic sample replay; not live telemetry",
+  "events": [
+    {
+      "type": "inspect",
+      "at": "2026-07-21T00:00:00.000Z",
+      "elapsed_ms": 0,
+      "path": "/observatory.html",
+      "hash": null,
+      "details": {
+        "surface": "public_notice",
+        "result": "two claims found",
+        "view_mode": "human",
+        "language_lens": "py"
+      }
+    },
+    {
+      "type": "compare",
+      "at": "2026-07-21T00:00:00.940Z",
+      "elapsed_ms": 940,
+      "path": "/observatory.html",
+      "hash": null,
+      "details": {
+        "surface": "shortcut",
+        "result": "claim lacks source",
+        "view_mode": "human",
+        "language_lens": "py"
+      }
+    },
+    {
+      "type": "name_uncertainty",
+      "at": "2026-07-21T00:00:01.710Z",
+      "elapsed_ms": 1710,
+      "path": "/observatory.html",
+      "hash": null,
+      "details": {
+        "surface": "case_context",
+        "result": "author unknown",
+        "view_mode": "human",
+        "language_lens": "py"
+      }
+    },
+    {
+      "type": "recover",
+      "at": "2026-07-21T00:00:02.480Z",
+      "elapsed_ms": 2480,
+      "path": "/observatory.html",
+      "hash": null,
+      "details": {
+        "surface": "boundary",
+        "result": "external action skipped",
+        "view_mode": "human",
+        "language_lens": "py"
+      }
+    }
+  ]
+}
