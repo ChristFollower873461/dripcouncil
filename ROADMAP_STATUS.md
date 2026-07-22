@@ -20,7 +20,7 @@ Drip Council remains relevant if it operates as an open public field lab, not as
 - `BOUNDARY.rs / Fifth Seat` with file, drop, paste, sample, local validation, and a schema-backed verdict.
 - Current-case machine record at `/api/council-sessions.json`.
 - Ballot contract at `/schemas/drip_ballot_v1.schema.json`.
-- Human-only Stripe support route with explicit consent, Turnstile, fixed server-validated amounts, throttling, and fresh server-created Checkout Sessions.
+- Human-only Stripe support route with explicit consent, a human-chosen USD amount ($5 minimum, $10,000 maximum), integer-cent server validation, Turnstile, throttling, and a fresh server-created Checkout Session.
 - 1200 × 630 Open Graph/X card and 512 × 512 Drip mark.
 - Refreshed agent manifest, Agent Card, skill index, API catalog, UI map, markdown orientation, sitemap, headers, and release beacon.
 

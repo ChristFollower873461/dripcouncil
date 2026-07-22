@@ -6,11 +6,9 @@ const ALLOWED_HOSTS = new Set([
   "127.0.0.1"
 ]);
 
-const AMOUNTS = {
-  five: { label: "$5", cents: 500 },
-  ten: { label: "$10", cents: 1000 },
-  twentyfive: { label: "$25", cents: 2500 }
-};
+const CURRENCY = "usd";
+const MINIMUM_CENTS = 500;
+const MAXIMUM_CENTS = 1_000_000;
 
 const ATTEMPT_WINDOW_MS = 10 * 60 * 1000;
 const MAX_ATTEMPTS_PER_WINDOW = 3;
@@ -51,12 +49,18 @@ function requestOrigin(context) {
   }
 }
 
+function allowedHostname(hostname) {
+  if (typeof hostname !== "string") return false;
+  const normalized = hostname.toLowerCase().replace(/\.$/, "");
+  return ALLOWED_HOSTS.has(normalized) || normalized.endsWith(".dripcouncil.pages.dev");
+}
+
 function allowedRequest(context) {
   const host = requestHost(context);
   const origin = requestOrigin(context);
-  if (!ALLOWED_HOSTS.has(host)) return false;
+  if (!allowedHostname(host)) return false;
   if (!origin) return true;
-  return ALLOWED_HOSTS.has(origin.hostname);
+  return allowedHostname(origin.hostname);
 }
 
 function clientIp(context) {
@@ -95,12 +99,11 @@ async function validateTurnstile(context, token) {
   const result = await response.json();
   if (!result.success) return false;
   if (result.action && result.action !== "drip_support_checkout") return false;
-  if (result.hostname && !ALLOWED_HOSTS.has(result.hostname)) return false;
+  if (result.hostname && !allowedHostname(result.hostname)) return false;
   return true;
 }
 
-async function createCheckoutSession(context, amountKey) {
-  const amount = AMOUNTS[amountKey];
+async function createCheckoutSession(context, amountCents) {
   const url = new URL(context.request.url);
   const siteOrigin = `${url.protocol}//${url.host}`;
   const stripeKey = context.env.STRIPE_SECRET_KEY || context.env.STRIPE_API_KEY;
@@ -109,21 +112,20 @@ async function createCheckoutSession(context, amountKey) {
   params.set("mode", "payment");
   params.set("success_url", context.env.SUPPORT_SUCCESS_URL || `${siteOrigin}/support.html?support=success`);
   params.set("cancel_url", context.env.SUPPORT_CANCEL_URL || `${siteOrigin}/support.html?support=cancel`);
-  params.set("payment_method_types[0]", "card");
   params.set("billing_address_collection", "auto");
   params.set("customer_creation", "if_required");
   params.set("client_reference_id", `drip-support-${crypto.randomUUID()}`);
   params.set("line_items[0][quantity]", "1");
-  params.set("line_items[0][price_data][currency]", "usd");
-  params.set("line_items[0][price_data][unit_amount]", String(amount.cents));
+  params.set("line_items[0][price_data][currency]", CURRENCY);
+  params.set("line_items[0][price_data][unit_amount]", String(amountCents));
   params.set("line_items[0][price_data][product_data][name]", "Drip Council Research Support");
   params.set("line_items[0][price_data][product_data][description]", "Human-approved support for Drip Council research.");
   params.set("metadata[purpose]", "drip_council_research_support");
   params.set("metadata[source]", "server_side_turnstile_checkout");
-  params.set("metadata[amount_key]", amountKey);
+  params.set("metadata[amount_cents]", String(amountCents));
   params.set("payment_intent_data[metadata][purpose]", "drip_council_research_support");
   params.set("payment_intent_data[metadata][source]", "server_side_turnstile_checkout");
-  params.set("payment_intent_data[metadata][amount_key]", amountKey);
+  params.set("payment_intent_data[metadata][amount_cents]", String(amountCents));
 
   const response = await fetch("https://api.stripe.com/v1/checkout/sessions", {
     method: "POST",
@@ -139,7 +141,16 @@ async function createCheckoutSession(context, amountKey) {
   if (!response.ok || !payload.url) {
     return null;
   }
-  return payload.url;
+
+  try {
+    const checkoutUrl = new URL(payload.url);
+    if (checkoutUrl.protocol !== "https:" || checkoutUrl.hostname !== "checkout.stripe.com") {
+      return null;
+    }
+    return checkoutUrl.href;
+  } catch {
+    return null;
+  }
 }
 
 export async function onRequestGet(context) {
@@ -147,14 +158,13 @@ export async function onRequestGet(context) {
     return json({ enabled: false, error: "origin_not_allowed" }, { status: 403 });
   }
 
+  const enabled = configured(context.env);
   return json({
-    enabled: configured(context.env),
-    turnstileSiteKey: configured(context.env) ? context.env.TURNSTILE_SITE_KEY : null,
-    amounts: Object.entries(AMOUNTS).map(([key, amount]) => ({
-      key,
-      label: amount.label,
-      cents: amount.cents
-    }))
+    enabled,
+    turnstileSiteKey: enabled ? context.env.TURNSTILE_SITE_KEY : null,
+    currency: CURRENCY,
+    minimumCents: MINIMUM_CENTS,
+    maximumCents: MAXIMUM_CENTS
   });
 }
 
@@ -176,9 +186,13 @@ export async function onRequestPost(context) {
     return json({ error: "invalid_json" }, { status: 400 });
   }
 
-  const amountKey = String(payload.amount || "");
-  const token = String(payload.turnstileToken || "");
-  if (!AMOUNTS[amountKey]) {
+  const amountCents = payload?.amountCents;
+  const token = String(payload?.turnstileToken || "");
+  if (
+    !Number.isInteger(amountCents) ||
+    amountCents < MINIMUM_CENTS ||
+    amountCents > MAXIMUM_CENTS
+  ) {
     return json({ error: "invalid_amount" }, { status: 400 });
   }
   if (!token) {
@@ -190,7 +204,7 @@ export async function onRequestPost(context) {
     return json({ error: "human_check_failed" }, { status: 403 });
   }
 
-  const checkoutUrl = await createCheckoutSession(context, amountKey);
+  const checkoutUrl = await createCheckoutSession(context, amountCents);
   if (!checkoutUrl) {
     return json({ error: "checkout_unavailable" }, { status: 502 });
   }

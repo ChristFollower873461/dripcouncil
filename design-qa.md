@@ -37,7 +37,8 @@ The implementation preserves the selected direction’s hard-cornered editorial 
 - Downloaded Observatory JSON conforms to `drip_trace_v1`.
 - Fifth Seat sample loads, validates, and lights Seat 05 locally.
 - Fifth Seat rejects malformed confidence, evidence, uncertainty, world, optional field types, and unknown fields.
-- Support remains unavailable on a plain static server and exposes checkout only after explicit human confirmation plus configured server protections.
+- Support remains unavailable on a plain static server and exposes checkout only after explicit human confirmation, a valid human-chosen amount from $5 through $10,000 USD, Turnstile, and configured server protections.
+- Support uses no reusable public Stripe Payment Link; each accepted request receives a fresh Stripe-hosted Checkout Session URL.
 
 ## Accessibility and resilience
 

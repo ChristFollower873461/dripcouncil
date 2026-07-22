@@ -39,7 +39,7 @@ The Cloudflare Pages Function requires:
 - `TURNSTILE_SECRET_KEY`
 - `STRIPE_SECRET_KEY` or `STRIPE_API_KEY`
 
-The static page contains no reusable Stripe Payment Link. After explicit human confirmation and Turnstile verification, the server validates a fixed amount and creates a fresh Stripe Checkout Session.
+The static page contains no reusable Stripe Payment Link. A human may choose a one-time USD amount from $5 through $10,000. After explicit human confirmation, the browser sends the amount as integer `amountCents`; the server independently enforces the range, verifies Turnstile, applies request throttling, and creates a fresh Stripe-hosted Checkout Session URL.
 
 ## Verify
 

@@ -24,7 +24,7 @@
     "Reframed Drip Council as a public field lab rather than a generic benchmark.",
     "Unified three visually distinct coding-language worlds under one Council system.",
     "Added a public machine session record, explicit sample trace replay, and bounded ballot workflow.",
-    "Separated optional human-only Stripe support from every agent action path.",
+    "Added optional human-only Stripe support with a $5 minimum custom amount and fresh protected Checkout Sessions, separate from every agent action path.",
     "Added a 1200 by 630 social card and square Drip mark for rich link sharing."
   ],
   "safety": {

@@ -7,6 +7,7 @@ const requiredFiles = [
   "observatory.html",
   "fifth-seat.html",
   "support.html",
+  "functions/api/support/checkout.js",
   "styles/council-worlds.css",
   "scripts/council-worlds.mjs",
   "site.webmanifest",
@@ -116,7 +117,8 @@ const sources = {
   robots: await read("robots.txt"),
   build: await read("scripts/build.sh"),
   llms: await read("llms.txt"),
-  agents: await read("AGENTS.md")
+  agents: await read("AGENTS.md"),
+  supportCheckout: await read("functions/api/support/checkout.js")
 };
 
 const expectations = [
@@ -135,8 +137,21 @@ const expectations = [
   [sources.fifthSeat, "drip_ballot_v1", "Fifth Seat ballot contract"],
   [sources.script, "validateBallot", "local ballot validation"],
   [sources.script, "initObservatoryWorld", "Observatory interaction"],
+  [sources.support, "id=\"support-human-confirmation\"", "human support confirmation control"],
   [sources.support, "data-support-consent", "human support consent"],
+  [sources.support, "id=\"support-amount\"", "custom support amount control"],
+  [sources.support, "data-support-amount-input", "custom support amount selector"],
+  [sources.support, "id=\"support-turnstile\"", "support Turnstile mount"],
+  [sources.support, "data-support-action=\"checkout\"", "support checkout action"],
   [sources.support, "/api/support/checkout", "server checkout endpoint"],
+  [sources.support, "amountCents", "integer-cent checkout request"],
+  [sources.support, "$5 minimum", "support minimum disclosure"],
+  [sources.supportCheckout, "const MINIMUM_CENTS = 500", "server support minimum"],
+  [sources.supportCheckout, "const MAXIMUM_CENTS = 1_000_000", "server support maximum"],
+  [sources.supportCheckout, "Number.isInteger(amountCents)", "server integer-cent validation"],
+  [sources.supportCheckout, "validateTurnstile(context, token)", "server Turnstile validation"],
+  [sources.supportCheckout, "throttle(context)", "server support throttling"],
+  [sources.supportCheckout, "checkout.stripe.com", "fresh Stripe Checkout URL allowlist"],
   [sources.api, "\"case_id\": \"case_014\"", "current Council case"],
   [sources.api, "private chain of thought", "public evidence boundary"],
   [sources.ballot, "\"const\": \"drip_ballot_v1\"", "ballot schema id"],
@@ -155,6 +170,10 @@ const expectations = [
 
 for (const [haystack, needle, label] of expectations) {
   if (!haystack.includes(needle)) fail(`missing ${label}: ${needle}`);
+}
+
+if (/buy\.stripe\.com/i.test(sources.support)) {
+  fail("support.html must not expose a reusable public Stripe Payment Link");
 }
 
 function assertPngDimensions(path, expectedWidth, expectedHeight) {
