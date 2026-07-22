@@ -1,7 +1,7 @@
 {
   "schema": "drip_council_agent_skills_index_v1",
   "site": "https://dripcouncil.org/",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "mode": "static_read_only_draft_only_local_only",
   "safety": {
     "external_writes": false,
@@ -24,6 +24,9 @@
       "name": "Replay Sample Trace",
       "path": "render-public-trace.json",
       "mode": "local_only",
+      "implementation": "browser sample replay plus inspectable stdlib-only Python CLI/build lens",
+      "source": "/python/observatory_lens.py",
+      "artifact": "/api/observatory-lens.json",
       "output": "fixed sample drip_trace_v1 and Council Minutes"
     },
     {
@@ -31,6 +34,9 @@
       "name": "Validate Local Ballot",
       "path": "validate-local-ballot.json",
       "mode": "local_only",
+      "implementation": "Rust compiled to browser WebAssembly",
+      "source": "/rust/boundary-validator/src/lib.rs",
+      "module": "/wasm/boundary_validator.wasm",
       "output": "validated drip_ballot_v1 verdict"
     }
   ],

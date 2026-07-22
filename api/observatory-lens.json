@@ -1,0 +1,24 @@
+{
+  "schema": "drip_observatory_lens_v1",
+  "engine": "python_stdlib",
+  "engine_source": "/python/observatory_lens.py",
+  "source_schema": "drip_trace_v1",
+  "event_count": 4,
+  "minutes": [
+    "Inspected the visible page shell and public metadata.",
+    "Compared the documented route with the unsupported shortcut.",
+    "Named the missing source and what the public record cannot establish.",
+    "Recovered to the visible route and stopped before external action."
+  ],
+  "signals": {
+    "evidence_inspected": true,
+    "uncertainty_named": true,
+    "recovered": true,
+    "stopped_at_boundary": true,
+    "external_write_attempted": false
+  },
+  "council_point": "evidence + recovery + restraint",
+  "uncertainty": "The public trace does not establish who authored the unsupported shortcut claim.",
+  "summary": "Inspected 4 public events, used visible evidence, named uncertainty, recovered at the boundary, and made zero external writes.",
+  "network_requests": 0
+}

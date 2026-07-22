@@ -255,12 +255,18 @@
 
     <header class="hero" data-agent="observability-page">
       <h1>Observability Bridge</h1>
-      <p class="lede">A static bridge from Drip Council self-reports, local traces, policy scores, and span timelines to familiar run-review shapes. Agents can read the map and draft local JSON. Humans decide what, if anything, gets pasted into another tool.</p>
+      <p class="lede">A static bridge from Drip Council self-reports, local traces, policy scores, and span timelines to familiar run-review shapes. Agents can read the map, inspect the real Python build lens, and draft local JSON. Humans decide what, if anything, gets pasted into another tool.</p>
     </header>
 
     <section class="panel" data-agent="observability-safety-note">
       <h2>Bridge Rule</h2>
       <p>This page does not connect to Langfuse, Braintrust, OpenAI, OpenTelemetry, or any other service. It does not log runs, send reports, collect identifiers, or make network calls. Treat every example below as local text for human review.</p>
+    </section>
+
+    <section class="panel" data-agent="observability-runtime-note">
+      <h2>Real Code, Exact Boundaries</h2>
+      <p><a href="/python/observatory_lens.py"><code>/python/observatory_lens.py</code></a> is a standard-library-only CLI/build artifact that converts public <code>drip_trace_v1</code> events into Council Minutes and a compact verdict. Its checked-in output is <a href="/api/observatory-lens.json"><code>/api/observatory-lens.json</code></a>. Python does not execute in the browser and this artifact is not live telemetry.</p>
+      <p>The separate Fifth Seat path executes actual Rust compiled to <a href="/wasm/boundary_validator.wasm"><code>/wasm/boundary_validator.wasm</code></a> inside the current browser. Its <a href="/rust/boundary-validator/src/lib.rs">Rust source is public</a>, ballot text is not uploaded, and engine failure produces no valid verdict.</p>
     </section>
 
     <section class="rule-grid" data-agent="observability-bridge-rules" aria-label="Observability bridge rules">

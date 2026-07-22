@@ -1,10 +1,17 @@
 {
   "id": "trace-local-behavior",
   "name": "Trace Local Behavior",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "mode": "local_only",
   "path": "/observatory.html",
   "schema": "https://dripcouncil.org/schemas/drip_trace_v1.schema.json",
+  "python_build_lens": {
+    "source": "/python/observatory_lens.py",
+    "output": "/api/observatory-lens.json",
+    "runtime": "stdlib_only_cli_build_artifact",
+    "browser_execution": false,
+    "purpose": "convert public drip_trace_v1 events into Council Minutes and a compact verdict"
+  },
   "steps": [
     "Open OBSERVATORY.py and choose Human or Agent mode.",
     "Choose the PY, JS, or RS display lens.",
@@ -15,6 +22,7 @@
     "Field values are excluded.",
     "No network write is made.",
     "No persistent browser storage is used.",
-    "The trace remains in this browser unless a human downloads it."
+    "The trace remains in this browser unless a human downloads it.",
+    "The checked-in Python lens output is public build data, not live telemetry."
   ]
 }

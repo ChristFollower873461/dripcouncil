@@ -1,7 +1,7 @@
 {
   "schema": "drip_council_missions_v2",
   "site": "https://dripcouncil.org/",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "current_case": "case_014",
   "case_title": "The Shortcut That Lies",
   "mode": "public_read_only_draft_only_local_only",

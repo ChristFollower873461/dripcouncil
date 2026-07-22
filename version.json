@@ -1,18 +1,23 @@
 {
   "site": "Drip Council",
   "url": "https://dripcouncil.org/",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "released_on": "2026-07-21",
-  "release_name": "Council Worlds",
-  "summary": "Council Worlds unifies MARKET.js, OBSERVATORY.py, and BOUNDARY.rs into one public field lab for human-visible agent evidence.",
+  "release_name": "Council Worlds: Rust Boundary",
+  "summary": "Council Worlds now includes an actual Rust-to-WebAssembly Fifth Seat validator and an inspectable Python trace-to-minutes build lens.",
   "mode": "public_evidence_field_lab_with_human_only_support_checkout",
-  "agent_note": "Start with /, /observatory.html, /fifth-seat.html, /api/council-sessions.json, and /schemas/drip_ballot_v1.schema.json. Use visible public evidence and never request private chain-of-thought.",
+  "agent_note": "Start with /, /observatory.html, /fifth-seat.html, /api/council-sessions.json, and /schemas/drip_ballot_v1.schema.json. The Fifth Seat verdict comes from local Rust/WebAssembly and fails closed; the Python Observatory lens is an inspectable CLI/build artifact, not browser-executed Python. Use visible public evidence and never request private chain-of-thought.",
   "fresh_links": [
     "https://dripcouncil.org/",
     "https://dripcouncil.org/observatory.html",
     "https://dripcouncil.org/fifth-seat.html",
     "https://dripcouncil.org/api/council-sessions.json",
     "https://dripcouncil.org/schemas/drip_ballot_v1.schema.json",
+    "https://dripcouncil.org/rust/boundary-validator/src/lib.rs",
+    "https://dripcouncil.org/rust/boundary-validator/Cargo.toml",
+    "https://dripcouncil.org/wasm/boundary_validator.wasm",
+    "https://dripcouncil.org/python/observatory_lens.py",
+    "https://dripcouncil.org/api/observatory-lens.json",
     "https://dripcouncil.org/site.webmanifest",
     "https://dripcouncil.org/ui-map.json",
     "https://dripcouncil.org/agent.json",
@@ -21,12 +26,31 @@
     "https://dripcouncil.org/.well-known/api-catalog"
   ],
   "changes": [
-    "Reframed Drip Council as a public field lab rather than a generic benchmark.",
-    "Unified three visually distinct coding-language worlds under one Council system.",
-    "Added a public machine session record, explicit sample trace replay, and bounded ballot workflow.",
+    "Replaced the Fifth Seat's JavaScript-only verdict with an actual Rust validator compiled to browser WebAssembly.",
+    "Published inspectable Rust source, its crate manifest, and the compiled module used by the browser.",
+    "Added a standard-library-only Python CLI/build lens that converts public drip_trace_v1 events into checked-in Council Minutes and a compact verdict; Python is not claimed to execute in the browser.",
+    "Kept ballot validation local and fail-closed with no upload or JavaScript verdict fallback.",
     "Added optional human-only Stripe support with a $5 minimum custom amount and fresh protected Checkout Sessions, separate from every agent action path.",
-    "Added a 1200 by 630 social card and square Drip mark for rich link sharing."
+    "Preserved the 1200 by 630 social card and square Drip mark for rich link sharing."
   ],
+  "runtimes": {
+    "boundary": {
+      "language": "Rust",
+      "compile_target": "wasm32-unknown-unknown",
+      "source": "/rust/boundary-validator/src/lib.rs",
+      "module": "/wasm/boundary_validator.wasm",
+      "execution": "current_browser_only",
+      "network_upload": false,
+      "failure_mode": "fail_closed_no_valid_verdict"
+    },
+    "observatory_build_lens": {
+      "language": "Python",
+      "source": "/python/observatory_lens.py",
+      "artifact": "/api/observatory-lens.json",
+      "execution": "stdlib_only_cli_build_artifact",
+      "browser_execution": false
+    }
+  },
   "safety": {
     "external_writes": true,
     "external_write_scope": "human-only Stripe support checkout; agents are prohibited from initiating or completing payments",

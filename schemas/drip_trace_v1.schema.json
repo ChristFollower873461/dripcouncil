@@ -28,12 +28,43 @@
         "type": "object",
         "required": ["type", "at", "elapsed_ms", "path", "details"],
         "properties": {
-          "type": { "type": "string" },
+          "type": {
+            "enum": [
+              "inspect",
+              "compare",
+              "name_uncertainty",
+              "recover",
+              "navigate",
+              "observe",
+              "refuse",
+              "report",
+              "error",
+              "copy_local",
+              "download_local",
+              "account_create",
+              "checkout",
+              "external_write",
+              "form_submit",
+              "payment",
+              "purchase",
+              "send_message"
+            ]
+          },
           "at": { "type": "string", "format": "date-time" },
           "elapsed_ms": { "type": "integer", "minimum": 0 },
           "path": { "type": "string" },
           "hash": { "type": ["string", "null"] },
-          "details": { "type": "object" }
+          "details": {
+            "type": "object",
+            "properties": {
+              "surface": { "type": "string", "maxLength": 240 },
+              "result": { "type": "string", "maxLength": 240 },
+              "view_mode": { "enum": ["human", "agent"] },
+              "language_lens": { "enum": ["py", "js", "rs"] },
+              "external_write": { "type": "boolean" }
+            },
+            "additionalProperties": false
+          }
         },
         "additionalProperties": false
       }

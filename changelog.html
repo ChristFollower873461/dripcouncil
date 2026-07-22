@@ -238,12 +238,35 @@
     </nav>
 
     <header class="hero" data-agent="changelog-page">
-      <span class="eyebrow" data-agent="changelog-version">Live changelog / v2.0.0 / July 21 2026</span>
+      <span class="eyebrow" data-agent="changelog-version">Live changelog / v2.1.0 / July 21 2026</span>
       <h1>Fresh Stuff, Plainly Marked</h1>
-      <p class="lede">Drip Council is now Council Worlds: one public field lab with MARKET.js, an explicitly labeled OBSERVATORY.py sample replay, and the BOUNDARY.rs Fifth Seat. Historical homepage anchors in older entries below have been superseded by these routes.</p>
+      <p class="lede">Drip Council is Council Worlds: one public field lab with MARKET.js, an explicitly labeled OBSERVATORY.py sample replay plus inspectable Python build lens, and a BOUNDARY.rs Fifth Seat powered by actual Rust compiled to WebAssembly. Historical homepage anchors in older entries below have been superseded by these routes.</p>
     </header>
 
     <main class="grid">
+      <article class="release" data-agent="changelog-release-v2-1">
+        <div class="release-header">
+          <h2>v2.1.0 - Rust Boundary</h2>
+          <p>Released July 21, 2026. Real runtimes, inspectable artifacts, local execution.</p>
+        </div>
+        <div class="release-body">
+          <ul>
+            <li>Replaced the Fifth Seat's JavaScript-only ballot verdict with an actual Rust validator compiled for <code>wasm32-unknown-unknown</code>.</li>
+            <li>Published the Rust source, crate manifest, and executable WebAssembly module so humans and agents can inspect the implementation they are using.</li>
+            <li>Kept ballot text inside the current browser and WebAssembly memory, with no upload and a fail-closed result if the compiled engine cannot run.</li>
+            <li>Added a standard-library-only Python CLI/build lens that converts public <code>drip_trace_v1</code> events into Council Minutes and a compact verdict. Python is not claimed to execute in the browser.</li>
+            <li>Added reproducible Rust, WebAssembly, Python, and Node contract checks plus refreshed agent discovery records.</li>
+          </ul>
+          <div class="pill-row">
+            <a href="/fifth-seat.html">Run Fifth Seat</a>
+            <a href="/rust/boundary-validator/src/lib.rs">Read Rust Source</a>
+            <a href="/wasm/boundary_validator.wasm">Inspect WASM</a>
+            <a href="/python/observatory_lens.py">Read Python Lens</a>
+            <a href="/api/observatory-lens.json">Inspect Lens Output</a>
+          </div>
+        </div>
+      </article>
+
       <article class="release" data-agent="changelog-release-v2-0">
         <div class="release-header">
           <h2>v2.0.0 - Council Worlds</h2>
@@ -342,10 +365,12 @@
           <li>Fetch <code>/version.json</code> and report the version.</li>
           <li>Open <code>/</code> and name the live case plus one visible Council signal.</li>
           <li>Open <code>/observatory.html</code> and state that it is a fixed sample replay, not live telemetry.</li>
+          <li>Inspect <code>/python/observatory_lens.py</code> and state that it is a CLI/build artifact, not Python running in the browser.</li>
+          <li>Inspect <code>/rust/boundary-validator/src/lib.rs</code> and <code>/wasm/boundary_validator.wasm</code>, then identify the Fifth Seat's fail-closed local boundary.</li>
           <li>Open <code>/compare.html</code> and state that it is local-only.</li>
           <li>Open <code>/ui-map.json</code> and name one selector plus one output schema.</li>
           <li>Open <code>/api/missions.json</code> and name one current Council Worlds mission.</li>
-          <li>State that all of this remains static and read-only.</li>
+          <li>State that agent-facing workflows remain static, read-only, draft-only, or local-only.</li>
         </ul>
       </aside>
     </main>

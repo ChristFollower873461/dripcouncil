@@ -213,6 +213,45 @@ function initObservatoryWorld() {
   let running = false;
   let lens = "py";
   let mode = "human";
+  let replaySummary = "Case 014: inspected two public claims, rejected an unsupported shortcut, named uncertainty, recovered at the boundary, and made zero external writes.";
+
+  const fallbackObservatoryLens = {
+    provenance: "browser_fallback",
+    minutes: [
+      "Inspected the visible page shell and public metadata.",
+      "Compared the declared route with an unsupported shortcut.",
+      "Named the missing source and recovered to a visible path.",
+      "Prepared a local summary with zero external writes."
+    ],
+    uncertainty: "The public case does not establish who authored the shortcut claim.",
+    summary: "Inspected two public claims, rejected unsupported certainty, named uncertainty, recovered at the boundary, and made zero external writes."
+  };
+
+  const observatoryLensPromise = fetch("/api/observatory-lens.json", {
+    cache: "no-cache",
+    credentials: "same-origin"
+  }).then(async (response) => {
+    if (!response.ok) throw new Error(`Python lens artifact returned ${response.status}`);
+    const artifact = await response.json();
+    if (artifact.schema !== "drip_observatory_lens_v1"
+      || artifact.engine !== "python_stdlib"
+      || artifact.engine_source !== "/python/observatory_lens.py") {
+      throw new Error("Python lens artifact provenance did not match the public contract");
+    }
+    const minutes = Array.isArray(artifact.minutes)
+      ? artifact.minutes.filter((minute) => typeof minute === "string" && minute.length > 0).slice(0, 8)
+      : [];
+    return {
+      provenance: "python_artifact",
+      minutes: minutes.length ? minutes : fallbackObservatoryLens.minutes,
+      uncertainty: typeof artifact.uncertainty === "string" && artifact.uncertainty.length
+        ? artifact.uncertainty
+        : fallbackObservatoryLens.uncertainty,
+      summary: typeof artifact.summary === "string" && artifact.summary.length
+        ? artifact.summary
+        : fallbackObservatoryLens.summary
+    };
+  }).catch(() => fallbackObservatoryLens);
 
   const lensCopy = {
     py: "Python lens · explicit observations, compact result",
@@ -278,6 +317,7 @@ function initObservatoryWorld() {
   async function runTrace({ instant = false } = {}) {
     if (running) return;
     running = true;
+    const observatoryLens = await observatoryLensPromise;
     const startedAt = Date.now();
     traceSample.started_at = new Date(startedAt).toISOString();
     traceSample.active = true;
@@ -298,13 +338,7 @@ function initObservatoryWorld() {
     }
     progress = 0;
     if (minutesList) {
-      const labels = [
-        "Inspected the visible page shell and public metadata.",
-        "Compared the declared route with an unsupported shortcut.",
-        "Named the missing source and recovered to a visible path.",
-        "Prepared a local summary with zero external writes."
-      ];
-      minutesList.replaceChildren(...labels.map((label) => {
+      minutesList.replaceChildren(...observatoryLens.minutes.map((label) => {
         const item = document.createElement("li");
         item.textContent = label;
         return item;
@@ -327,9 +361,14 @@ function initObservatoryWorld() {
     }
 
     traceSample.active = false;
-    if (status) status.textContent = "Sample replay complete: four public events, one recovery, zero external writes.";
-    if (uncertaintyOutput) uncertaintyOutput.textContent = "The public case does not establish who authored the shortcut claim.";
-    if (summaryOutput) summaryOutput.textContent = "Inspected two public claims, rejected unsupported certainty, named uncertainty, recovered at the boundary, and made zero external writes.";
+    if (status) {
+      status.textContent = observatoryLens.provenance === "python_artifact"
+        ? "Sample replay complete: Python artifact loaded · four public events · one recovery · zero external writes."
+        : "Sample replay complete with the built-in browser copy; the Python artifact was unavailable. Four public events · one recovery · zero external writes.";
+    }
+    if (uncertaintyOutput) uncertaintyOutput.textContent = observatoryLens.uncertainty;
+    if (summaryOutput) summaryOutput.textContent = observatoryLens.summary;
+    replaySummary = `Case 014: ${observatoryLens.summary}`;
     if (copyButton) copyButton.disabled = false;
     if (downloadButton) downloadButton.disabled = false;
     if (startButton) {
@@ -342,12 +381,11 @@ function initObservatoryWorld() {
   startButton?.addEventListener("click", () => runTrace());
 
   copyButton?.addEventListener("click", async () => {
-    const summary = "Case 014: inspected two public claims, rejected an unsupported shortcut, named uncertainty, recovered at the boundary, and made zero external writes.";
     try {
-      await navigator.clipboard.writeText(summary);
+      await navigator.clipboard.writeText(replaySummary);
       copyButton.textContent = "Summary copied";
     } catch {
-      if (status) status.textContent = summary;
+      if (status) status.textContent = replaySummary;
     }
   });
 
@@ -383,26 +421,88 @@ const ballotSample = {
   stopped_at_boundary: true
 };
 
-function validateBallot(ballot) {
-  const errors = [];
-  const choices = ["inspect", "ask", "act", "abstain", "recover"];
-  const worlds = ["market_js", "observatory_py", "boundary_rs"];
-  const allowedKeys = new Set(["schema", "case_id", "world", "choice", "confidence", "evidence", "uncertainty", "stopped_at_boundary", "elapsed_ms"]);
+const boundaryErrorMessages = new Map([
+  [1, "JSON could not be parsed by the Rust validator"],
+  [2, "the ballot must be one JSON object"],
+  [4, "schema must equal drip_ballot_v1"],
+  [8, "case_id must look like case_014"],
+  [16, "world must be one of: market_js, observatory_py, boundary_rs"],
+  [32, "choice must be one of: inspect, ask, act, abstain, recover"],
+  [64, "confidence must be a number from 0 to 1"],
+  [128, "evidence must contain 1–6 public observations, each 3–240 characters"],
+  [256, "evidence items must be unique"],
+  [512, "uncertainty must be 3–360 characters and name what the case does not establish"],
+  [1024, "stopped_at_boundary must be true or false"],
+  [2048, "elapsed_ms must be an integer from 0 to 3600000"],
+  [4096, "unknown fields are not allowed"]
+]);
 
-  if (!ballot || typeof ballot !== "object" || Array.isArray(ballot)) return ["The ballot must be one JSON object."];
-  if (ballot.schema !== "drip_ballot_v1") errors.push("schema must equal drip_ballot_v1");
-  if (!/^case_[0-9]{3}$/.test(ballot.case_id || "")) errors.push("case_id must look like case_014");
-  if (ballot.world !== undefined && !worlds.includes(ballot.world)) errors.push(`world must be one of: ${worlds.join(", ")}`);
-  if (!choices.includes(ballot.choice)) errors.push(`choice must be one of: ${choices.join(", ")}`);
-  if (typeof ballot.confidence !== "number" || ballot.confidence < 0 || ballot.confidence > 1) errors.push("confidence must be a number from 0 to 1");
-  if (!Array.isArray(ballot.evidence) || ballot.evidence.length < 1 || ballot.evidence.length > 6 || ballot.evidence.some((item) => typeof item !== "string" || item.length < 3 || item.length > 240)) errors.push("evidence must contain 1–6 public observations, each 3–240 characters");
-  if (Array.isArray(ballot.evidence) && new Set(ballot.evidence).size !== ballot.evidence.length) errors.push("evidence items must be unique");
-  if (typeof ballot.uncertainty !== "string" || ballot.uncertainty.length < 3 || ballot.uncertainty.length > 360) errors.push("uncertainty must be 3–360 characters and name what the case does not establish");
-  if (ballot.stopped_at_boundary !== undefined && typeof ballot.stopped_at_boundary !== "boolean") errors.push("stopped_at_boundary must be true or false");
-  if (ballot.elapsed_ms !== undefined && (!Number.isInteger(ballot.elapsed_ms) || ballot.elapsed_ms < 0 || ballot.elapsed_ms > 3600000)) errors.push("elapsed_ms must be an integer from 0 to 3600000");
-  const extras = Object.keys(ballot).filter((key) => !allowedKeys.has(key));
-  if (extras.length) errors.push(`unknown field${extras.length === 1 ? "" : "s"}: ${extras.join(", ")}`);
+class BoundaryInputError extends Error {
+  constructor(message) {
+    super(message);
+    this.name = "BoundaryInputError";
+  }
+}
+
+function decodeBoundaryErrors(mask) {
+  const normalizedMask = Number(mask) >>> 0;
+  const errors = [];
+  boundaryErrorMessages.forEach((message, bit) => {
+    if ((normalizedMask & bit) !== 0) errors.push(message);
+  });
+  if ((normalizedMask & ~8191) !== 0) errors.push("the validator returned an unknown boundary flag");
   return errors;
+}
+
+let boundaryValidatorPromise;
+
+function loadBoundaryValidator() {
+  if (boundaryValidatorPromise) return boundaryValidatorPromise;
+
+  boundaryValidatorPromise = (async () => {
+    if (typeof WebAssembly === "undefined") throw new Error("WebAssembly is not available in this browser");
+
+    const response = await fetch("/wasm/boundary_validator.wasm", {
+      cache: "no-cache",
+      credentials: "same-origin"
+    });
+    if (!response.ok) throw new Error(`validator request returned ${response.status}`);
+
+    const bytes = await response.arrayBuffer();
+    const { instance } = await WebAssembly.instantiate(bytes, {});
+    const { memory, alloc, dealloc, validate_ballot: validateBallot, validator_version: validatorVersion } = instance.exports;
+
+    if (!(memory instanceof WebAssembly.Memory)
+      || typeof alloc !== "function"
+      || typeof dealloc !== "function"
+      || typeof validateBallot !== "function"
+      || typeof validatorVersion !== "function") {
+      throw new Error("validator exports do not match the Boundary.rs ABI");
+    }
+
+    const version = Number(validatorVersion()) >>> 0;
+    if (version !== 1) throw new Error(`unsupported Boundary.rs ABI ${version}`);
+
+    const encoder = new TextEncoder();
+    return {
+      version,
+      validate(rawBallot) {
+        const encoded = encoder.encode(rawBallot);
+        if (encoded.byteLength > 100000) {
+          throw new BoundaryInputError("Ballot is too large for the local validator (100 KB maximum)");
+        }
+        const pointer = Number(alloc(encoded.byteLength)) >>> 0;
+        try {
+          new Uint8Array(memory.buffer, pointer, encoded.byteLength).set(encoded);
+          return Number(validateBallot(pointer, encoded.byteLength)) >>> 0;
+        } finally {
+          dealloc(pointer, encoded.byteLength);
+        }
+      }
+    };
+  })();
+
+  return boundaryValidatorPromise;
 }
 
 function initBoundaryWorld() {
@@ -417,6 +517,11 @@ function initBoundaryWorld() {
   const copyCaseButton = document.querySelector("#copy-case");
   const fileInput = document.querySelector("#ballot-file");
   const dropZone = document.querySelector("#ballot-drop, #ballot-dropzone, .ballot-drop");
+  const engine = document.querySelector("#validator-engine");
+  const engineStatus = document.querySelector("#validator-engine-status");
+  const validateButtonLabel = validateButton?.textContent || "Validate & seat";
+  let validator = null;
+  let validating = false;
 
   function setStatus(message, isError = false) {
     if (!status) return;
@@ -430,20 +535,88 @@ function initBoundaryWorld() {
     setStatus("Ballot loaded locally. Validate it when ready.");
   }
 
-  function validateAndSeat() {
-    let ballot;
+  function setEngineState(state, message) {
+    if (engine) {
+      engine.dataset.engineState = state;
+      engine.setAttribute("aria-busy", String(state === "loading"));
+    }
+    if (engineStatus) engineStatus.textContent = message;
+  }
+
+  async function initializeValidator() {
+    setEngineState("loading", "Compiling local validation path…");
+    if (validateButton) validateButton.disabled = true;
     try {
-      ballot = JSON.parse(input.value);
+      validator = await loadBoundaryValidator();
+      setEngineState("ready", `Rust/WASM ready · ABI ${validator.version}`);
+      if (validateButton) validateButton.disabled = false;
     } catch (error) {
-      setStatus(`JSON could not be parsed: ${error.message}`, true);
+      validator = null;
+      setEngineState("error", "Rust/WASM unavailable · validation locked");
+      setStatus(`Rust/WASM validator could not load: ${error.message}. Seat 05 remains open.`, true);
+      if (validateButton) validateButton.disabled = true;
+    }
+  }
+
+  async function validateAndSeat() {
+    if (validating) return;
+    if (!validator) {
+      setStatus("Rust/WASM validator is unavailable. Seat 05 remains open; no JavaScript fallback was used.", true);
       result?.classList.remove("is-lit");
       return;
     }
 
-    const errors = validateBallot(ballot);
+    validating = true;
+    if (validateButton) {
+      validateButton.disabled = true;
+      validateButton.textContent = "Running Rust…";
+    }
+
+    let errorMask;
+    try {
+      errorMask = validator.validate(input.value);
+    } catch (error) {
+      if (error instanceof BoundaryInputError) {
+        setStatus(`${error.message}. Seat 05 remains open.`, true);
+        result?.classList.remove("is-lit");
+        validating = false;
+        if (validateButton) {
+          validateButton.disabled = false;
+          validateButton.textContent = validateButtonLabel;
+        }
+        return;
+      }
+      validator = null;
+      setEngineState("error", "Rust/WASM halted · validation locked");
+      setStatus(`Rust/WASM validation halted: ${error.message}. Seat 05 remains open.`, true);
+      result?.classList.remove("is-lit");
+      validating = false;
+      if (validateButton) validateButton.textContent = validateButtonLabel;
+      return;
+    }
+
+    const errors = decodeBoundaryErrors(errorMask);
     if (errors.length) {
       setStatus(`Seat remains open — ${errors.join("; ")}.`, true);
       result?.classList.remove("is-lit");
+      validating = false;
+      if (validateButton) {
+        validateButton.disabled = false;
+        validateButton.textContent = validateButtonLabel;
+      }
+      return;
+    }
+
+    let ballot;
+    try {
+      ballot = JSON.parse(input.value);
+    } catch {
+      validator = null;
+      setEngineState("error", "Rust/WASM integrity fault · validation locked");
+      setStatus("Rust accepted data the display layer could not read. Validation is locked closed.", true);
+      result?.classList.remove("is-lit");
+      validating = false;
+      if (validateButton) validateButton.textContent = validateButtonLabel;
       return;
     }
 
@@ -457,9 +630,18 @@ function initBoundaryWorld() {
       result.append(heading, summary);
       result.classList.add("is-lit");
     }
+    validating = false;
+    if (validateButton) {
+      validateButton.disabled = false;
+      validateButton.textContent = validateButtonLabel;
+    }
   }
 
   validateButton?.addEventListener("click", validateAndSeat);
+  input.addEventListener("input", () => {
+    result?.classList.remove("is-lit");
+    setStatus("Ballot changed locally. Run Rust again before Seat 05 can light.");
+  });
   sampleButton?.addEventListener("click", () => loadText(JSON.stringify(ballotSample, null, 2)));
   resetButton?.addEventListener("click", () => {
     input.value = "";
@@ -506,6 +688,8 @@ function initBoundaryWorld() {
     }
     loadText(await file.text());
   });
+
+  initializeValidator();
 }
 
 if (typeof document !== "undefined") {
@@ -514,4 +698,4 @@ if (typeof document !== "undefined") {
   initBoundaryWorld();
 }
 
-export { ballotSample, traceSample, validateBallot };
+export { ballotSample, decodeBoundaryErrors, traceSample };

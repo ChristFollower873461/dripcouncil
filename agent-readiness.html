@@ -219,7 +219,7 @@
 
     <header class="hero" data-agent="agent-readiness-page">
       <h1>Agent Readiness</h1>
-      <p class="lede">A public self-audit for Drip Council's agent-facing surface. Agents can use this page to confirm discovery files, markdown mirrors, local-only trace behavior, safety boundaries, and protocol cards before they summarize the site.</p>
+      <p class="lede">A public self-audit for Drip Council's agent-facing surface. Agents can confirm discovery files, inspect the real Rust and Python artifacts, verify local-only behavior, and check safety boundaries before they summarize the site.</p>
     </header>
 
     <section class="panel" data-agent="agent-readiness-safety-note">
@@ -266,6 +266,18 @@
         <span class="status">ready</span>
         <h3>Local Trace</h3>
         <p>The homepage trace lab records only selectors, scroll depth, hash changes, focus targets, click targets, and timing. Field values are redacted. No network request or browser storage is used.</p>
+      </article>
+
+      <article class="card" data-agent="readiness-python-lens">
+        <span class="status">ready</span>
+        <h3>Python Build Lens</h3>
+        <p><a href="/python/observatory_lens.py"><code>/python/observatory_lens.py</code></a> is a standard-library-only CLI/build artifact that turns public <code>drip_trace_v1</code> events into Council Minutes and a verdict at <a href="/api/observatory-lens.json"><code>/api/observatory-lens.json</code></a>. Python does not execute in the browser.</p>
+      </article>
+
+      <article class="card" data-agent="readiness-rust-boundary">
+        <span class="status">ready</span>
+        <h3>Rust Boundary</h3>
+        <p>Fifth Seat executes <a href="/wasm/boundary_validator.wasm">actual Rust compiled to WebAssembly</a> in the current browser. The <a href="/rust/boundary-validator/src/lib.rs">source</a> and <a href="/rust/boundary-validator/Cargo.toml">crate manifest</a> are public. Ballots are not uploaded, and engine failure returns no valid verdict.</p>
       </article>
 
       <article class="card" data-agent="readiness-policy-score">
