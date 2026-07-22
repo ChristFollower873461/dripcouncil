@@ -98,8 +98,8 @@ async function validateTurnstile(context, token) {
   if (!response.ok) return false;
   const result = await response.json();
   if (!result.success) return false;
-  if (result.action && result.action !== "drip_support_checkout") return false;
-  if (result.hostname && !allowedHostname(result.hostname)) return false;
+  if (result.action !== "drip_support_checkout") return false;
+  if (!allowedHostname(result.hostname)) return false;
   return true;
 }
 

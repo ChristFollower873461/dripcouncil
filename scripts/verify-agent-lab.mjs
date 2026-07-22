@@ -150,6 +150,8 @@ const expectations = [
   [sources.supportCheckout, "const MAXIMUM_CENTS = 1_000_000", "server support maximum"],
   [sources.supportCheckout, "Number.isInteger(amountCents)", "server integer-cent validation"],
   [sources.supportCheckout, "validateTurnstile(context, token)", "server Turnstile validation"],
+  [sources.supportCheckout, "result.action !== \"drip_support_checkout\"", "strict Turnstile action binding"],
+  [sources.supportCheckout, "!allowedHostname(result.hostname)", "strict Turnstile hostname binding"],
   [sources.supportCheckout, "throttle(context)", "server support throttling"],
   [sources.supportCheckout, "checkout.stripe.com", "fresh Stripe Checkout URL allowlist"],
   [sources.api, "\"case_id\": \"case_014\"", "current Council case"],
@@ -174,6 +176,10 @@ for (const [haystack, needle, label] of expectations) {
 
 if (/buy\.stripe\.com/i.test(sources.support)) {
   fail("support.html must not expose a reusable public Stripe Payment Link");
+}
+
+if (sources.support.includes("replace(/,/g")) {
+  fail("support.html must not reinterpret ambiguous comma-formatted payment amounts");
 }
 
 function assertPngDimensions(path, expectedWidth, expectedHeight) {

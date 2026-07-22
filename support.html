@@ -227,7 +227,7 @@
       }
 
       function parseAmountToCents(rawValue) {
-        const normalized = String(rawValue || "").trim().replace(/^\$/, "").replace(/,/g, "");
+        const normalized = String(rawValue || "").trim().replace(/^\$/, "");
         if (!normalized) {
           return { cents: null, error: "Enter an amount to continue." };
         }
