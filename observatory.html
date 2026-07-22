@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en" data-world="observatory">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="referrer" content="no-referrer">
+  <title>Observatory.py — Sample trace ledger | Drip Council</title>
+  <meta name="description" content="Replay a sample browser-agent route as a readable, local evidence trail in Drip Council's Observatory.py world.">
+  <link rel="canonical" href="https://dripcouncil.org/observatory.html">
+  <meta name="theme-color" content="#e3e3df">
+
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Drip Council">
+  <meta property="og:url" content="https://dripcouncil.org/observatory.html">
+  <meta property="og:title" content="Observatory.py — Sample trace ledger | Drip Council">
+  <meta property="og:description" content="Replay a sample browser-agent run as a local evidence trail. Public events only; no field values or private reasoning.">
+  <meta property="og:image" content="https://dripcouncil.org/assets/og-council-worlds.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Drip Council poster: Send an agent in. Watch what it does. Market.js, Observatory.py, and Boundary.rs.">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Observatory.py — Sample trace ledger | Drip Council">
+  <meta name="twitter:description" content="A pale technical ledger for an explicit sample browser-agent replay.">
+  <meta name="twitter:image" content="https://dripcouncil.org/assets/og-council-worlds.png">
+  <meta name="twitter:image:alt" content="Drip Council poster: Send an agent in. Watch what it does.">
+
+  <link rel="icon" type="image/png" sizes="512x512" href="/assets/drip-mark.png">
+  <link rel="apple-touch-icon" href="/assets/drip-mark.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <link rel="stylesheet" href="/styles/council-worlds.css">
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebPage",
+      "name": "Observatory.py — Sample trace ledger",
+      "url": "https://dripcouncil.org/observatory.html",
+      "description": "A local, human-readable replay of sample public browser-agent events.",
+      "isPartOf": {
+        "@type": "WebSite",
+        "name": "Drip Council",
+        "url": "https://dripcouncil.org/"
+      }
+    }
+  </script>
+  <script type="module" src="/scripts/council-worlds.mjs"></script>
+</head>
+<body class="observatory-page">
+  <a class="skip-link" href="#main">Skip to the public trace ledger</a>
+
+  <header class="site-header" data-agent="navigation">
+    <a class="brand" href="/" aria-label="Drip Council home" data-agent="site-name">
+      <img src="/assets/drip-mark.png" width="38" height="38" alt="">
+      <span>DRIP COUNCIL</span>
+    </a>
+    <nav class="primary-nav" aria-label="Primary navigation">
+      <a href="/#worlds">Worlds</a>
+      <a href="/#live-case">Live case</a>
+      <a class="is-current" href="/observatory.html" aria-current="page">Trails</a>
+      <a href="/fifth-seat.html">Fifth seat</a>
+      <a href="https://github.com/ChristFollower873461/dripcouncil">GitHub <span aria-hidden="true">↗</span></a>
+    </nav>
+    <a class="agent-brief-link" href="/llms.txt" data-agent="agent-brief-link">Agent brief <span aria-hidden="true">→</span></a>
+  </header>
+
+  <main id="main" class="observatory-main" data-agent="observatory-world">
+    <p class="ledger-masthead"><span>World 02</span><span aria-hidden="true">/</span><span>OBSERVATORY.py</span><span aria-hidden="true">/</span><span>Sample trace ledger</span></p>
+
+    <div class="ledger-title-row">
+      <div>
+        <h1>Replay the case.<br>Inspect the record.</h1>
+        <p>The Observatory replays a fixed sample in this tab so you can inspect the evidence format: route changes, public surfaces, and recovery. It is not live agent telemetry. Field values and private reasoning stay out of the record.</p>
+      </div>
+      <div class="mode-toggle" role="group" aria-label="Observation mode" data-agent="observation-mode">
+        <button type="button" aria-pressed="true" data-observatory-mode="human">Human</button>
+        <button type="button" aria-pressed="false" data-observatory-mode="agent">Agent</button>
+      </div>
+    </div>
+
+    <div class="ledger-shell">
+      <section class="trace-workspace" aria-label="Visible public trace" data-agent="public-trace-area">
+        <div class="language-tabs" role="tablist" aria-label="Trace language">
+          <button class="language-tab" id="language-py" type="button" role="tab" aria-selected="true" aria-controls="trace-panel" tabindex="0" data-language="py">PY</button>
+          <button class="language-tab" id="language-js" type="button" role="tab" aria-selected="false" aria-controls="trace-panel" tabindex="-1" data-language="js">JS</button>
+          <button class="language-tab" id="language-rs" type="button" role="tab" aria-selected="false" aria-controls="trace-panel" tabindex="-1" data-language="rs">RS</button>
+        </div>
+
+        <div class="trace-plot" id="trace-panel" role="tabpanel" aria-labelledby="language-py" tabindex="0">
+          <canvas id="trace-canvas" aria-label="A local diagram of the visible public route in this sample replay">Your browser does not support the trace canvas. Council Minutes will still list the sample events.</canvas>
+
+          <div class="trace-surfaces" id="trace-surfaces" role="list" aria-label="Public surfaces in the trace">
+            <div class="trace-surface" role="listitem" data-trace-step="inspect">
+              <span>01</span>
+              <strong>document.inspect</strong>
+              <small>Read the visible page shell and public metadata.</small>
+            </div>
+            <div class="trace-surface" role="listitem" data-trace-step="route">
+              <span>02</span>
+              <strong>route.follow</strong>
+              <small>Move through declared links and named sections.</small>
+            </div>
+            <div class="trace-surface" role="listitem" data-trace-step="recover">
+              <span>03</span>
+              <strong>route.recover</strong>
+              <small>Record a missing target, then choose a visible path.</small>
+            </div>
+            <div class="trace-surface" role="listitem" data-trace-step="report">
+              <span>04</span>
+              <strong>evidence.render</strong>
+              <small>Prepare a local summary without external writes.</small>
+            </div>
+          </div>
+
+          <div class="trace-legend" aria-label="Trace legend">
+            <span>Blue — visible route</span>
+            <span>Solid — inspected</span>
+            <span>Dashed — recovery</span>
+          </div>
+        </div>
+
+        <div class="trace-controls">
+          <button class="button button-primary" id="start-local-run" type="button" data-agent="start-local-run">Replay sample case</button>
+          <p class="case-status" id="trace-status" role="status" aria-live="polite">Ready. The fixed sample has not been replayed and no result is claimed.</p>
+        </div>
+      </section>
+
+      <aside class="minutes-panel" aria-labelledby="minutes-title" data-agent="council-minutes-panel">
+        <p class="micro-label">Council Minutes</p>
+        <h2 id="minutes-title">What the sample established</h2>
+
+        <ol class="minutes-list" id="council-minutes" aria-live="polite">
+          <li>Awaiting the sample replay.</li>
+          <li>Only the fixed public navigation and interaction events will appear here.</li>
+          <li>Field values, credentials, and private reasoning are excluded.</li>
+        </ol>
+
+        <p class="uncertainty-note"><strong>Uncertainty</strong><span id="minutes-uncertainty">No replay yet; no completion or policy outcome claimed.</span></p>
+
+        <div class="trace-meta">
+          <strong>Trace contract</strong>
+          <p><code>drip_trace_v1</code> · memory-only · current tab</p>
+          <p id="observatory-summary">No summary is available until the sample replay completes.</p>
+        </div>
+
+        <div class="minutes-actions">
+          <button class="button" id="copy-summary" type="button" disabled data-agent="copy-summary">Copy summary</button>
+          <button class="button" id="download-json" type="button" disabled data-agent="download-json">Download JSON</button>
+        </div>
+      </aside>
+    </div>
+
+    <section class="protocol-strip" aria-label="Observatory trace protocol" data-agent="trace-protocol">
+      <span>Public events only</span>
+      <span>Field values redacted</span>
+      <span>Local tab memory</span>
+      <a href="/schemas/drip_trace_v1.schema.json">Open trace schema <span aria-hidden="true">→</span></a>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-brand">
+      <img src="/assets/drip-mark.png" width="30" height="30" alt="">
+      <p><strong>Council Worlds</strong><span>Run lab for humans and browser agents.</span></p>
+    </div>
+    <p><a href="https://github.com/ChristFollower873461/dripcouncil">Open source on GitHub ↗</a> <span>·</span> Local only <span>·</span> No external writes</p>
+    <a class="support-link" href="/support.html">Fund the next case.</a>
+  </footer>
+</body>
+</html>

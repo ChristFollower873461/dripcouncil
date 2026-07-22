@@ -1,0 +1,15 @@
+{
+  "id": "inspect-council-case",
+  "name": "Inspect Council Case",
+  "version": "2.0.0",
+  "mode": "read_only",
+  "path": "/",
+  "inputs": ["visible live case", "visible sample trail", "public metadata"],
+  "steps": [
+    "Inspect [data-agent='live-case'].",
+    "Review [data-agent='visible-evidence-feed'].",
+    "Name the public surfaces used, uncertainty, and avoided actions."
+  ],
+  "output": "A concise case summary grounded in visible evidence.",
+  "boundaries": ["no hidden-route claims", "no private chain-of-thought", "no external writes"]
+}

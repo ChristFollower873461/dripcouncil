@@ -1,73 +1,55 @@
 # Drip Council Roadmap Status
 
-This document tracks the v1.13.0 Run Lab Glow-Up for Drip Council.
+This document tracks the v2.0.0 Council Worlds release.
 
 ## Branch
 
-- Working branch: `run-lab-glow-up-v1-13`
+- Working branch: `agent/council-worlds`
 - Base: `main`
-- Release target: v1.13.0, Run Lab Glow-Up
-- Release date in static metadata: July 1, 2026
+- Release target: v2.0.0, Council Worlds
+- Static release date: July 21, 2026
+
+## Relevance Verdict
+
+Drip Council remains relevant if it operates as an open public field lab, not as another generic benchmark. Its useful loop is now: pick a harmless case, let an agent inspect public surfaces, show humans compact evidence, and leave a local trace or ballot that can be compared later.
 
 ## Built In This Branch
 
-- Homepage Run Lab on `/#run-lab` with human/agent mode, mission picker, stepper, safety prompts, and copy-safe agent prompt.
-- Readable trace timeline, metrics, raw JSON tabs, and local privacy cues on `/#trace`.
-- Report builder v2 polish: live human summary, schema links, risk tags, badges, and export shapes.
-- Local-only compare dashboard on `/compare.html` for report v2 JSON files and supported local export wrappers.
-- UI selector/workflow map at `/ui-map.json`.
-- Prompt Injection Gauntlet verdict scoring.
-- Static A2A handoff board polish on `/collab.html`.
-- Static commerce-boundary verdict cards on `/seasons/summer-2026.html`.
-- Updated `version.json`, `changelog.html`, `llms.txt`, `AGENTS.md`, `index.md`, `missions.md`, `missions.json`, `api/missions.json`, `sitemap.xml`, `_headers`, README, agent manifests, Agent Card, Agent Skills, API catalog, and build script.
+- `MARKET.js` homepage with a live case, sample Council trail, chamber interaction, and shared world switcher.
+- `OBSERVATORY.py` fixed sample trace replay with Human/Agent modes, PY/JS/RS display lenses, Council Minutes, copy, and JSON download; explicitly not live telemetry.
+- `BOUNDARY.rs / Fifth Seat` with file, drop, paste, sample, local validation, and a schema-backed verdict.
+- Current-case machine record at `/api/council-sessions.json`.
+- Ballot contract at `/schemas/drip_ballot_v1.schema.json`.
+- Human-only Stripe support route with explicit consent, a human-chosen USD amount ($5 minimum, $10,000 maximum), integer-cent server validation, Turnstile, throttling, and a fresh server-created Checkout Session.
+- 1200 × 630 Open Graph/X card and 512 × 512 Drip mark.
+- Refreshed agent manifest, Agent Card, skill index, API catalog, UI map, markdown orientation, sitemap, headers, and release beacon.
 
 ## Safety Posture
 
-- Static public pages remain read-only or draft-only.
-- Trace capture is opt-in, local to the browser tab, memory-only, and redacts field values.
-- Compare-runs analysis uses local files or pasted JSON only and has no upload or storage endpoint.
-- No automatic telemetry, accounts, database writes, live report submission, or service connections were added.
-- Agent Card and Agent Skills advertise static/draft-only behavior only.
-- No live MCP server, A2A message endpoint, report-submission API, or agent payment endpoint is advertised.
-- Commerce examples are simulated; agents must not initiate checkout, choose amounts, enter payment details, or claim a live transaction happened.
+- Council interactions remain public, read-only, draft-only, or local-only.
+- No automatic telemetry, account, report submission, database, live A2A endpoint, or agent payment authority is introduced.
+- Public evidence and concise rationales are welcome; private chain-of-thought is neither requested nor claimed.
+- Human support is separate from agent actions and fails closed without server configuration.
 
-## Verification Plan
+## Verification
 
-- Validate all JSON files with `python3 -m json.tool`.
-- Run `node scripts/verify-agent-lab.mjs`.
-- Confirm `agent.json` and `/.well-known/agent.json` are identical.
-- Build `dist/` with `./scripts/build.sh`.
-- Serve the site locally and confirm new public routes return `200`.
-- Check homepage Run Lab, trace/report interactions, compare dashboard, collab board, and seasonal course in a browser.
-- Scan for credentials, private paths, or unsafe payment links.
+- `./scripts/build.sh`
+- `node --check scripts/council-worlds.mjs`
+- `node scripts/verify-agent-lab.mjs`
+- `git diff --check`
+- Desktop and mobile interaction QA for all four new routes.
+- Side-by-side visual comparison against the selected concept.
 
-## PR Description Draft
+## Draft PR Description
 
-Title: Add Drip Council Run Lab Glow-Up
+Title: **Build Drip Council v2: Council Worlds**
 
 Summary:
 
-- Adds guided Run Lab UX for humans and agents.
-- Adds readable trace timeline, report builder polish, and local compare-runs dashboard.
-- Expands prompt-injection, A2A handoff, and agentic commerce boundary clarity.
-- Keeps all new behavior static, public, local-only, read-only, or draft-only.
+- Reframes the project as a public field lab for visible agent behavior.
+- Unifies three distinct coding-language worlds on one website.
+- Adds schema-backed local traces and ballots for agent-native play.
+- Adds a quiet, protected, human-only Stripe support path.
+- Adds complete X/Open Graph sharing art and refreshed discovery metadata.
 
-Testing:
-
-- `python3 -m json.tool agent.json`
-- `python3 -m json.tool .well-known/agent.json`
-- `python3 -m json.tool .well-known/agent-card.json`
-- `python3 -m json.tool .well-known/agent-skills/index.json`
-- `python3 -m json.tool .well-known/api-catalog`
-- `python3 -m json.tool ui-map.json`
-- `python3 -m json.tool schemas/drip_trace_v1.schema.json`
-- `python3 -m json.tool schemas/drip_report_v2.schema.json`
-- `python3 -m json.tool schemas/drip_policy_score_v1.schema.json`
-- `node scripts/verify-agent-lab.mjs`
-- `diff -u agent.json .well-known/agent.json`
-- `./scripts/build.sh`
-- Local route checks against `dist/`
-
-Known blocker:
-
-- No repository blocker is known. If push fails, treat it as an external network or authentication issue.
+No repository blocker is known.

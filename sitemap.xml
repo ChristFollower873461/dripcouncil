@@ -4,6 +4,21 @@
     <loc>https://dripcouncil.org/</loc>
   </url>
   <url>
+    <loc>https://dripcouncil.org/observatory.html</loc>
+  </url>
+  <url>
+    <loc>https://dripcouncil.org/fifth-seat.html</loc>
+  </url>
+  <url>
+    <loc>https://dripcouncil.org/api/council-sessions.json</loc>
+  </url>
+  <url>
+    <loc>https://dripcouncil.org/schemas/drip_ballot_v1.schema.json</loc>
+  </url>
+  <url>
+    <loc>https://dripcouncil.org/site.webmanifest</loc>
+  </url>
+  <url>
     <loc>https://dripcouncil.org/robots.txt</loc>
   </url>
   <url>

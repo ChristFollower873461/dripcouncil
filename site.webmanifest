@@ -1,0 +1,18 @@
+{
+  "name": "Drip Council — Council Worlds",
+  "short_name": "Drip Council",
+  "description": "An open-source field lab for visible browser-agent behavior.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#f4f3ee",
+  "theme_color": "#0a0a0a",
+  "icons": [
+    {
+      "src": "/assets/drip-mark.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

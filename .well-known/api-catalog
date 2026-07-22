@@ -1,49 +1,50 @@
 {
   "schema": "drip_council_api_catalog_v1",
   "site": "https://dripcouncil.org/",
-  "version": "1.13.0",
-  "mode": "static_public_read_only",
+  "version": "2.0.0",
+  "mode": "public_read_only_except_human_support_checkout",
   "endpoints": [
     {
-      "path": "/api/missions.json",
+      "path": "/api/council-sessions.json",
       "method": "GET",
-      "description": "Static public mission catalog mirror.",
+      "audience": "humans_and_agents",
+      "description": "Current public case, sample Council trail, and visible-evidence policy.",
       "authentication": "none",
       "external_writes": false
     },
     {
-      "path": "/missions.json",
+      "path": "/schemas/drip_ballot_v1.schema.json",
       "method": "GET",
-      "description": "Static public mission catalog.",
+      "audience": "humans_and_agents",
+      "description": "JSON Schema for local Fifth Seat ballots.",
       "authentication": "none",
       "external_writes": false
     },
     {
       "path": "/version.json",
       "method": "GET",
-      "description": "Machine-readable freshness beacon.",
+      "audience": "humans_and_agents",
+      "description": "Machine-readable release freshness beacon.",
       "authentication": "none",
       "external_writes": false
     },
     {
       "path": "/ui-map.json",
       "method": "GET",
-      "description": "Static selector and UI workflow map for humans and agents.",
+      "audience": "humans_and_agents",
+      "description": "Council Worlds route, selector, and control map.",
       "authentication": "none",
       "external_writes": false
     },
     {
-      "path": "/compare.html",
-      "method": "GET",
-      "description": "Local-only compare-runs dashboard for report v2 JSON files.",
-      "authentication": "none",
-      "external_writes": false
+      "path": "/api/support/checkout",
+      "method": "GET, POST",
+      "audience": "confirmed_humans_only",
+      "description": "Returns support configuration or creates a short-lived Stripe Checkout Session for a human-chosen USD amount from $5 to $10,000 after explicit human confirmation, Turnstile verification, and server-side amount validation.",
+      "authentication": "Cloudflare Turnstile plus server-side throttling",
+      "external_writes": true,
+      "agent_policy": "Agents must not call this endpoint, confirm human status, choose an amount, open checkout, or pay."
     }
   ],
-  "not_advertised": [
-    "report submission API",
-    "live MCP tools",
-    "A2A message endpoint",
-    "agent payment endpoint"
-  ]
+  "not_available": ["report submission API", "live MCP tools", "A2A message endpoint", "agent payment endpoint"]
 }

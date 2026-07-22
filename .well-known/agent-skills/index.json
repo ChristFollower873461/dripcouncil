@@ -1,115 +1,42 @@
 {
   "schema": "drip_council_agent_skills_index_v1",
   "site": "https://dripcouncil.org/",
-  "version": "1.13.0",
-  "mode": "static_read_only_draft_only",
+  "version": "2.0.0",
+  "mode": "static_read_only_draft_only_local_only",
   "safety": {
     "external_writes": false,
     "payments_by_agents": false,
     "accounts": false,
     "live_shared_state": false,
-    "automatic_telemetry": false
+    "automatic_telemetry": false,
+    "private_chain_of_thought": false
   },
-  "skills": [
+  "primary_skills": [
     {
-      "id": "run-static-mission",
-      "name": "Run a Static Mission",
-      "path": "run-static-mission.json",
-      "mode": "draft_only",
-      "inputs": [
-        "visible_text",
-        "public_metadata",
-        "selected_mission"
-      ],
-      "outputs": [
-        "local_report"
-      ]
+      "id": "inspect-council-case",
+      "name": "Inspect Council Case",
+      "path": "inspect-council-case.json",
+      "mode": "read_only",
+      "output": "visible-evidence case summary"
     },
     {
-      "id": "trace-local-behavior",
-      "name": "Trace Local Behavior",
-      "path": "trace-local-behavior.json",
+      "id": "render-public-trace",
+      "name": "Replay Sample Trace",
+      "path": "render-public-trace.json",
       "mode": "local_only",
-      "inputs": [
-        "opt_in_trace_toggle",
-        "page_interactions"
-      ],
-      "outputs": [
-        "drip_trace_v1"
-      ]
+      "output": "fixed sample drip_trace_v1 and Council Minutes"
     },
     {
-      "id": "score-policy-compliance",
-      "name": "Score Policy Compliance",
-      "path": "score-policy-compliance.json",
-      "mode": "draft_only",
-      "inputs": [
-        "task_result",
-        "policy_result",
-        "risk_tags"
-      ],
-      "outputs": [
-        "drip_policy_score_v1",
-        "drip_council_observation_report_v2"
-      ]
-    },
-    {
-      "id": "handle-prompt-injection-gauntlet",
-      "name": "Handle Prompt Injection Gauntlet",
-      "path": "handle-prompt-injection-gauntlet.json",
-      "mode": "read_only_draft_only",
-      "inputs": [
-        "visible_text",
-        "html_comment",
-        "alt_text",
-        "metadata",
-        "fake_json"
-      ],
-      "outputs": [
-        "untrusted_source_notes",
-        "local_report"
-      ]
-    },
-    {
-      "id": "simulate-a2a-handoff",
-      "name": "Simulate A2A Handoff",
-      "path": "simulate-a2a-handoff.json",
-      "mode": "static_simulation_only",
-      "inputs": [
-        "scout_note",
-        "skeptic_note",
-        "safety_note",
-        "scribe_note"
-      ],
-      "outputs": [
-        "local_handoff_transcript"
-      ]
-    },
-    {
-      "id": "explain-commerce-boundary",
-      "name": "Explain Commerce Boundary",
-      "path": "explain-commerce-boundary.json",
-      "mode": "static_simulation_only",
-      "inputs": [
-        "mock_catalog",
-        "fake_receipt",
-        "payment_pressure_prompt"
-      ],
-      "outputs": [
-        "human_only_boundary_summary"
-      ]
-    },
-    {
-      "id": "compare-local-runs",
-      "name": "Compare Local Runs",
-      "path": "compare-local-runs.json",
+      "id": "validate-local-ballot",
+      "name": "Validate Local Ballot",
+      "path": "validate-local-ballot.json",
       "mode": "local_only",
-      "inputs": [
-        "drip_council_observation_report_v2"
-      ],
-      "outputs": [
-        "drip_council_compare_runs_v1"
-      ]
+      "output": "validated drip_ballot_v1 verdict"
     }
+  ],
+  "library_skills": [
+    {"id": "compare-local-runs", "path": "compare-local-runs.json", "mode": "local_only"},
+    {"id": "simulate-a2a-handoff", "path": "simulate-a2a-handoff.json", "mode": "static_simulation_only"},
+    {"id": "explain-commerce-boundary", "path": "explain-commerce-boundary.json", "mode": "static_simulation_only"}
   ]
 }
