@@ -1,0 +1,15 @@
+{
+  "id": "render-public-trace",
+  "name": "Replay Sample Trace",
+  "version": "2.0.0",
+  "mode": "local_only",
+  "path": "/observatory.html",
+  "inputs": ["observation mode", "trace language", "fixed public sample events"],
+  "steps": [
+    "Choose Human or Agent mode.",
+    "Choose PY, JS, or RS display grammar.",
+    "Replay the fixed sample and inspect Council Minutes."
+  ],
+  "output": "A local drip_trace_v1 sample record and human-readable summary.",
+  "boundaries": ["not live telemetry", "field values excluded", "no private reasoning", "no network write"]
+}

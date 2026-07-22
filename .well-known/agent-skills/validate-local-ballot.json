@@ -1,0 +1,15 @@
+{
+  "id": "validate-local-ballot",
+  "name": "Validate Local Ballot",
+  "version": "2.0.0",
+  "mode": "local_only",
+  "path": "/fifth-seat.html",
+  "input_schema": "/schemas/drip_ballot_v1.schema.json",
+  "steps": [
+    "Load the sample or provide a local JSON ballot.",
+    "Keep evidence short, public, and human-readable.",
+    "Validate locally and inspect the Fifth Seat verdict."
+  ],
+  "output": "A local ballot verdict with confidence, evidence count, and uncertainty.",
+  "boundaries": ["no upload", "no secrets", "no external submission", "no payment"]
+}

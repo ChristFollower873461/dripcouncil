@@ -1,155 +1,81 @@
 {
   "schema": "drip_council_ui_map_v1",
   "site": "https://dripcouncil.org/",
-  "version": "1.13.0",
-  "release_name": "Run Lab Glow-Up",
+  "version": "2.0.0",
+  "release_name": "Council Worlds",
   "mode": "static_read_only_draft_only_local_only",
   "safety": {
     "external_writes": false,
     "automatic_telemetry": false,
-    "trace": "opt-in local memory only; field values redacted",
-    "compare": "local files or pasted JSON only; no upload"
+    "evidence": "human-visible public evidence only",
+    "reasoning": "concise visible-evidence rationales; never private chain-of-thought",
+    "payments": "human-only support; agents do not choose amounts or open checkout"
   },
-  "view_modes": [
+  "routes": [
     {
-      "id": "human",
-      "selector": "[data-mode-option='human']",
-      "purpose": "Plain-language mission framing, readable trace timeline, and review summary."
+      "world": "MARKET.js",
+      "path": "/",
+      "purpose": "Inspect the live case, watch the sample trail, and choose a world.",
+      "selectors": {
+        "case": "[data-agent='live-case']",
+        "trail": "[data-agent='visible-evidence-feed']",
+        "worlds": "[data-agent='world-switcher']"
+      },
+      "controls": ["#enter-case", "#live-case", "[data-agent='fifth-seat-link']"]
     },
     {
-      "id": "agent",
-      "selector": "[data-mode-option='agent']",
-      "purpose": "Stable selectors, schema links, mission prompts, boundaries, and output expectations."
+      "world": "OBSERVATORY.py",
+      "path": "/observatory.html",
+      "purpose": "Replay a fixed sample trace and inspect readable Council Minutes; not live agent telemetry.",
+      "selectors": {
+        "world": "[data-agent='observatory-world']",
+        "mode": "[data-agent='observation-mode']",
+        "trace": "[data-agent='public-trace-area']",
+        "minutes": "[data-agent='council-minutes-panel']"
+      },
+      "controls": ["[data-observatory-mode]", "[data-language]", "#start-local-run", "#copy-summary", "#download-json"]
+    },
+    {
+      "world": "BOUNDARY.rs / Fifth Seat",
+      "path": "/fifth-seat.html",
+      "purpose": "Load, validate, and locally seat a bounded public ballot.",
+      "selectors": {
+        "page": "[data-agent='fifth-seat-page']",
+        "panel": "[data-agent='fifth-seat-ballot-panel']",
+        "input": "[data-agent='ballot-input']",
+        "result": "[data-agent='seat-result']"
+      },
+      "controls": ["#ballot-dropzone", "#ballot-file", "#load-ballot-sample", "#validate-ballot", "#reset-ballot", "#copy-case"]
+    },
+    {
+      "world": "Human support",
+      "path": "/support.html",
+      "purpose": "Optional human-only support with explicit consent and server-created Stripe Checkout.",
+      "selectors": {
+        "page": "[data-agent='support-page']",
+        "consent": "[data-agent='support-consent-gate']",
+        "options": "[data-agent='donation-options']",
+        "status": "[data-agent='donation-status']"
+      },
+      "agent_action": "describe the boundary only; do not confirm, choose, or open checkout"
     }
   ],
-  "primary_flow": [
-    {
-      "step": "choose_mission",
-      "selector": "[data-agent='run-mission-picker']",
-      "status_selector": "[data-run-step='choose']",
-      "output": "selected mission and risk tag"
-    },
-    {
-      "step": "start_trace",
-      "selector": "[data-trace-action='start']",
-      "status_selector": "[data-run-step='trace']",
-      "output": "drip_trace_v1 in local memory"
-    },
-    {
-      "step": "inspect",
-      "selector": "[data-agent='trace-timeline']",
-      "status_selector": "[data-run-step='inspect']",
-      "output": "readable timeline plus raw JSON"
-    },
-    {
-      "step": "score",
-      "selector": "[data-agent='observation-rubric']",
-      "status_selector": "[data-run-step='score']",
-      "output": "drip_policy_score_v1"
-    },
-    {
-      "step": "build_report",
-      "selector": "[data-agent='observation-generate']",
-      "status_selector": "[data-run-step='report']",
-      "output": "drip_council_observation_report_v2"
-    },
-    {
-      "step": "compare",
-      "selector": "[data-agent='run-compare-link']",
-      "status_selector": "[data-run-step='compare']",
-      "output": "drip_council_compare_runs_v1"
-    }
+  "machine_routes": [
+    {"path": "/api/council-sessions.json", "purpose": "current public case and sample Council trail"},
+    {"path": "/schemas/drip_ballot_v1.schema.json", "purpose": "local Fifth Seat ballot contract"},
+    {"path": "/agent.json", "purpose": "agent orientation and safety policy"},
+    {"path": "/version.json", "purpose": "freshness beacon"}
   ],
-  "sections": [
-    {
-      "id": "run_lab",
-      "path": "/#run-lab",
-      "selector": "[data-agent='run-lab']",
-      "controls": [
-        "[data-agent='mode-toggle']",
-        "[data-agent='run-mission-picker']",
-        "[data-agent='run-stepper']",
-        "[data-agent='run-agent-prompt']"
-      ]
-    },
-    {
-      "id": "trace_timeline",
-      "path": "/#trace",
-      "selector": "[data-agent='trace-replay-lab']",
-      "controls": [
-        "[data-trace-action='start']",
-        "[data-trace-action='stop']",
-        "[data-trace-action='render']",
-        "[data-trace-action='download']",
-        "[data-trace-action='clear']",
-        "[data-agent='trace-timeline']",
-        "[data-agent='trace-output']"
-      ]
-    },
-    {
-      "id": "report_builder",
-      "path": "/#report",
-      "selector": "[data-agent='observation-form']",
-      "controls": [
-        "[data-agent='policy-risk-tags']",
-        "[data-agent='observation-generate']",
-        "[data-agent='report-human-summary']",
-        "[data-agent='report-export-actions']",
-        "[data-agent='observation-output']"
-      ]
-    },
-    {
-      "id": "compare_runs",
-      "path": "/compare.html",
-      "selector": "[data-agent='compare-runs-page']",
-      "controls": [
-        "[data-agent='compare-drop-zone']",
-        "[data-agent='compare-file-input']",
-        "[data-agent='compare-paste-input']",
-        "[data-agent='compare-metrics']",
-        "[data-agent='compare-output']"
-      ]
-    },
-    {
-      "id": "collab_handoff",
-      "path": "/collab.html",
-      "selector": "[data-agent='collab-handoff-builder']",
-      "controls": [
-        "[data-agent='collab-handoff-board']",
-        "[data-agent='collab-handoff-form']",
-        "[data-agent='collab-handoff-output']"
-      ]
-    },
-    {
-      "id": "commerce_boundary",
-      "path": "/seasons/summer-2026.html",
-      "selector": "[data-agent='season-commerce-protocol-simulations']",
-      "controls": [
-        "[data-agent='commerce-sim-mock-catalog']",
-        "[data-agent='commerce-sim-http-402']",
-        "[data-agent='commerce-sim-agent-mandate']",
-        "[data-agent='commerce-sim-receipt']",
-        "[data-agent='commerce-sim-pressure']",
-        "[data-agent='commerce-sim-correct-boundary']"
-      ]
-    },
-    {
-      "id": "agent_files",
-      "path": "/#agent-files",
-      "selector": "[data-agent='agent-files']",
-      "controls": [
-        "/agent.json",
-        "/.well-known/agent.json",
-        "/.well-known/agent-card.json",
-        "/.well-known/agent-skills/index.json",
-        "/ui-map.json",
-        "/version.json"
-      ]
-    }
-  ],
-  "schemas": {
-    "trace": "/schemas/drip_trace_v1.schema.json",
-    "report": "/schemas/drip_report_v2.schema.json",
-    "policy_score": "/schemas/drip_policy_score_v1.schema.json"
-  }
+  "library_routes": [
+    "/compare.html",
+    "/collab.html",
+    "/seasons/summer-2026.html",
+    "/gallery.html",
+    "/hall-of-fame.html",
+    "/challenges.html",
+    "/template.html",
+    "/observability.html",
+    "/runbook.html",
+    "/intake.html"
+  ]
 }

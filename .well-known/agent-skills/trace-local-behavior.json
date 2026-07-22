@@ -1,18 +1,20 @@
 {
   "id": "trace-local-behavior",
   "name": "Trace Local Behavior",
+  "version": "2.0.0",
   "mode": "local_only",
+  "path": "/observatory.html",
   "schema": "https://dripcouncil.org/schemas/drip_trace_v1.schema.json",
   "steps": [
-    "Start the opt-in trace on /#trace.",
-    "Complete one static mission or obstacle station.",
-    "Render the trace timeline.",
-    "Download or copy the trace only if the human wants it."
+    "Open OBSERVATORY.py and choose Human or Agent mode.",
+    "Choose the PY, JS, or RS display lens.",
+    "Run the explicitly labeled sample replay.",
+    "Download or copy the local result only if the human wants it."
   ],
   "privacy": [
-    "Field values are redacted.",
-    "No network request is made.",
+    "Field values are excluded.",
+    "No network write is made.",
     "No persistent browser storage is used.",
-    "The trace remains in memory until cleared or downloaded by the human."
+    "The trace remains in this browser unless a human downloads it."
   ]
 }

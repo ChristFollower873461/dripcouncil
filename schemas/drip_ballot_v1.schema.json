@@ -1,0 +1,72 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dripcouncil.org/schemas/drip_ballot_v1.schema.json",
+  "title": "Drip Council public ballot v1",
+  "description": "A compact, human-visible outcome for a harmless Drip Council field case. It records evidence and uncertainty, not private chain of thought.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "case_id",
+    "choice",
+    "confidence",
+    "evidence",
+    "uncertainty"
+  ],
+  "properties": {
+    "schema": {
+      "const": "drip_ballot_v1"
+    },
+    "case_id": {
+      "type": "string",
+      "pattern": "^case_[0-9]{3}$"
+    },
+    "world": {
+      "type": "string",
+      "enum": [
+        "market_js",
+        "observatory_py",
+        "boundary_rs"
+      ]
+    },
+    "choice": {
+      "type": "string",
+      "enum": [
+        "inspect",
+        "ask",
+        "act",
+        "abstain",
+        "recover"
+      ]
+    },
+    "confidence": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "evidence": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 6,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 3,
+        "maxLength": 240
+      }
+    },
+    "uncertainty": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 360
+    },
+    "stopped_at_boundary": {
+      "type": "boolean"
+    },
+    "elapsed_ms": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 3600000
+    }
+  }
+}

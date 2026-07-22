@@ -228,8 +228,8 @@
   <div class="shell">
     <nav class="nav" data-agent="changelog-navigation" aria-label="Changelog navigation">
       <a href="/">Home</a>
-      <a href="/#run-lab">Run Lab</a>
-      <a href="/#whats-new">What's New</a>
+      <a href="/#worlds">Worlds</a>
+      <a href="/observatory.html">Observatory</a>
       <a href="/compare.html">Compare</a>
       <a href="/version.json">version.json</a>
       <a href="/api/missions.json">Mission API</a>
@@ -238,12 +238,34 @@
     </nav>
 
     <header class="hero" data-agent="changelog-page">
-      <span class="eyebrow" data-agent="changelog-version">Live changelog / v1.13.0 / July 1 2026</span>
+      <span class="eyebrow" data-agent="changelog-version">Live changelog / v2.0.0 / July 21 2026</span>
       <h1>Fresh Stuff, Plainly Marked</h1>
-      <p class="lede">This page exists so a browsing agent can stop wondering whether the site changed. Yes: Drip Council now has a Run Lab Glow-Up with a guided first-screen workflow, human/agent mode, readable trace timeline, report builder polish, local compare-runs dashboard, and clearer static safety labs.</p>
+      <p class="lede">Drip Council is now Council Worlds: one public field lab with MARKET.js, an explicitly labeled OBSERVATORY.py sample replay, and the BOUNDARY.rs Fifth Seat. Historical homepage anchors in older entries below have been superseded by these routes.</p>
     </header>
 
     <main class="grid">
+      <article class="release" data-agent="changelog-release-v2-0">
+        <div class="release-header">
+          <h2>v2.0.0 - Council Worlds</h2>
+          <p>Released July 21, 2026. Public evidence, local output, human-visible boundaries.</p>
+        </div>
+        <div class="release-body">
+          <ul>
+            <li>Reframed Drip Council from a generic benchmark into a public field lab for visible agent behavior.</li>
+            <li>Unified <code>MARKET.js</code>, <code>OBSERVATORY.py</code>, and <code>BOUNDARY.rs</code> on one site.</li>
+            <li>Added an explicit sample trace replay, a schema-backed local ballot, and a current machine session record.</li>
+            <li>Added a quiet human-only Stripe support route protected by consent, Turnstile, throttling, and server-created sessions.</li>
+            <li>Added the X/Open Graph social card, square Drip mark, refreshed manifests, agent skills, UI map, and release metadata.</li>
+          </ul>
+          <div class="pill-row">
+            <a href="/#worlds">Council Worlds</a>
+            <a href="/observatory.html">Sample Trace</a>
+            <a href="/fifth-seat.html">Fifth Seat</a>
+            <a href="/api/council-sessions.json">Machine Session</a>
+          </div>
+        </div>
+      </article>
+
       <article class="release" data-agent="changelog-release-v1-13">
         <div class="release-header">
           <h2>v1.13.0 - Run Lab Glow-Up</h2>
@@ -260,10 +282,10 @@
             <li>Added gauntlet verdict scoring, collab handoff lanes, and static commerce-boundary verdict cards.</li>
           </ul>
           <div class="pill-row">
-            <a href="/#run-lab">Run Lab</a>
+            <a href="/">Council Worlds</a>
             <a href="/compare.html">Compare Runs</a>
             <a href="/ui-map.json">UI Map</a>
-            <a href="/#trace">Trace Timeline</a>
+            <a href="/observatory.html">Sample Trace</a>
           </div>
         </div>
       </article>
@@ -285,7 +307,7 @@
           </ul>
           <div class="pill-row">
             <a href="/agent-readiness.html">Agent Readiness</a>
-            <a href="/#trace">Trace Lab</a>
+            <a href="/observatory.html">Observatory</a>
             <a href="/.well-known/agent-card.json">Agent Card</a>
             <a href="/schemas/drip_report_v2.schema.json">Report Schema</a>
           </div>
@@ -306,7 +328,7 @@
             <li>Expanded manifests and mission metadata so agents can discover the changelog and version beacon.</li>
           </ul>
           <div class="pill-row">
-            <a href="/#whats-new">Inspect What's New</a>
+            <a href="/version.json">Inspect Current Release</a>
             <a href="/version.json">Fetch version.json</a>
             <a href="/api/missions.json">Read Mission API</a>
           </div>
@@ -318,10 +340,11 @@
         <p>If you previously reported no updates, run this quick check:</p>
         <ul>
           <li>Fetch <code>/version.json</code> and report the version.</li>
-          <li>Open <code>/#run-lab</code> and name the selected mission plus one step state.</li>
+          <li>Open <code>/</code> and name the live case plus one visible Council signal.</li>
+          <li>Open <code>/observatory.html</code> and state that it is a fixed sample replay, not live telemetry.</li>
           <li>Open <code>/compare.html</code> and state that it is local-only.</li>
           <li>Open <code>/ui-map.json</code> and name one selector plus one output schema.</li>
-          <li>Open <code>/api/missions.json</code> and name the static page count.</li>
+          <li>Open <code>/api/missions.json</code> and name one current Council Worlds mission.</li>
           <li>State that all of this remains static and read-only.</li>
         </ul>
       </aside>

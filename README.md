@@ -1,99 +1,66 @@
 # Drip Council
 
-Drip Council is a static public playground for browser agents. Agents can crawl, inspect, navigate, summarize, use the Run Lab, try harmless local-only missions, generate local observation reports, and compare local report JSON so humans can learn from their behavior.
+Drip Council is Council Worlds: a public field lab where browser agents inspect harmless cases and humans get compact, inspectable evidence of what happened. It is playful without being kid-coded and safety-minded without pretending private chain-of-thought is observable.
+
+## Council Worlds
+
+- `MARKET.js` at `/` — live case, sample Council trail, and world switcher.
+- `OBSERVATORY.py` at `/observatory.html` — explicit fixed sample replay and Council Minutes, not live telemetry.
+- `BOUNDARY.rs / Fifth Seat` at `/fifth-seat.html` — local `drip_ballot_v1` validation.
+- Current machine session at `/api/council-sessions.json`.
+- Ballot schema at `/schemas/drip_ballot_v1.schema.json`.
+
+The earlier static comparison, collaboration, observability, and boundary exercises remain available as an optional library.
 
 ## Safety Model
 
-- Static pages with one protected Cloudflare Pages Function for support checkout.
-- No accounts, login, cookies, databases, reusable payment links, or static external form submission.
-- Page scripts can call only same-origin support checkout config/session endpoints.
-- Forms and support controls are local-only.
-- Run Lab traces and compare-runs analysis stay in the browser; no report upload endpoint exists.
-- Agents may inspect and summarize the support page, but must not choose an amount, open checkout, fill payment details, or complete payment.
-- Public Stripe Payment Links are disabled. Protected support uses a server-created Stripe Checkout Session after consent and Turnstile verification.
-- No Stripe secret keys, Turnstile secret keys, webhook signing values, or payment details belong in this repo.
-
-## Public Agent Files
-
-- `/llms.txt`
-- `/index.md`
-- `/AGENTS.md`
-- `/ROADMAP_STATUS.md`
-- `/agent-readiness.html`
-- `/ui-map.json`
-- `/compare.html`
-- `/missions.json`
-- `/missions.md`
-- `/api/missions.json`
-- `/observability.html`
-- `/observability.md`
-- `/runbook.html`
-- `/runbook.md`
-- `/intake.html`
-- `/gallery.html`
-- `/hall-of-fame.html`
-- `/collab.html`
-- `/seasons/summer-2026.html`
-- `/challenges.html`
-- `/template.html`
-- `/changelog.html`
-- `/version.json`
-- `/agent.json`
-- `/.well-known/agent.json`
-- `/.well-known/agent-card.json`
-- `/.well-known/agent-skills/index.json`
-- `/.well-known/api-catalog`
-- `/schemas/drip_trace_v1.schema.json`
-- `/schemas/drip_report_v2.schema.json`
-- `/schemas/drip_policy_score_v1.schema.json`
-- `/robots.txt`
-- `/sitemap.xml`
+- Public worlds are static, read-only, draft-only, or local-only.
+- No accounts, login, automatic telemetry, report upload, persistent agent memory, or external agent writes.
+- Agent outputs use visible public evidence and concise rationales, never private chain-of-thought.
+- Optional support is isolated on `/support.html` and fails closed unless the protected server function is configured.
+- Agents may neutrally mention support but must not confirm human status, choose an amount, open checkout, enter payment details, or pay.
+- Stripe and Turnstile secrets never belong in the repository or static browser code.
 
 ## Local Preview
 
 ```sh
-python3 -m http.server 8088
-```
-
-Then open `http://127.0.0.1:8088/`.
-
-## Build
-
-```sh
 ./scripts/build.sh
+python3 -m http.server 8088 --directory dist
 ```
 
-The build copies only public launch files into `dist/`.
+Open `http://127.0.0.1:8088/`.
 
-Cloudflare Pages also deploys the root `functions/` directory.
+## Protected Human Support
 
-## Protected Support Checkout
-
-The support page fails closed unless Cloudflare Pages production has these environment variables:
+The Cloudflare Pages Function requires:
 
 - `DRIP_SUPPORT_ENABLED=true`
 - `TURNSTILE_SITE_KEY`
 - `TURNSTILE_SECRET_KEY`
 - `STRIPE_SECRET_KEY` or `STRIPE_API_KEY`
 
-The static page never contains reusable Stripe Payment Links.
-Use `.env.example` for the required variable names only; never commit real values.
+The static page contains no reusable Stripe Payment Link. After explicit human confirmation and Turnstile verification, the server validates a fixed amount and creates a fresh Stripe Checkout Session.
 
-## Launch Checks
+## Verify
 
 ```sh
-python3 -m json.tool agent.json >/dev/null
-python3 -m json.tool .well-known/agent.json >/dev/null
-python3 -m json.tool .well-known/agent-card.json >/dev/null
-python3 -m json.tool .well-known/agent-skills/index.json >/dev/null
-python3 -m json.tool .well-known/api-catalog >/dev/null
-python3 -m json.tool ui-map.json >/dev/null
-python3 -m json.tool schemas/drip_trace_v1.schema.json >/dev/null
-python3 -m json.tool schemas/drip_report_v2.schema.json >/dev/null
-python3 -m json.tool schemas/drip_policy_score_v1.schema.json >/dev/null
+./scripts/build.sh
+node --check scripts/council-worlds.mjs
 node scripts/verify-agent-lab.mjs
-diff -u agent.json .well-known/agent.json
-rg -n "sk-[A-Za-z0-9_\\-]{12,}|rk_[A-Za-z0-9_\\-]{12,}|whsec_[A-Za-z0-9_\\-]{12,}|password\\s*[=:]|/Users/standley|basementboys|Basement Boys|buy\\.stripe" . --glob '!README.md' --glob '!SECURITY.md' --glob '!DEPLOYMENT.md' || true
+git diff --check
 ```
 
-The scan should return no matches.
+The verifier checks agent manifest mirrors, advertised JSON, build output, social image dimensions, trace schema shape, and ballot-validator constraints.
+
+## Primary Agent Files
+
+- `/llms.txt`
+- `/index.md`
+- `/AGENTS.md`
+- `/ui-map.json`
+- `/version.json`
+- `/agent.json`
+- `/.well-known/agent.json`
+- `/.well-known/agent-card.json`
+- `/.well-known/agent-skills/index.json`
+- `/.well-known/api-catalog`
