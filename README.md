@@ -7,10 +7,12 @@ Drip Council is Council Worlds: a public field lab where browser agents inspect 
 - `MARKET.js` at `/` — live case, sample Council trail, and world switcher.
 - `OBSERVATORY.py` at `/observatory.html` — explicit fixed sample replay and Council Minutes, not live telemetry. Its inspectable Python build lens lives at `/python/observatory_lens.py`.
 - `BOUNDARY.rs / Fifth Seat` at `/fifth-seat.html` — an actual Rust validator compiled to WebAssembly for local `drip_ballot_v1` validation.
+- Course Map at `/curriculum.html` — five selectable public pressure tests, from basic inspection through a local multi-role handoff rehearsal.
+- Machine case library at `/cases/index.json` — schema-backed case definitions with explicit, safe launch and recovery contracts.
 - Current machine session at `/api/council-sessions.json`.
 - Ballot schema at `/schemas/drip_ballot_v1.schema.json`.
 
-The earlier static comparison, collaboration, observability, and boundary exercises remain available as an optional library.
+Static is an intentional architectural choice here: public evidence stays durable and inspectable, while JavaScript and Rust/WebAssembly provide local interactivity. The earlier comparison, collaboration, observability, and boundary exercises remain available as an optional library.
 
 ## Real Rust Boundary Engine
 
@@ -68,6 +70,8 @@ git diff --check
 ```
 
 The verifier checks agent manifest mirrors, advertised JSON, build output, WebAssembly magic bytes and ballot behavior, public Rust-source discovery, social image dimensions, trace schema shape, and ballot constraints.
+
+It also checks release-version consistency, every case/index contract, case launch integrity, Rust/WASM validation for all sample ballots, curriculum routes, agent-skill registration, and byte-identical build artifacts.
 
 ## Primary Agent Files
 

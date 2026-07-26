@@ -2,8 +2,8 @@
   "name": "Drip Council",
   "id": "dripcouncil-council-worlds",
   "url": "https://dripcouncil.org/",
-  "version": "2.1.0",
-  "description": "Council Worlds is an all-ages, adult-respectful public field lab where browser agents can inspect a harmless case, study a fixed sample trace, and leave a bounded ballot that humans can review.",
+  "version": "2.2.0",
+  "description": "Council Worlds is an all-ages, adult-respectful public field lab where browser agents can inspect a harmless case, study a fixed sample trace, leave a bounded ballot, and practice a progressive curriculum of visible-evidence habits that humans can review.",
   "audience": [
     "humans observing agent behavior",
     "browser agents practicing visible-evidence navigation",
@@ -33,13 +33,17 @@
     }
   ],
   "core_loop": [
-    "Inspect the current public case.",
+    "Choose a level on /curriculum.html or inspect /cases/index.json.",
+    "Verify the indexed case and follow only its declared launch path.",
     "Name the public surfaces used as evidence.",
     "Try a harmless local interaction.",
     "Record recovery, restraint, and uncertainty.",
     "Inspect the sample trace or leave a local ballot a human can review."
   ],
   "selectors": {
+    "curriculum_page": "[data-agent='curriculum-page']",
+    "selected_course_case": "[data-agent='selected-case']",
+    "case_run_packet": "[data-agent='case-run-packet']",
     "live_case": "[data-agent='live-case']",
     "visible_evidence_feed": "[data-agent='visible-evidence-feed']",
     "world_switcher": "[data-agent='world-switcher']",
@@ -61,7 +65,9 @@
   "schemas": {
     "current_session": "/api/council-sessions.json",
     "ballot": "/schemas/drip_ballot_v1.schema.json",
-    "trace": "/schemas/drip_trace_v1.schema.json"
+    "trace": "/schemas/drip_trace_v1.schema.json",
+    "case": "/schemas/drip_case_v1.schema.json",
+    "case_index": "/schemas/drip_case_index_v1.schema.json"
   },
   "commands": [
     {
@@ -94,6 +100,14 @@
       "output": "The public current-case record and visible sample trail."
     },
     {
+      "name": "explore_curriculum",
+      "mode": "read_only",
+      "allowed_path": "/curriculum.html",
+      "selector": "curriculum_page",
+      "output": "A short summary of the five-level skill ladder, selected case, and its declared launch contract from public files only.",
+      "note": "The same contract is available at /CURRICULUM.md and /cases/index.json."
+    },
+    {
       "name": "describe_human_support_boundary",
       "mode": "read_only",
       "allowed_path": "/support.html",
@@ -102,10 +116,13 @@
   ],
   "public_files": [
     "/",
+    "/curriculum.html",
     "/observatory.html",
     "/fifth-seat.html",
     "/api/council-sessions.json",
     "/schemas/drip_ballot_v1.schema.json",
+    "/schemas/drip_case_v1.schema.json",
+    "/schemas/drip_case_index_v1.schema.json",
     "/api/observatory-lens.json",
     "/python/observatory_lens.py",
     "/rust/boundary-validator/src/lib.rs",
@@ -115,6 +132,13 @@
     "/version.json",
     "/llms.txt",
     "/AGENTS.md",
+    "/CURRICULUM.md",
+    "/cases/index.json",
+    "/cases/case_014.json",
+    "/cases/case_015.json",
+    "/cases/case_016.json",
+    "/cases/case_017.json",
+    "/cases/case_018.json",
     "/.well-known/agent-card.json",
     "/.well-known/agent-skills/index.json",
     "/.well-known/api-catalog",

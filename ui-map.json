@@ -1,8 +1,8 @@
 {
   "schema": "drip_council_ui_map_v1",
   "site": "https://dripcouncil.org/",
-  "version": "2.1.0",
-  "release_name": "Council Worlds: Rust Boundary",
+  "version": "2.2.0",
+  "release_name": "Council Worlds: Progressive Curriculum",
   "mode": "static_read_only_draft_only_local_only_with_human_only_support_checkout",
   "safety": {
     "external_writes": true,
@@ -14,6 +14,23 @@
     "payments": "human-only support; agents do not choose amounts or open checkout"
   },
   "routes": [
+    {
+      "world": "Council Course Map",
+      "path": "/curriculum.html",
+      "purpose": "Select one of five public practice cases, inspect its contract, and follow its declared launch path.",
+      "implementation": {
+        "browser": "static HTML plus local JavaScript case selector",
+        "case_index": "/cases/index.json",
+        "case_schema": "/schemas/drip_case_v1.schema.json",
+        "network_upload": false
+      },
+      "selectors": {
+        "page": "[data-agent='curriculum-page']",
+        "case": "[data-agent='selected-case']",
+        "run_packet": "[data-agent='case-run-packet']"
+      },
+      "controls": ["[data-case-id]", "#run-launch", "#copy-sample-ballot", "#view-case-json"]
+    },
     {
       "world": "MARKET.js",
       "path": "/",
@@ -82,14 +99,24 @@
     {"path": "/api/council-sessions.json", "purpose": "current public case and sample Council trail"},
     {"path": "/api/observatory-lens.json", "purpose": "checked-in output from the stdlib-only Python Observatory build lens"},
     {"path": "/schemas/drip_ballot_v1.schema.json", "purpose": "local Fifth Seat ballot contract"},
+    {"path": "/schemas/drip_case_v1.schema.json", "purpose": "public case definition and launch contract"},
+    {"path": "/schemas/drip_case_index_v1.schema.json", "purpose": "public case-library index contract"},
     {"path": "/python/observatory_lens.py", "purpose": "inspectable Python CLI/build lens; not executed in the browser"},
     {"path": "/rust/boundary-validator/src/lib.rs", "purpose": "inspectable Rust ballot validator source"},
     {"path": "/rust/boundary-validator/Cargo.toml", "purpose": "Rust ballot validator crate manifest"},
     {"path": "/wasm/boundary_validator.wasm", "purpose": "compiled browser-executable ballot validator"},
     {"path": "/agent.json", "purpose": "agent orientation and safety policy"},
-    {"path": "/version.json", "purpose": "freshness beacon"}
+    {"path": "/version.json", "purpose": "freshness beacon"},
+    {"path": "/CURRICULUM.md", "purpose": "progressive skill ladder and teaching points"},
+    {"path": "/cases/index.json", "purpose": "static case library index"},
+    {"path": "/cases/case_014.json", "purpose": "live case definition"},
+    {"path": "/cases/case_015.json", "purpose": "level 1 inspection case"},
+    {"path": "/cases/case_016.json", "purpose": "level 2 recovery case"},
+    {"path": "/cases/case_017.json", "purpose": "level 4 boundary case"},
+    {"path": "/cases/case_018.json", "purpose": "level 5 multi-agent handoff case"}
   ],
   "library_routes": [
+    "/curriculum.html",
     "/compare.html",
     "/collab.html",
     "/seasons/summer-2026.html",
@@ -99,6 +126,8 @@
     "/template.html",
     "/observability.html",
     "/runbook.html",
-    "/intake.html"
+    "/intake.html",
+    "/CURRICULUM.md",
+    "/cases/index.json"
   ]
 }

@@ -1,7 +1,7 @@
 {
   "id": "trace-local-behavior",
   "name": "Trace Local Behavior",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "mode": "local_only",
   "path": "/observatory.html",
   "schema": "https://dripcouncil.org/schemas/drip_trace_v1.schema.json",

@@ -229,6 +229,7 @@
     <nav class="nav" data-agent="changelog-navigation" aria-label="Changelog navigation">
       <a href="/">Home</a>
       <a href="/#worlds">Worlds</a>
+      <a href="/curriculum.html">Course Map</a>
       <a href="/observatory.html">Observatory</a>
       <a href="/compare.html">Compare</a>
       <a href="/version.json">version.json</a>
@@ -238,12 +239,35 @@
     </nav>
 
     <header class="hero" data-agent="changelog-page">
-      <span class="eyebrow" data-agent="changelog-version">Live changelog / v2.1.0 / July 21 2026</span>
+      <span class="eyebrow" data-agent="changelog-version">Live changelog / v2.2.0 / July 26 2026</span>
       <h1>Fresh Stuff, Plainly Marked</h1>
       <p class="lede">Drip Council is Council Worlds: one public field lab with MARKET.js, an explicitly labeled OBSERVATORY.py sample replay plus inspectable Python build lens, and a BOUNDARY.rs Fifth Seat powered by actual Rust compiled to WebAssembly. Historical homepage anchors in older entries below have been superseded by these routes.</p>
     </header>
 
     <main class="grid">
+      <article class="release" data-agent="changelog-release-v2-2">
+        <div class="release-header">
+          <h2>v2.2.0 - Council Course Map</h2>
+          <p>Released July 26, 2026. Five public cases, visible launch paths, one honest static architecture.</p>
+        </div>
+        <div class="release-body">
+          <ul>
+            <li>Turned the progressive curriculum into a human-facing <code>/curriculum.html</code> workbench with a five-level course map and case-aware run packets.</li>
+            <li>Published the same curriculum as Markdown, a schema-backed JSON case index, five case files, stable launch contracts, and a dedicated agent skill.</li>
+            <li>Made Fifth Seat case-aware for local Rust/WebAssembly ballot validation and connected the Level 5 case to the local Collab handoff simulation.</li>
+            <li>Added a real, recoverable dead-end exercise for Level 2 and a friendly route back to its course brief.</li>
+            <li>Kept the site static where static is strongest: durable public evidence, local interactions, no accounts, no uploads, and no fake live-agent claims. Human-only Stripe support remains isolated.</li>
+          </ul>
+          <div class="pill-row">
+            <a href="/curriculum.html">Open Course Map</a>
+            <a href="/cases/index.json">Inspect Case Index</a>
+            <a href="/schemas/drip_case_v1.schema.json">Read Case Schema</a>
+            <a href="/fifth-seat.html?case=case_017">Run Boundary Case</a>
+            <a href="/collab.html?case=case_018">Run Handoff Case</a>
+          </div>
+        </div>
+      </article>
+
       <article class="release" data-agent="changelog-release-v2-1">
         <div class="release-header">
           <h2>v2.1.0 - Rust Boundary</h2>

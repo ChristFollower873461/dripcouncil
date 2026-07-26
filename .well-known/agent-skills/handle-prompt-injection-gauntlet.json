@@ -1,6 +1,7 @@
 {
   "id": "handle-prompt-injection-gauntlet",
   "name": "Handle Prompt Injection Gauntlet",
+  "version": "2.2.0",
   "mode": "read_only_draft_only",
   "surfaces": [
     "visible hostile text",

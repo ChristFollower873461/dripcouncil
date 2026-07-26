@@ -2060,6 +2060,653 @@ li {
   border-top: 1px solid var(--line);
 }
 
+/* Council Course Map */
+.curriculum-page {
+  --course-accent: var(--yellow);
+  background:
+    linear-gradient(rgba(10, 10, 10, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(10, 10, 10, 0.035) 1px, transparent 1px),
+    var(--paper);
+  background-size: 32px 32px;
+}
+
+.curriculum-main {
+  min-height: calc(100vh - 9rem);
+}
+
+.curriculum-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(19rem, 29rem);
+  border-bottom: 1px solid var(--ink);
+}
+
+.curriculum-hero-copy {
+  padding: clamp(2rem, 5vw, 5.5rem) clamp(1.25rem, 4vw, 4.5rem);
+}
+
+.curriculum-hero-copy .eyebrow {
+  margin-bottom: 1rem;
+}
+
+.curriculum-hero h1 {
+  max-width: 58rem;
+  margin: 0;
+  font-family: var(--display);
+  font-size: clamp(3.5rem, 8vw, 8.8rem);
+  font-weight: 900;
+  letter-spacing: -0.065em;
+  line-height: 0.81;
+  text-transform: uppercase;
+}
+
+.curriculum-hero-copy > p:not(.eyebrow) {
+  max-width: 52rem;
+  margin: 1.5rem 0 0;
+  font-family: var(--mono);
+  font-size: clamp(0.85rem, 1.15vw, 1.05rem);
+}
+
+.curriculum-contract {
+  display: grid;
+  align-content: center;
+  padding: clamp(1.5rem, 3vw, 3.25rem);
+  border-left: 1px solid var(--ink);
+  background: var(--yellow);
+}
+
+.curriculum-contract dl {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  margin: 1.3rem 0;
+  border-top: 1px solid var(--ink);
+  border-bottom: 1px solid var(--ink);
+}
+
+.curriculum-contract dl div {
+  min-width: 0;
+  padding: 1rem 0.75rem 1rem 0;
+  border-right: 1px solid var(--ink);
+}
+
+.curriculum-contract dl div + div {
+  padding-left: 0.75rem;
+}
+
+.curriculum-contract dl div:last-child {
+  border-right: 0;
+}
+
+.curriculum-contract dt {
+  font-family: var(--display);
+  font-size: clamp(2rem, 3vw, 3.5rem);
+  font-weight: 900;
+  letter-spacing: -0.06em;
+  line-height: 1;
+}
+
+.curriculum-contract dd {
+  margin: 0.4rem 0 0;
+  font-family: var(--mono);
+  font-size: 0.61rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.curriculum-contract > p:last-child {
+  margin: 0;
+  font-family: var(--mono);
+  font-size: 0.75rem;
+}
+
+.course-workbench {
+  display: grid;
+  grid-template-columns: minmax(17rem, 0.78fr) minmax(25rem, 1.45fr) minmax(20rem, 0.92fr);
+  min-height: 44rem;
+  border-bottom: 1px solid var(--ink);
+  background: var(--paper);
+}
+
+.course-map-panel,
+.case-brief-panel,
+.case-run-panel {
+  min-width: 0;
+}
+
+.course-map-panel,
+.case-brief-panel {
+  border-right: 1px solid var(--ink);
+}
+
+.course-section-heading,
+.selected-case-heading,
+.run-panel-heading {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.course-section-heading {
+  min-height: 7rem;
+  align-items: end;
+  padding: 1.25rem;
+  border-bottom: 1px solid var(--ink);
+}
+
+.course-section-heading h2,
+.selected-case-heading h2,
+.case-run-panel h2,
+.course-loop h2 {
+  margin: 0.25rem 0 0;
+  font-family: var(--display);
+  font-weight: 900;
+  letter-spacing: -0.045em;
+  line-height: 0.95;
+  text-transform: uppercase;
+}
+
+.course-section-heading h2 {
+  font-size: clamp(1.8rem, 2.5vw, 2.8rem);
+}
+
+.course-section-heading > span {
+  max-width: 9rem;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 0.58rem;
+  text-align: right;
+  text-transform: uppercase;
+}
+
+.course-level-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.course-level-list li {
+  margin: 0;
+}
+
+.course-level-button {
+  width: 100%;
+  min-height: 6.6rem;
+  display: grid;
+  grid-template-columns: 2.5rem minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 0.9rem 1.1rem;
+  border: 0;
+  border-bottom: 1px solid var(--line);
+  background: transparent;
+  color: var(--ink);
+  cursor: pointer;
+  text-align: left;
+  transition: background 120ms ease, color 120ms ease, padding 120ms ease;
+}
+
+.course-level-button:hover {
+  background: var(--paper-2);
+}
+
+.course-level-button.is-selected {
+  padding-left: 1.35rem;
+  background: var(--yellow);
+}
+
+.course-level-button > span:nth-child(2) {
+  min-width: 0;
+  display: grid;
+  gap: 0.25rem;
+}
+
+.course-level-number {
+  font-family: var(--display);
+  font-size: 1.65rem;
+  font-weight: 900;
+  letter-spacing: -0.05em;
+}
+
+.course-level-button strong {
+  font-family: var(--mono);
+  font-size: 0.74rem;
+  text-transform: uppercase;
+}
+
+.course-level-button small {
+  overflow: hidden;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 0.64rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.course-level-button.is-selected small {
+  color: var(--ink);
+}
+
+.course-level-button i {
+  font-family: var(--mono);
+  font-size: 1.25rem;
+  font-style: normal;
+  opacity: 0;
+  transform: translateX(-0.35rem);
+  transition: opacity 120ms ease, transform 120ms ease;
+}
+
+.course-level-button:hover i,
+.course-level-button.is-selected i {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.case-brief-panel {
+  padding: clamp(1.25rem, 2.5vw, 2.4rem);
+  background:
+    linear-gradient(rgba(10, 10, 10, 0.035) 1px, transparent 1px),
+    var(--paper);
+  background-size: 100% 2rem;
+}
+
+.selected-case-heading {
+  align-items: start;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid var(--ink);
+}
+
+.selected-case-heading .micro-label span {
+  margin-left: 0.5rem;
+  color: var(--blue);
+}
+
+.selected-case-heading h2 {
+  max-width: 38rem;
+  font-size: clamp(2.5rem, 4.5vw, 5rem);
+}
+
+.case-level-stamp {
+  flex: 0 0 auto;
+  padding: 0.4rem 0.55rem;
+  border: 1px solid var(--ink);
+  background: var(--paper);
+  font-family: var(--mono);
+  font-size: 0.64rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.selected-case-brief {
+  max-width: 55rem;
+  margin: 1.4rem 0;
+  font-family: var(--mono);
+  font-size: clamp(0.84rem, 1.15vw, 1rem);
+  font-weight: 700;
+}
+
+.case-brief-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  border: 1px solid var(--ink);
+}
+
+.case-brief-grid section {
+  min-width: 0;
+  padding: 1rem;
+  border-right: 1px solid var(--ink);
+  border-bottom: 1px solid var(--ink);
+  background: rgba(244, 243, 238, 0.94);
+}
+
+.case-brief-grid section:nth-child(2) {
+  border-right: 0;
+}
+
+.case-brief-grid section:last-child {
+  grid-column: 1 / -1;
+  border-right: 0;
+  border-bottom: 0;
+}
+
+.case-brief-grid h3 {
+  margin: 0 0 0.7rem;
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.case-brief-grid ul {
+  display: grid;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.case-brief-grid li {
+  position: relative;
+  padding-left: 1rem;
+  font-family: var(--mono);
+  font-size: 0.69rem;
+}
+
+.case-brief-grid li::before {
+  position: absolute;
+  top: 0;
+  left: 0;
+  color: var(--blue);
+  content: "↳";
+  font-weight: 900;
+}
+
+.case-brief-grid .case-avoid {
+  background: #f3dfda;
+}
+
+.case-brief-grid .case-avoid li::before {
+  color: var(--red);
+  content: "×";
+}
+
+.case-brief-panel blockquote {
+  margin: 1.25rem 0 0;
+  padding: 1rem 1rem 1rem 1.3rem;
+  border-left: 0.5rem solid var(--yellow);
+  background: var(--ink);
+  color: #fff;
+  font-family: var(--mono);
+  font-size: 0.76rem;
+  font-weight: 700;
+}
+
+.case-run-panel {
+  padding: clamp(1.25rem, 2.2vw, 2rem);
+  background: var(--ink);
+  color: #fff;
+}
+
+.run-panel-heading {
+  color: var(--yellow);
+}
+
+.run-panel-heading > span {
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  font-weight: 900;
+}
+
+.case-run-panel h2 {
+  max-width: 22rem;
+  margin-top: 1rem;
+  font-size: clamp(2.3rem, 3.4vw, 3.8rem);
+}
+
+.run-spec {
+  margin: 1.35rem 0;
+  border-top: 1px solid var(--line-dark);
+  border-bottom: 1px solid var(--line-dark);
+}
+
+.run-spec div {
+  display: grid;
+  grid-template-columns: 5rem minmax(0, 1fr);
+  gap: 0.75rem;
+  padding: 0.55rem 0;
+  border-bottom: 1px solid var(--line-dark);
+  font-family: var(--mono);
+  font-size: 0.65rem;
+}
+
+.run-spec div:last-child {
+  border-bottom: 0;
+}
+
+.run-spec dt {
+  color: #888;
+  text-transform: uppercase;
+}
+
+.run-spec dd {
+  margin: 0;
+  color: var(--yellow);
+}
+
+.run-instruction {
+  padding: 0.9rem;
+  border: 1px solid var(--line-dark);
+  background: #151515;
+}
+
+.run-instruction span,
+.run-ballot span {
+  color: #888;
+  font-family: var(--mono);
+  font-size: 0.58rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.run-instruction p {
+  margin: 0.45rem 0 0;
+  font-family: var(--mono);
+  font-size: 0.72rem;
+}
+
+.run-launch {
+  width: 100%;
+  min-height: 3.4rem;
+  justify-content: space-between;
+  margin: 0.9rem 0;
+  border-color: var(--yellow);
+  background: var(--yellow);
+  color: var(--ink);
+}
+
+.run-launch:hover {
+  background: #fff;
+  color: var(--ink);
+}
+
+.run-ballot {
+  overflow: hidden;
+  border: 1px solid var(--line-dark);
+}
+
+.run-ballot > div {
+  min-height: 2.3rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0 0.7rem;
+  border-bottom: 1px solid var(--line-dark);
+}
+
+.run-ballot button {
+  border: 0;
+  background: transparent;
+  color: var(--yellow);
+  cursor: pointer;
+  font-family: var(--mono);
+  font-size: 0.58rem;
+  font-weight: 900;
+  text-decoration: underline;
+  text-transform: uppercase;
+}
+
+.run-ballot pre {
+  min-height: 10rem;
+  max-height: 18rem;
+  margin: 0;
+  overflow: auto;
+  padding: 0.8rem;
+  background: #111;
+  color: #c9e4ff;
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  line-height: 1.45;
+  white-space: pre-wrap;
+}
+
+.run-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 0.85rem;
+  margin-top: 0.85rem;
+}
+
+.run-links a {
+  color: var(--yellow);
+  font-family: var(--mono);
+  font-size: 0.58rem;
+}
+
+.run-status {
+  margin: 0.85rem 0 0;
+  color: #999;
+  font-family: var(--mono);
+  font-size: 0.59rem;
+}
+
+.course-loop {
+  display: grid;
+  grid-template-columns: minmax(16rem, 0.75fr) minmax(0, 2fr);
+  border-bottom: 1px solid var(--ink);
+  background: var(--yellow);
+}
+
+.course-loop > div {
+  padding: clamp(1.25rem, 3vw, 2.5rem);
+  border-right: 1px solid var(--ink);
+}
+
+.course-loop h2 {
+  max-width: 30rem;
+  font-size: clamp(2rem, 3.5vw, 4rem);
+}
+
+.course-loop ol {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.course-loop li {
+  min-width: 0;
+  display: grid;
+  align-content: center;
+  gap: 0.3rem;
+  min-height: 12rem;
+  padding: 1rem;
+  border-right: 1px solid var(--ink);
+}
+
+.course-loop li:last-child {
+  border-right: 0;
+}
+
+.course-loop li span {
+  font-family: var(--display);
+  font-size: 2rem;
+  font-weight: 900;
+}
+
+.course-loop li strong {
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+}
+
+.course-loop li small {
+  font-family: var(--mono);
+  font-size: 0.63rem;
+}
+
+.curriculum-noscript {
+  margin: 0;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid var(--ink);
+  background: #fff1b7;
+  font-family: var(--mono);
+  font-size: 0.72rem;
+}
+
+/* Homepage course callout */
+.curriculum-callout {
+  display: grid;
+  grid-template-columns: minmax(16rem, 0.85fr) minmax(0, 2fr) auto;
+  align-items: stretch;
+  border-bottom: 1px solid var(--ink);
+  background: var(--yellow);
+}
+
+.curriculum-callout-copy {
+  padding: 1.35rem 1.5rem;
+  border-right: 1px solid var(--ink);
+}
+
+.curriculum-callout-copy h2 {
+  max-width: 29rem;
+  margin: 0.35rem 0 0;
+  font-family: var(--display);
+  font-size: clamp(1.8rem, 3vw, 3.4rem);
+  letter-spacing: -0.05em;
+  line-height: 0.92;
+  text-transform: uppercase;
+}
+
+.curriculum-mini-map {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.curriculum-mini-map li {
+  min-width: 0;
+  display: grid;
+  align-content: center;
+  gap: 0.3rem;
+  padding: 1rem;
+  border-right: 1px solid var(--ink);
+}
+
+.curriculum-mini-map span {
+  font-family: var(--display);
+  font-size: 1.65rem;
+  font-weight: 900;
+}
+
+.curriculum-mini-map strong {
+  font-family: var(--mono);
+  font-size: 0.61rem;
+  text-transform: uppercase;
+}
+
+.curriculum-callout > a {
+  min-width: 10rem;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  background: var(--ink);
+  color: var(--yellow);
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  font-weight: 900;
+  text-align: center;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+.curriculum-callout > a:hover {
+  background: var(--blue);
+  color: #fff;
+}
+
 /* Responsive */
 @media (max-width: 1100px) {
   .site-header {
@@ -2100,6 +2747,27 @@ li {
 
   .world-switcher-intro {
     grid-column: 1 / -1;
+  }
+
+  .course-workbench {
+    grid-template-columns: minmax(16rem, 0.72fr) minmax(0, 1.28fr);
+  }
+
+  .case-brief-panel {
+    border-right: 0;
+  }
+
+  .case-run-panel {
+    grid-column: 1 / -1;
+  }
+
+  .curriculum-callout {
+    grid-template-columns: minmax(15rem, 0.85fr) minmax(0, 2fr);
+  }
+
+  .curriculum-callout > a {
+    grid-column: 1 / -1;
+    min-height: 3.5rem;
   }
 }
 
@@ -2305,6 +2973,77 @@ li {
   }
 
   .support-protocol > p {
+    grid-column: auto;
+  }
+
+  .curriculum-hero,
+  .course-workbench,
+  .course-loop,
+  .curriculum-callout {
+    grid-template-columns: 1fr;
+  }
+
+  .curriculum-hero h1 {
+    font-size: clamp(3.3rem, 18vw, 6rem);
+  }
+
+  .curriculum-contract {
+    border-top: 1px solid var(--ink);
+    border-left: 0;
+  }
+
+  .course-map-panel,
+  .case-brief-panel,
+  .course-loop > div,
+  .curriculum-callout-copy {
+    border-right: 0;
+  }
+
+  .course-map-panel,
+  .case-brief-panel,
+  .course-loop > div,
+  .curriculum-callout-copy {
+    border-bottom: 1px solid var(--ink);
+  }
+
+  .course-level-button {
+    min-height: 5.4rem;
+  }
+
+  .selected-case-heading {
+    display: grid;
+  }
+
+  .case-brief-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .case-brief-grid section,
+  .case-brief-grid section:nth-child(2) {
+    grid-column: auto;
+    border-right: 0;
+    border-bottom: 1px solid var(--ink);
+  }
+
+  .course-loop ol,
+  .curriculum-mini-map {
+    grid-template-columns: 1fr;
+  }
+
+  .course-loop li,
+  .curriculum-mini-map li {
+    min-height: auto;
+    grid-template-columns: 2.5rem minmax(0, 1fr);
+    padding: 0.85rem 1rem;
+    border-right: 0;
+    border-bottom: 1px solid var(--ink);
+  }
+
+  .course-loop li small {
+    grid-column: 2;
+  }
+
+  .curriculum-callout > a {
     grid-column: auto;
   }
 }

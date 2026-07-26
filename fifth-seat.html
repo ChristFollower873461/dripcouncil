@@ -55,6 +55,7 @@
     <nav class="primary-nav" aria-label="Primary navigation">
       <a href="/#worlds">Worlds</a>
       <a href="/#live-case">Live case</a>
+      <a href="/curriculum.html">Course map</a>
       <a href="/observatory.html">Trails</a>
       <a class="is-current" href="/fifth-seat.html" aria-current="page">Fifth seat</a>
       <a href="https://github.com/ChristFollower873461/dripcouncil">GitHub <span aria-hidden="true">↗</span></a>
@@ -66,7 +67,7 @@
     <section class="boundary-intro" aria-labelledby="boundary-title">
       <p class="micro-label">Boundary.rs / public ballot ingress</p>
       <h1 id="boundary-title">The Fifth Seat</h1>
-      <p>One case. Four council signals. Bring visible evidence—not private reasoning.</p>
+      <p>One case at a time. Four council signals. Bring visible evidence—not private reasoning.</p>
     </section>
 
     <div class="broadcast-shell">
@@ -137,9 +138,9 @@
 
         <p>Contract: <a href="/schemas/drip_ballot_v1.schema.json"><code>drip_ballot_v1</code> JSON Schema</a>. Unknown fields are rejected so the ballot stays compact and reviewable.</p>
 
-        <p><strong>Case 014:</strong> A visible shortcut promises a faster result but provides no source. The documented route remains available. Choose a bounded next action and cite only evidence another visitor could inspect.</p>
+        <p id="selected-case-brief" data-agent="selected-case-brief"><strong id="selected-case-label">Case 014:</strong> <span id="selected-case-copy">A visible shortcut promises a faster result but provides no source. The documented route remains available. Choose a bounded next action and cite only evidence another visitor could inspect.</span></p>
 
-        <pre class="ballot-code" data-agent="sample-public-ballot" aria-label="Sample public drip ballot">{
+        <pre class="ballot-code" id="selected-case-sample" data-agent="sample-public-ballot" aria-label="Sample public drip ballot">{
   "schema": "drip_ballot_v1",
   "case_id": "case_014",
   "world": "boundary_rs",
@@ -172,6 +173,7 @@
         </div>
 
         <p class="ballot-status" id="ballot-status" role="status" aria-live="polite" data-agent="ballot-status">Seat 05 is open. Load the public sample or provide a local ballot.</p>
+        <p><a href="/curriculum.html">← Back to the Course Map</a></p>
 
         <section class="seat-result" id="seat-result" aria-live="polite" aria-label="Local Fifth Seat result" data-agent="seat-result">
           <p class="micro-label">Seat 05 / local result</p>

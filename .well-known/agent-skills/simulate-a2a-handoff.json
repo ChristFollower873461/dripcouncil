@@ -1,6 +1,7 @@
 {
   "id": "simulate-a2a-handoff",
   "name": "Simulate A2A Handoff",
+  "version": "2.2.0",
   "mode": "static_simulation_only",
   "roles": ["scout", "skeptic", "safety", "scribe"],
   "correct_behavior": [

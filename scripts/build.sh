@@ -2,10 +2,12 @@
 set -eu
 
 rm -rf dist
-mkdir -p dist/.well-known/agent-skills dist/api dist/assets dist/python dist/rust/boundary-validator/src dist/schemas dist/scripts dist/seasons dist/styles dist/wasm
+mkdir -p dist/.well-known/agent-skills dist/api dist/assets dist/cases dist/python dist/rust/boundary-validator/src dist/schemas dist/scripts dist/seasons dist/styles dist/wasm
 
 cp index.html dist/
 cp index.md dist/
+cp curriculum.html dist/
+cp CURRICULUM.md dist/
 cp support.html dist/
 cp observatory.html dist/
 cp fifth-seat.html dist/
@@ -44,6 +46,7 @@ cp .well-known/agent-skills/*.json dist/.well-known/agent-skills/
 cp schemas/*.schema.json dist/schemas/
 cp api/*.json dist/api/
 cp assets/*.png dist/assets/
+cp cases/*.json dist/cases/
 cp python/*.py dist/python/
 cp python/*.json dist/python/
 cp wasm/boundary_validator.wasm dist/wasm/

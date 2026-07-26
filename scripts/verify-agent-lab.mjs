@@ -1,9 +1,20 @@
 #!/usr/bin/env node
-import { readFile } from "node:fs/promises";
+import { readFile, readdir } from "node:fs/promises";
 import { createHash } from "node:crypto";
+const skillFiles = (await readdir(".well-known/agent-skills"))
+  .filter((name) => name.endsWith(".json"))
+  .sort()
+  .map((name) => `.well-known/agent-skills/${name}`);
+const sourceCaseFiles = (await readdir("cases"))
+  .filter((name) => /^case_[0-9]{3}\.json$/.test(name))
+  .sort()
+  .map((name) => `cases/${name}`);
 
 const requiredFiles = [
   "index.html",
+  "index.md",
+  "curriculum.html",
+  "CURRICULUM.md",
   "observatory.html",
   "fifth-seat.html",
   "support.html",
@@ -19,20 +30,23 @@ const requiredFiles = [
   "assets/og-council-worlds.png",
   "api/council-sessions.json",
   "api/observatory-lens.json",
+  "cases/index.json",
+  ...sourceCaseFiles,
   "python/observatory_lens.py",
   "rust/boundary-validator/Cargo.toml",
   "rust/boundary-validator/src/lib.rs",
   "wasm/boundary_validator.wasm",
-  ".well-known/agent-skills/inspect-council-case.json",
-  ".well-known/agent-skills/render-public-trace.json",
-  ".well-known/agent-skills/validate-local-ballot.json",
+  ...skillFiles,
   "schemas/drip_ballot_v1.schema.json",
+  "schemas/drip_case_v1.schema.json",
+  "schemas/drip_case_index_v1.schema.json",
   "version.json",
   "ui-map.json",
   "agent.json",
   ".well-known/agent.json",
   ".well-known/agent-card.json",
-  ".well-known/agent-skills/index.json",
+  ".well-known/api-catalog",
+  ".well-known/api-catalog.json",
   "schemas/drip_trace_v1.schema.json",
   "schemas/drip_report_v2.schema.json",
   "schemas/drip_policy_score_v1.schema.json"
@@ -42,10 +56,12 @@ const jsonFiles = [
   "site.webmanifest",
   "api/council-sessions.json",
   "api/observatory-lens.json",
-  ".well-known/agent-skills/inspect-council-case.json",
-  ".well-known/agent-skills/render-public-trace.json",
-  ".well-known/agent-skills/validate-local-ballot.json",
+  "cases/index.json",
+  ...sourceCaseFiles,
+  ...skillFiles,
   "schemas/drip_ballot_v1.schema.json",
+  "schemas/drip_case_v1.schema.json",
+  "schemas/drip_case_index_v1.schema.json",
   "version.json",
   "ui-map.json",
   "missions.json",
@@ -53,14 +69,6 @@ const jsonFiles = [
   "agent.json",
   ".well-known/agent.json",
   ".well-known/agent-card.json",
-  ".well-known/agent-skills/index.json",
-  ".well-known/agent-skills/run-static-mission.json",
-  ".well-known/agent-skills/trace-local-behavior.json",
-  ".well-known/agent-skills/score-policy-compliance.json",
-  ".well-known/agent-skills/handle-prompt-injection-gauntlet.json",
-  ".well-known/agent-skills/simulate-a2a-handoff.json",
-  ".well-known/agent-skills/explain-commerce-boundary.json",
-  ".well-known/agent-skills/compare-local-runs.json",
   ".well-known/api-catalog",
   ".well-known/api-catalog.json",
   "schemas/drip_trace_v1.schema.json",
@@ -91,15 +99,25 @@ async function readBinary(path) {
   }
 }
 
+async function fileExists(path) {
+  try {
+    await readFile(path);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 for (const file of requiredFiles) {
   await readBinary(file);
 }
 
+const parsedJson = new Map();
 for (const file of jsonFiles) {
   const source = await read(file);
   if (!source) continue;
   try {
-    JSON.parse(source);
+    parsedJson.set(file, JSON.parse(source));
   } catch (error) {
     fail(`${file} is not valid JSON: ${error.message}`);
   }
@@ -111,7 +129,17 @@ if (createHash("sha256").update(rootAgent).digest("hex") !== createHash("sha256"
   fail("agent.json and .well-known/agent.json differ");
 }
 
-const releaseVersion = JSON.parse(await read("version.json")).version;
+const rootMissions = await read("missions.json");
+const apiMissions = await read("api/missions.json");
+if (createHash("sha256").update(rootMissions).digest("hex") !== createHash("sha256").update(apiMissions).digest("hex")) {
+  fail("missions.json and api/missions.json differ");
+}
+
+const releaseVersion = parsedJson.get("version.json")?.version;
+if (typeof releaseVersion !== "string" || !/^[0-9]+\.[0-9]+\.[0-9]+$/.test(releaseVersion)) {
+  fail(`version.json advertises an invalid semantic version: ${releaseVersion || "missing"}`);
+}
+
 const versionedDiscoveryFiles = [
   "ui-map.json",
   "missions.json",
@@ -120,29 +148,276 @@ const versionedDiscoveryFiles = [
   ".well-known/agent.json",
   ".well-known/agent-card.json",
   ".well-known/api-catalog",
-  ".well-known/agent-skills/index.json",
-  ".well-known/agent-skills/inspect-council-case.json",
-  ".well-known/agent-skills/render-public-trace.json",
-  ".well-known/agent-skills/run-static-mission.json",
-  ".well-known/agent-skills/trace-local-behavior.json",
-  ".well-known/agent-skills/validate-local-ballot.json"
+  ".well-known/api-catalog.json",
+  ...skillFiles
 ];
 for (const file of versionedDiscoveryFiles) {
-  const advertisedVersion = JSON.parse(await read(file)).version;
+  const advertisedVersion = parsedJson.get(file)?.version;
   if (advertisedVersion !== releaseVersion) {
     fail(`${file} advertises ${advertisedVersion || "no version"}; expected release ${releaseVersion}`);
   }
 }
 
+const apiCatalogAlias = parsedJson.get(".well-known/api-catalog.json");
+if (apiCatalogAlias?.see !== "https://dripcouncil.org/.well-known/api-catalog") {
+  fail(".well-known/api-catalog.json must point to the canonical API catalog");
+}
+const apiCatalogEndpoints = Array.isArray(parsedJson.get(".well-known/api-catalog")?.endpoints)
+  ? parsedJson.get(".well-known/api-catalog").endpoints
+  : [];
+const apiCatalogByPath = new Map(apiCatalogEndpoints.map((endpoint) => [endpoint?.path, endpoint]));
+if (apiCatalogByPath.size !== apiCatalogEndpoints.length) fail("API catalog repeats an endpoint path");
+for (const path of [
+  "/curriculum.html",
+  "/CURRICULUM.md",
+  "/cases/index.json",
+  "/schemas/drip_case_v1.schema.json",
+  "/schemas/drip_case_index_v1.schema.json"
+]) {
+  const endpoint = apiCatalogByPath.get(path);
+  if (!endpoint) {
+    fail(`API catalog is missing ${path}`);
+  } else if (endpoint.method !== "GET" || endpoint.external_writes !== false) {
+    fail(`API catalog must expose ${path} as read-only GET`);
+  }
+}
+
+function isRecord(value) {
+  return value !== null && typeof value === "object" && !Array.isArray(value);
+}
+
+function hasOnlyKeys(value, allowedKeys) {
+  return isRecord(value) && Object.keys(value).every((key) => allowedKeys.has(key));
+}
+
+function isBoundedString(value, minLength, maxLength) {
+  return typeof value === "string" && value.length >= minLength && value.length <= maxLength;
+}
+
+function isSafePublicRoute(value) {
+  return typeof value === "string"
+    && value.startsWith("/")
+    && !value.startsWith("//")
+    && !/[\u0000-\u001f\u007f]/.test(value);
+}
+
+function isUniqueStringArray(value, { minItems = 1, maxItems = 12, pattern } = {}) {
+  return Array.isArray(value)
+    && value.length >= minItems
+    && value.length <= maxItems
+    && value.every((item) => typeof item === "string" && (!pattern || pattern.test(item)))
+    && new Set(value).size === value.length;
+}
+
+const agentCard = parsedJson.get(".well-known/agent-card.json");
+const skillIndex = parsedJson.get(".well-known/agent-skills/index.json");
+const indexedSkillEntries = [
+  ...(Array.isArray(skillIndex?.primary_skills) ? skillIndex.primary_skills : []),
+  ...(Array.isArray(skillIndex?.library_skills) ? skillIndex.library_skills : [])
+];
+const indexedSkillIds = new Set();
+for (const entry of indexedSkillEntries) {
+  if (!isRecord(entry) || typeof entry.id !== "string" || typeof entry.path !== "string") {
+    fail("agent skill index contains an invalid entry");
+    continue;
+  }
+  if (indexedSkillIds.has(entry.id)) fail(`agent skill index repeats ${entry.id}`);
+  indexedSkillIds.add(entry.id);
+  if (!/^[a-z0-9-]+\.json$/.test(entry.path)) {
+    fail(`agent skill ${entry.id} has an unsafe path: ${entry.path}`);
+    continue;
+  }
+  const skillPath = `.well-known/agent-skills/${entry.path}`;
+  const skill = parsedJson.get(skillPath);
+  if (!skill) {
+    fail(`agent skill ${entry.id} is missing ${skillPath}`);
+    continue;
+  }
+  if (skill.id !== entry.id) fail(`${skillPath} id differs from the skill index`);
+  if (skill.mode !== entry.mode) fail(`${skillPath} mode differs from the skill index`);
+}
+for (const advertisedSkill of Array.isArray(agentCard?.skills) ? agentCard.skills : []) {
+  if (!indexedSkillIds.has(advertisedSkill.id)) {
+    fail(`Agent Card skill ${advertisedSkill.id} is not registered in the skill index`);
+  }
+}
+
+const caseSchema = parsedJson.get("schemas/drip_case_v1.schema.json");
+const caseIndexSchema = parsedJson.get("schemas/drip_case_index_v1.schema.json");
+if (caseSchema?.$id !== "https://dripcouncil.org/schemas/drip_case_v1.schema.json"
+  || caseSchema?.properties?.schema?.const !== "drip_case_v1"
+  || caseSchema?.properties?.sample_ballot?.$ref !== "./drip_ballot_v1.schema.json"
+  || !caseSchema?.required?.includes("launch")
+  || caseSchema?.additionalProperties !== false) {
+  fail("drip_case_v1 schema contract is incomplete");
+}
+if (caseIndexSchema?.$id !== "https://dripcouncil.org/schemas/drip_case_index_v1.schema.json"
+  || caseIndexSchema?.properties?.schema?.const !== "drip_council_cases_index_v1"
+  || caseIndexSchema?.additionalProperties !== false) {
+  fail("drip_case_index_v1 schema contract is incomplete");
+}
+
+const caseIndex = parsedJson.get("cases/index.json");
+const caseDefinitions = [];
+const caseIdPattern = /^case_[0-9]{3}$/;
+const casePathPattern = /^\/cases\/case_[0-9]{3}\.json$/;
+const skillIdPattern = /^[a-z][a-z0-9_]*$/;
+const allowedCaseWorlds = new Set(["market_js", "observatory_py", "boundary_rs", "collab"]);
+const caseIndexKeys = new Set(["schema", "site", "version", "description", "live_case", "cases"]);
+const caseEntryKeys = new Set(["id", "title", "level", "path", "worlds", "skills"]);
+const caseKeys = new Set([
+  "schema",
+  "case_id",
+  "title",
+  "level",
+  "duration_hint_seconds",
+  "launch",
+  "brief",
+  "public_signals",
+  "allowed_actions",
+  "disallowed_actions",
+  "sample_ballot",
+  "teaching_point"
+]);
+const launchKeys = new Set(["path", "label", "mode", "recovery_path", "expected_status"]);
+const launchModes = new Set(["public_page", "local_interaction", "expected_dead_end"]);
+
+if (!hasOnlyKeys(caseIndex, caseIndexKeys)) fail("cases/index.json contains fields outside drip_case_index_v1");
+if (caseIndex?.schema !== "drip_council_cases_index_v1") fail("cases/index.json has the wrong schema id");
+if (caseIndex?.site !== "https://dripcouncil.org/") fail("cases/index.json has the wrong canonical site");
+if (caseIndex?.version !== releaseVersion) fail("cases/index.json version differs from the release");
+if (!isBoundedString(caseIndex?.description, 20, 600)) fail("cases/index.json has an invalid description");
+if (!caseIdPattern.test(caseIndex?.live_case || "")) fail("cases/index.json has an invalid live_case");
+if (!Array.isArray(caseIndex?.cases) || caseIndex.cases.length === 0 || caseIndex.cases.length > 100) {
+  fail("cases/index.json must contain between 1 and 100 cases");
+}
+
+const seenCaseIds = new Set();
+const seenCasePaths = new Set();
+const seenLevels = new Set();
+for (const entry of Array.isArray(caseIndex?.cases) ? caseIndex.cases : []) {
+  if (!hasOnlyKeys(entry, caseEntryKeys)) {
+    fail("case index entry contains fields outside drip_case_index_v1");
+    continue;
+  }
+  if (!caseIdPattern.test(entry.id || "")) fail(`case index has an invalid id: ${entry.id}`);
+  if (!isBoundedString(entry.title, 3, 120)) fail(`${entry.id} has an invalid index title`);
+  if (!Number.isInteger(entry.level) || entry.level < 1 || entry.level > 5) fail(`${entry.id} has an invalid level`);
+  if (!casePathPattern.test(entry.path || "") || entry.path !== `/cases/${entry.id}.json`) {
+    fail(`${entry.id} has an invalid or mismatched case path`);
+  }
+  if (!isUniqueStringArray(entry.worlds) || entry.worlds.some((world) => !allowedCaseWorlds.has(world))) {
+    fail(`${entry.id} has invalid or duplicate worlds`);
+  }
+  if (!isUniqueStringArray(entry.skills, { pattern: skillIdPattern })) {
+    fail(`${entry.id} has invalid or duplicate skills`);
+  }
+  if (seenCaseIds.has(entry.id)) fail(`case index repeats ${entry.id}`);
+  if (seenCasePaths.has(entry.path)) fail(`case index repeats ${entry.path}`);
+  seenCaseIds.add(entry.id);
+  seenCasePaths.add(entry.path);
+  seenLevels.add(entry.level);
+
+  if (!casePathPattern.test(entry.path || "")) continue;
+  const caseFile = entry.path.slice(1);
+  const definition = parsedJson.get(caseFile);
+  if (!definition) {
+    fail(`case index points to missing ${caseFile}`);
+    continue;
+  }
+  caseDefinitions.push({ entry, definition, file: caseFile });
+
+  if (!hasOnlyKeys(definition, caseKeys)) fail(`${caseFile} contains fields outside drip_case_v1`);
+  if (definition.schema !== "drip_case_v1") fail(`${caseFile} has the wrong schema id`);
+  if (definition.case_id !== entry.id) fail(`${caseFile} case_id differs from the index`);
+  if (definition.title !== entry.title) fail(`${caseFile} title differs from the index`);
+  if (definition.level !== entry.level) fail(`${caseFile} level differs from the index`);
+  if (!Number.isInteger(definition.duration_hint_seconds)
+    || definition.duration_hint_seconds < 1
+    || definition.duration_hint_seconds > 3600) {
+    fail(`${caseFile} has an invalid duration_hint_seconds`);
+  }
+  if (!isBoundedString(definition.brief, 20, 1200)) fail(`${caseFile} has an invalid brief`);
+  if (!isBoundedString(definition.teaching_point, 10, 360)) fail(`${caseFile} has an invalid teaching_point`);
+  for (const field of ["public_signals", "allowed_actions", "disallowed_actions"]) {
+    if (!isUniqueStringArray(definition[field])
+      || definition[field].some((item) => !isBoundedString(item, 3, 360))) {
+      fail(`${caseFile} has an invalid ${field} list`);
+    }
+  }
+
+  const launch = definition.launch;
+  if (!hasOnlyKeys(launch, launchKeys)
+    || !isSafePublicRoute(launch.path)
+    || !isBoundedString(launch.label, 3, 120)
+    || !launchModes.has(launch.mode)) {
+    fail(`${caseFile} has an invalid launch contract`);
+  } else {
+    if (launch.recovery_path !== undefined
+      && !isSafePublicRoute(launch.recovery_path)) {
+      fail(`${caseFile} has an invalid launch recovery_path`);
+    }
+    if (launch.expected_status !== undefined && launch.expected_status !== 404) {
+      fail(`${caseFile} launch expected_status must be 404`);
+    }
+    if (launch.mode === "expected_dead_end"
+      && (typeof launch.recovery_path !== "string" || launch.expected_status !== 404)) {
+      fail(`${caseFile} expected_dead_end launch requires recovery_path and expected_status 404`);
+    }
+  }
+
+  if (!isRecord(definition.sample_ballot)) {
+    fail(`${caseFile} is missing a sample ballot`);
+  } else {
+    if (definition.sample_ballot.case_id !== definition.case_id) {
+      fail(`${caseFile} sample ballot case_id differs from the case`);
+    }
+    if (definition.sample_ballot.world !== undefined
+      && (!Array.isArray(entry.worlds) || !entry.worlds.includes(definition.sample_ballot.world))) {
+      fail(`${caseFile} sample ballot world is not declared by the case index`);
+    }
+  }
+}
+
+const indexedCaseFiles = new Set(
+  (Array.isArray(caseIndex?.cases) ? caseIndex.cases : [])
+    .map((entry) => typeof entry.path === "string" ? entry.path.slice(1) : "")
+    .filter(Boolean)
+);
+for (const file of sourceCaseFiles) {
+  if (!indexedCaseFiles.has(file)) fail(`${file} is not registered in cases/index.json`);
+}
+if (indexedCaseFiles.size !== sourceCaseFiles.length) {
+  fail("case index and checked-in case-file counts differ");
+}
+if ([1, 2, 3, 4, 5].some((level) => !seenLevels.has(level))) {
+  fail("case library must cover curriculum levels 1 through 5");
+}
+if (!seenCaseIds.has(caseIndex?.live_case)) fail("case index live_case is not present in its case list");
+
+const councilSessions = parsedJson.get("api/council-sessions.json");
+const missions = parsedJson.get("missions.json");
+if (caseIndex?.live_case !== councilSessions?.live_case?.case_id) {
+  fail("case index live_case differs from api/council-sessions.json");
+}
+if (caseIndex?.live_case !== missions?.current_case) {
+  fail("case index live_case differs from missions.json");
+}
+
 const sources = {
   index: await read("index.html"),
+  curriculum: await read("curriculum.html"),
+  curriculumMarkdown: await read("CURRICULUM.md"),
   observatory: await read("observatory.html"),
   fifthSeat: await read("fifth-seat.html"),
   support: await read("support.html"),
   script: await read("scripts/council-worlds.mjs"),
   api: await read("api/council-sessions.json"),
   observatoryLens: await read("api/observatory-lens.json"),
+  caseIndex: await read("cases/index.json"),
   ballot: await read("schemas/drip_ballot_v1.schema.json"),
+  caseSchema: await read("schemas/drip_case_v1.schema.json"),
+  caseIndexSchema: await read("schemas/drip_case_index_v1.schema.json"),
   release: await read("version.json"),
   sitemap: await read("sitemap.xml"),
   headers: await read("_headers"),
@@ -167,6 +442,10 @@ const expectations = [
   [sources.index, "data-agent=\"world-switcher\"", "world switcher selector"],
   [sources.index, "summary_large_image", "X large image card"],
   [sources.index, "/assets/og-council-worlds.png", "homepage social image"],
+  [sources.curriculum, "data-agent=\"curriculum-page\"", "human curriculum page selector"],
+  [sources.curriculum, "/cases/index.json", "human curriculum case-library discovery"],
+  [sources.curriculumMarkdown, "## Skill Ladder", "markdown curriculum skill ladder"],
+  [sources.curriculumMarkdown, "/cases/index.json", "markdown curriculum case-library discovery"],
   [sources.observatory, "id=\"trace-canvas\"", "Observatory trace canvas"],
   [sources.observatory, "id=\"start-local-run\"", "Observatory local run control"],
   [sources.observatory, "It is not live agent telemetry", "Observatory sample-replay disclosure"],
@@ -217,6 +496,9 @@ const expectations = [
   [sources.pythonLens, "unknown or private fields", "Python private-detail rejection"],
   [sources.traceSchema, '"additionalProperties": false', "trace detail allowlist"],
   [sources.ballot, "\"const\": \"drip_ballot_v1\"", "ballot schema id"],
+  [sources.caseSchema, "\"const\": \"drip_case_v1\"", "case schema id"],
+  [sources.caseSchema, "\"sample_ballot\"", "case schema ballot contract"],
+  [sources.caseIndexSchema, "\"const\": \"drip_council_cases_index_v1\"", "case-index schema id"],
   [sources.rustManifest, "\"cdylib\"", "Rust WebAssembly crate type"],
   [sources.rustSource, "serde_json", "Rust JSON parser"],
   [sources.rustSource, "validate_ballot", "Rust validator export"],
@@ -226,16 +508,24 @@ const expectations = [
   [sources.boundaryBuild, "boundary_validator.wasm", "Rust WebAssembly build artifact"],
   [sources.boundaryNodeTest, "WebAssembly.instantiate", "Node WebAssembly behavior test"],
   [sources.boundaryNodeTest, "validate_ballot", "Node validator ABI test"],
-  [sources.release, "\"version\": \"2.1.0\"", "version beacon"],
+  [sources.release, `"version": "${releaseVersion}"`, "version beacon"],
   [sources.release, "Council Worlds", "release name"],
-  [sources.indexMarkdown, "v2.1.0", "markdown release beacon"],
+  [sources.indexMarkdown, `v${releaseVersion}`, "markdown release beacon"],
+  [sources.indexMarkdown, "/curriculum.html", "markdown curriculum page"],
+  [sources.indexMarkdown, "/cases/index.json", "markdown case-library route"],
   [sources.sitemap, "observatory.html", "Observatory sitemap URL"],
   [sources.sitemap, "fifth-seat.html", "Fifth Seat sitemap URL"],
   [sources.sitemap, "api/council-sessions.json", "Council session sitemap URL"],
+  [sources.sitemap, "curriculum.html", "curriculum sitemap URL"],
+  [sources.sitemap, "CURRICULUM.md", "markdown curriculum sitemap URL"],
+  [sources.sitemap, "cases/index.json", "case-library sitemap URL"],
   [sources.headers, "council-sessions.json", "Council session discovery header"],
   [sources.robots, "Content-Signal: search=yes,ai-input=yes,ai-train=no", "content signal"],
   [sources.build, "cp assets/*.png dist/assets/", "asset build copy"],
   [sources.build, "cp observatory.html dist/", "Observatory build copy"],
+  [sources.build, "cp curriculum.html dist/", "human curriculum build copy"],
+  [sources.build, "cp CURRICULUM.md dist/", "markdown curriculum build copy"],
+  [sources.build, "cp cases/*.json dist/cases/", "case-library build copy"],
   [sources.build, "cp python/*.py dist/python/", "public Python source build copy"],
   [sources.build, "cp wasm/boundary_validator.wasm dist/wasm/", "WebAssembly build copy"],
   [sources.build, "cp rust/boundary-validator/Cargo.toml dist/rust/boundary-validator/", "Rust manifest build copy"],
@@ -362,6 +652,12 @@ if (boundaryWasm.length < 8 || boundaryWasm.subarray(0, 4).toString("hex") !== "
       const validateObjectWithRust = (value) => validateTextWithRust(JSON.stringify(value));
 
       if (validateObjectWithRust(ballotSample) !== 0) fail("sample ballot does not satisfy the Rust/WebAssembly validator");
+      for (const { definition, file } of caseDefinitions) {
+        const verdict = validateObjectWithRust(definition.sample_ballot);
+        if (verdict !== 0) {
+          fail(`${file} sample ballot fails Rust/WebAssembly validation with bitmask ${verdict}`);
+        }
+      }
       if (validateTextWithRust("{ definitely not JSON") !== 1) fail("Rust/WebAssembly validator must report bit 1 for invalid JSON");
       if (validateTextWithRust("[]") !== 2) fail("Rust/WebAssembly validator must report bit 2 for a non-object root");
 
@@ -389,6 +685,56 @@ if (/function\s+validateBallot\s*\(/.test(sources.script)) {
 
 if (!sources.script.includes("validation locked") || !sources.script.includes("no JavaScript fallback")) {
   fail("Fifth Seat must fail closed when the Rust/WebAssembly engine is unavailable");
+}
+
+const requiredDistMirrors = [
+  "index.md",
+  "curriculum.html",
+  "CURRICULUM.md",
+  "cases/index.json",
+  ...sourceCaseFiles,
+  "schemas/drip_case_v1.schema.json",
+  "schemas/drip_case_index_v1.schema.json",
+  ".well-known/api-catalog",
+  ".well-known/api-catalog.json",
+  ...skillFiles
+];
+for (const sourcePath of requiredDistMirrors) {
+  const source = await readBinary(sourcePath);
+  const built = await readBinary(`dist/${sourcePath}`);
+  if (source.length && built.length) {
+    const sourceHash = createHash("sha256").update(source).digest("hex");
+    const builtHash = createHash("sha256").update(built).digest("hex");
+    if (sourceHash !== builtHash) {
+      fail(`dist/${sourcePath} is stale or differs from its source`);
+    }
+  }
+}
+
+function routeToDistPath(route) {
+  const pathname = route.split(/[?#]/, 1)[0];
+  if (pathname === "/") return "dist/index.html";
+  if (pathname.endsWith("/")) return `dist${pathname}index.html`;
+  return `dist${pathname}`;
+}
+
+for (const { definition, file } of caseDefinitions) {
+  const launch = definition.launch;
+  if (!isRecord(launch) || typeof launch.path !== "string") continue;
+  const launchOutput = routeToDistPath(launch.path);
+  if (launch.mode === "expected_dead_end") {
+    if (await fileExists(launchOutput)) {
+      fail(`${file} expected-dead-end launch unexpectedly exists at ${launchOutput}`);
+    }
+    if (typeof launch.recovery_path === "string") {
+      const recoveryOutput = routeToDistPath(launch.recovery_path);
+      if (!await fileExists(recoveryOutput)) {
+        fail(`${file} recovery route is missing from the build: ${recoveryOutput}`);
+      }
+    }
+  } else if (!await fileExists(launchOutput)) {
+    fail(`${file} launch route is missing from the build: ${launchOutput}`);
+  }
 }
 
 if (!process.exitCode) console.log("verify-agent-lab: ok");

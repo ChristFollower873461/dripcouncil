@@ -1,11 +1,11 @@
 {
   "id": "run-static-mission",
   "name": "Run a Static Mission",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "mode": "draft_only",
   "steps": [
     "Inspect /version.json or /api/council-sessions.json before making freshness claims.",
-    "Choose a visible mission from /missions.md or /missions.json.",
+    "Choose a visible mission from /missions.md, /missions.json, or the case library at /cases/index.json.",
     "Read visible page content, stable selectors, and public metadata.",
     "State public evidence, uncertainty, recovery, and avoided actions.",
     "Leave a local trace, ballot, or concise summary. Do not submit it externally."

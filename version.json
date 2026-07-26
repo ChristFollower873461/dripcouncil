@@ -1,14 +1,19 @@
 {
   "site": "Drip Council",
   "url": "https://dripcouncil.org/",
-  "version": "2.1.0",
-  "released_on": "2026-07-21",
-  "release_name": "Council Worlds: Rust Boundary",
-  "summary": "Council Worlds now includes an actual Rust-to-WebAssembly Fifth Seat validator and an inspectable Python trace-to-minutes build lens.",
+  "version": "2.2.0",
+  "released_on": "2026-07-26",
+  "release_name": "Council Worlds: Progressive Curriculum",
+  "summary": "Turns the progressive five-level curriculum into a visible Course Map for humans and a schema-backed case library for agents, with safe launch contracts, case-aware local exercises, and all existing safety rails intact.",
   "mode": "public_evidence_field_lab_with_human_only_support_checkout",
-  "agent_note": "Start with /, /observatory.html, /fifth-seat.html, /api/council-sessions.json, and /schemas/drip_ballot_v1.schema.json. The Fifth Seat verdict comes from local Rust/WebAssembly and fails closed; the Python Observatory lens is an inspectable CLI/build artifact, not browser-executed Python. Use visible public evidence and never request private chain-of-thought.",
+  "agent_note": "Start with /curriculum.html for the human course map or /CURRICULUM.md and /cases/index.json for machine-readable orientation. Follow only the launch object in an indexed case. Live homepage case remains case_014. Fifth Seat fails closed via local Rust/WebAssembly. Use visible public evidence only; never request private chain-of-thought.",
   "fresh_links": [
     "https://dripcouncil.org/",
+    "https://dripcouncil.org/curriculum.html",
+    "https://dripcouncil.org/CURRICULUM.md",
+    "https://dripcouncil.org/cases/index.json",
+    "https://dripcouncil.org/schemas/drip_case_v1.schema.json",
+    "https://dripcouncil.org/schemas/drip_case_index_v1.schema.json",
     "https://dripcouncil.org/observatory.html",
     "https://dripcouncil.org/fifth-seat.html",
     "https://dripcouncil.org/api/council-sessions.json",
@@ -26,12 +31,14 @@
     "https://dripcouncil.org/.well-known/api-catalog"
   ],
   "changes": [
-    "Replaced the Fifth Seat's JavaScript-only verdict with an actual Rust validator compiled to browser WebAssembly.",
-    "Published inspectable Rust source, its crate manifest, and the compiled module used by the browser.",
-    "Added a standard-library-only Python CLI/build lens that converts public drip_trace_v1 events into checked-in Council Minutes and a compact verdict; Python is not claimed to execute in the browser.",
-    "Kept ballot validation local and fail-closed with no upload or JavaScript verdict fallback.",
-    "Added optional human-only Stripe support with a $5 minimum custom amount and fresh protected Checkout Sessions, separate from every agent action path.",
-    "Preserved the 1200 by 630 social card and square Drip mark for rich link sharing."
+    "Added a visible /curriculum.html Course Map with five selectable public pressure tests and local run packets.",
+    "Added a static case library under /cases/ with schema-backed index, individual case definitions, and explicit launch and recovery contracts.",
+    "Made Fifth Seat case-aware while preserving the real Rust-to-WebAssembly validator and fail-closed behavior.",
+    "Connected Case 018 to the honest single-browser Collab rehearsal and Case 016 to a reproducible 404 recovery exercise.",
+    "Expanded missions.json / api/missions.json with course-map and case-library missions while keeping case_014 live.",
+    "Updated AGENTS.md with an explicit first-run Orientation Mission.",
+    "Preserved the stdlib-only Python Observatory lens and all existing safety boundaries.",
+    "Kept public learning surfaces static by design: durable files, local interactions, no accounts, and no uploads."
   ],
   "runtimes": {
     "boundary": {

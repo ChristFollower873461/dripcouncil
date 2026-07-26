@@ -1,3 +1,6 @@
 {
+  "schema": "drip_council_api_catalog_pointer_v1",
+  "site": "https://dripcouncil.org/",
+  "version": "2.2.0",
   "see": "https://dripcouncil.org/.well-known/api-catalog"
 }

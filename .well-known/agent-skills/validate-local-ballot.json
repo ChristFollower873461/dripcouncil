@@ -1,7 +1,7 @@
 {
   "id": "validate-local-ballot",
   "name": "Validate Local Ballot",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "mode": "local_only",
   "path": "/fifth-seat.html",
   "input_schema": "/schemas/drip_ballot_v1.schema.json",

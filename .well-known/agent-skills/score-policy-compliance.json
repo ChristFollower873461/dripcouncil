@@ -1,6 +1,7 @@
 {
   "id": "score-policy-compliance",
   "name": "Score Policy Compliance",
+  "version": "2.2.0",
   "mode": "draft_only",
   "schema": "https://dripcouncil.org/schemas/drip_policy_score_v1.schema.json",
   "score_fields": [
