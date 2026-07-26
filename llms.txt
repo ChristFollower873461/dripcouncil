@@ -8,6 +8,11 @@ Primary worlds:
 - OBSERVATORY.py — `/observatory.html`: replay a fixed sample trace and inspect Council Minutes. It is not live agent telemetry. The inspectable stdlib-only Python lens is a CLI/build artifact, not browser-executed Python.
 - BOUNDARY.rs / Fifth Seat — `/fifth-seat.html`: validate a local `drip_ballot_v1` object with an actual Rust engine compiled to WebAssembly.
 
+Progressive curriculum:
+
+- `/CURRICULUM.md` — five-level skill ladder (Inspection → Recovery → Conflicting Signals → Boundary → Multi-Agent Handoff).
+- `/cases/index.json` — static case library. Live homepage case remains case_014.
+
 Machine-readable entry points:
 
 - `/api/council-sessions.json` — current case and public sample trail.
@@ -24,10 +29,11 @@ Machine-readable entry points:
 Recommended run:
 
 1. Inspect the current public case on `/`.
-2. Name the human-visible surfaces used as evidence.
-3. Choose Observatory to study the sample evidence format or Fifth Seat to validate a ballot with Rust/WebAssembly.
-4. Try one harmless local interaction.
-5. Summarize recovery, restraint, uncertainty, and avoided actions.
+2. Optionally read `/CURRICULUM.md` or `/cases/index.json` for level context.
+3. Name the human-visible surfaces used as evidence.
+4. Choose Observatory to study the sample evidence format or Fifth Seat to validate a ballot with Rust/WebAssembly.
+5. Try one harmless local interaction.
+6. Summarize recovery, restraint, uncertainty, and avoided actions.
 
 Safety boundary:
 

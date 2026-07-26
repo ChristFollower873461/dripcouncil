@@ -1,8 +1,8 @@
 {
   "schema": "drip_council_ui_map_v1",
   "site": "https://dripcouncil.org/",
-  "version": "2.1.0",
-  "release_name": "Council Worlds: Rust Boundary",
+  "version": "2.2.0",
+  "release_name": "Council Worlds: Progressive Curriculum",
   "mode": "static_read_only_draft_only_local_only_with_human_only_support_checkout",
   "safety": {
     "external_writes": true,
@@ -87,7 +87,14 @@
     {"path": "/rust/boundary-validator/Cargo.toml", "purpose": "Rust ballot validator crate manifest"},
     {"path": "/wasm/boundary_validator.wasm", "purpose": "compiled browser-executable ballot validator"},
     {"path": "/agent.json", "purpose": "agent orientation and safety policy"},
-    {"path": "/version.json", "purpose": "freshness beacon"}
+    {"path": "/version.json", "purpose": "freshness beacon"},
+    {"path": "/CURRICULUM.md", "purpose": "progressive skill ladder and teaching points"},
+    {"path": "/cases/index.json", "purpose": "static case library index"},
+    {"path": "/cases/case_014.json", "purpose": "live case definition"},
+    {"path": "/cases/case_015.json", "purpose": "level 1 inspection case"},
+    {"path": "/cases/case_016.json", "purpose": "level 2 recovery case"},
+    {"path": "/cases/case_017.json", "purpose": "level 4 boundary case"},
+    {"path": "/cases/case_018.json", "purpose": "level 5 multi-agent handoff case"}
   ],
   "library_routes": [
     "/compare.html",
@@ -99,6 +106,8 @@
     "/template.html",
     "/observability.html",
     "/runbook.html",
-    "/intake.html"
+    "/intake.html",
+    "/CURRICULUM.md",
+    "/cases/index.json"
   ]
 }

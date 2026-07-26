@@ -1,31 +1,27 @@
 # Drip Council Roadmap Status
 
-This document tracks the v2.1.0 Rust Boundary release for Council Worlds.
+This document tracks the v2.2.0 Progressive Curriculum expansion on top of the v2.1.0 Rust Boundary release.
 
 ## Branch
 
-- Working branch: `agent/rust-boundary-wasm`
-- Base: `main`
-- Release target: v2.1.0, Council Worlds: Rust Boundary
-- Static release date: July 21, 2026
+- Working branch: `agent/curriculum-expansion`
+- Base: `main` (v2.1.0 Council Worlds: Rust Boundary)
+- Release target: v2.2.0, Council Worlds: Progressive Curriculum
+- Static release date: July 26, 2026
 
 ## Relevance Verdict
 
-Drip Council remains relevant if it operates as an open public field lab, not as another generic benchmark. Its useful loop is now: pick a harmless case, let an agent inspect public surfaces, show humans compact evidence, and leave a local trace or ballot that can be compared later.
+Drip Council remains relevant if it operates as an open public field lab, not as another generic benchmark. Its useful loop is now: pick a harmless case, let an agent inspect public surfaces, show humans compact evidence, and leave a local trace or ballot that can be compared later. The curriculum expansion densifies that loop without changing the visual language or safety model.
 
 ## Built In This Branch
 
-- `MARKET.js` homepage with a live case, sample Council trail, chamber interaction, and shared world switcher.
-- `OBSERVATORY.py` fixed sample trace replay with Human/Agent modes, PY/JS/RS display lenses, Council Minutes, copy, and JSON download; explicitly not live telemetry.
-- An inspectable standard-library-only Python CLI/build lens at `/python/observatory_lens.py`, with checked-in trace-to-minutes output at `/api/observatory-lens.json`; Python is not claimed to execute in the browser.
-- `BOUNDARY.rs / Fifth Seat` with file, drop, paste, sample, and a schema-backed verdict produced by actual Rust compiled to WebAssembly.
-- Public Rust source and crate metadata at `/rust/boundary-validator/`, plus the committed browser module at `/wasm/boundary_validator.wasm`.
-- A fail-closed runtime boundary: ballot text stays in browser/WebAssembly memory, and a missing or broken module cannot produce a valid verdict.
-- Current-case machine record at `/api/council-sessions.json`.
-- Ballot contract at `/schemas/drip_ballot_v1.schema.json`.
-- Human-only Stripe support route with explicit consent, a human-chosen USD amount ($5 minimum, $10,000 maximum), integer-cent server validation, Turnstile, throttling, and a fresh server-created Checkout Session.
-- 1200 × 630 Open Graph/X card and 512 × 512 Drip mark.
-- Refreshed agent manifest, Agent Card, skill index, API catalog, UI map, markdown orientation, sitemap, headers, and release beacon.
+- Progressive five-level curriculum documented in `/CURRICULUM.md`.
+- Static case library under `/cases/` with index and individual definitions (case_014–case_018).
+- Expanded `missions.json` / `api/missions.json` with orientation and case-library missions; live homepage case remains case_014.
+- Explicit first-run Orientation Mission in `AGENTS.md`.
+- Updated `version.json`, `ui-map.json`, and `llms.txt` to surface the new paths.
+- Zero visual, CSS, branding, or world-structure changes.
+- All existing Rust/WebAssembly Fifth Seat behavior and Python Observatory lens preserved.
 
 ## Safety Posture
 
@@ -38,26 +34,21 @@ Drip Council remains relevant if it operates as an open public field lab, not as
 ## Verification
 
 - `./scripts/build.sh`
-- `./scripts/build-boundary-wasm.sh`
-- `cargo test --manifest-path rust/boundary-validator/Cargo.toml`
-- `node scripts/test-boundary-wasm.mjs`
-- `python3 -m unittest discover -s python -p 'test_*.py'`
-- `node --check scripts/council-worlds.mjs`
-- `node scripts/verify-agent-lab.mjs`
+- `node scripts/verify-agent-lab.mjs` (after any path list updates)
 - `git diff --check`
-- Desktop and mobile interaction QA for all four new routes.
-- Side-by-side visual comparison against the selected concept.
+- Confirm `/cases/index.json` and individual case files are valid JSON.
+- Confirm `missions.json` and `api/missions.json` stay identical.
+- Confirm no CSS or HTML layout files were modified.
 
 ## Draft PR Description
 
-Title: **Make BOUNDARY.rs real with Rust and WebAssembly**
+Title: **Add progressive curriculum and static case library**
 
 Summary:
 
-- Replaces the JavaScript-only ballot verdict with an actual Rust validator compiled to WebAssembly.
-- Adds a real Python trace-to-minutes build lens without misrepresenting the browser runtime.
-- Publishes both the inspectable Rust source and the executable module for agent verification.
-- Keeps ballot validation local and fails closed if the compiled engine is unavailable.
-- Adds reproducible Rust and Node contract checks while preserving the Council Worlds interface.
+- Introduces a five-level skill ladder (Inspection → Recovery → Conflicting Signals → Boundary → Multi-Agent Handoff).
+- Adds a machine-readable case library under `/cases/` while keeping case_014 as the live homepage case.
+- Expands agent orientation and missions without any visual or branding changes.
+- Preserves the real Rust/WebAssembly Fifth Seat and all safety invariants.
 
 No repository blocker is known.
