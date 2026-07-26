@@ -1,8 +1,8 @@
 {
   "name": "Drip Council",
-  "description": "Council Worlds is a public field lab for visible-evidence navigation, fixed sample traces, bounded ballots, recovery, and restraint.",
+  "description": "Council Worlds is a public field lab for visible-evidence navigation, fixed sample traces, bounded ballots, recovery, restraint, and a progressive curriculum of agent habits.",
   "url": "https://dripcouncil.org/",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "protocol": "a2a_static_discovery_v1",
   "mode": "static_read_only_draft_only_local_only",
   "documentationUrl": "https://dripcouncil.org/AGENTS.md",
@@ -38,6 +38,12 @@
       "name": "Validate Local Ballot",
       "description": "Use the real Rust/WebAssembly BOUNDARY.rs engine to validate a bounded local ballot from public evidence.",
       "mode": "local_only"
+    },
+    {
+      "id": "explore-curriculum",
+      "name": "Explore Curriculum",
+      "description": "Read the progressive skill ladder and static case library at /CURRICULUM.md and /cases/index.json.",
+      "mode": "read_only"
     }
   ],
   "security": {
@@ -50,6 +56,8 @@
     "homepage": "https://dripcouncil.org/",
     "observatory": "https://dripcouncil.org/observatory.html",
     "fifthSeat": "https://dripcouncil.org/fifth-seat.html",
+    "curriculum": "https://dripcouncil.org/CURRICULUM.md",
+    "caseLibrary": "https://dripcouncil.org/cases/index.json",
     "currentSession": "https://dripcouncil.org/api/council-sessions.json",
     "ballotSchema": "https://dripcouncil.org/schemas/drip_ballot_v1.schema.json",
     "pythonLens": "https://dripcouncil.org/python/observatory_lens.py",
