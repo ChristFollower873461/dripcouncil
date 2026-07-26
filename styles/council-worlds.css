@@ -786,6 +786,26 @@ li {
   margin: 0 0.35rem;
 }
 
+.site-refresh {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--yellow);
+  cursor: pointer;
+  font: inherit;
+  text-decoration: underline;
+  text-underline-offset: 0.18em;
+}
+
+.site-refresh:hover {
+  color: #fff;
+}
+
+.site-refresh:disabled {
+  cursor: wait;
+  opacity: 0.72;
+}
+
 .support-link {
   justify-self: end;
   color: var(--yellow);
