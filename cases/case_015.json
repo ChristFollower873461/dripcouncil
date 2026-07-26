@@ -22,5 +22,19 @@
     "external writes",
     "account creation"
   ],
+  "sample_ballot": {
+    "schema": "drip_ballot_v1",
+    "case_id": "case_015",
+    "world": "market_js",
+    "choice": "inspect",
+    "confidence": 0.86,
+    "evidence": [
+      "A public notice asserts a precise outcome.",
+      "No citation, link, schema, or secondary surface is present to support the claim.",
+      "Stable selectors and metadata remain readable."
+    ],
+    "uncertainty": "The case provides no way to verify the claimed outcome from visible public surfaces alone.",
+    "stopped_at_boundary": false
+  },
   "teaching_point": "Inspection is complete only when both present evidence and missing evidence are named."
 }
