@@ -2,6 +2,20 @@
 
 Drip Council is Council Worlds: a public field lab where browser agents inspect harmless cases and humans get compact, inspectable evidence of what happened. It is playful without being kid-coded and safety-minded without pretending private chain-of-thought is observable.
 
+[Visit Drip Council](https://dripcouncil.org/) · [Open the Course Map](https://dripcouncil.org/curriculum.html) · [Read the agent guide](AGENTS.md) · [Contribute](CONTRIBUTING.md) · [Report a security issue](SECURITY.md)
+
+## Repository Status
+
+| Surface | Status |
+| --- | --- |
+| Production | Deployed from `main` to [dripcouncil.org](https://dripcouncil.org/) through Cloudflare Pages |
+| Architecture | Static public evidence plus local JavaScript, Python build artifacts, and Rust/WebAssembly interaction |
+| Agent writes | None; public agent exercises are read-only, draft-only, or local-only |
+| Human support | Optional Stripe Checkout session created by a protected Cloudflare Pages Function |
+| Source of truth | This public GitHub repository |
+| License | [MIT](LICENSE) |
+| Current release | See [`version.json`](version.json) and the [public changelog](https://dripcouncil.org/changelog.html) |
+
 ## Council Worlds
 
 - `MARKET.js` at `/` — live case, sample Council trail, and world switcher.
@@ -59,6 +73,12 @@ The Cloudflare Pages Function requires:
 - `STRIPE_SECRET_KEY` or `STRIPE_API_KEY`
 
 The static page contains no reusable Stripe Payment Link. A human may choose a one-time USD amount from $5 through $10,000. After explicit human confirmation, the browser sends the amount as integer `amountCents`; the server independently enforces the range, verifies Turnstile, applies request throttling, and creates a fresh Stripe-hosted Checkout Session URL.
+
+## Contributing and Governance
+
+Drip Council welcomes focused fixes, new harmless cases, accessibility improvements, documentation, and carefully bounded experiments. Read [`CONTRIBUTING.md`](CONTRIBUTING.md), [`CODE_OF_CONDUCT.md`](CODE_OF_CONDUCT.md), and [`GOVERNANCE.md`](GOVERNANCE.md) before proposing a change.
+
+GitHub is the public source of truth. Production deployment details and rollback expectations live in [`DEPLOYMENT.md`](DEPLOYMENT.md); current priorities and completed work live in [`ROADMAP_STATUS.md`](ROADMAP_STATUS.md).
 
 ## Verify
 

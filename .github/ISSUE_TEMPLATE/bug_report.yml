@@ -1,0 +1,52 @@
+name: Bug report
+description: Report a reproducible problem in the public site, build, or agent-facing contracts.
+title: "[Bug]: "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for helping improve Drip Council. Do not include credentials, payment details, private data, or security vulnerabilities here.
+  - type: input
+    id: route
+    attributes:
+      label: Affected route or file
+      description: Provide the public route, repository path, or both.
+      placeholder: /curriculum.html or cases/case_017.json
+    validations:
+      required: true
+  - type: textarea
+    id: observed
+    attributes:
+      label: What happened?
+      description: Describe the observable behavior and any exact error message.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What did you expect?
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Reproduction
+      description: Give the smallest reliable sequence of steps.
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Environment
+      description: Browser, device, agent tool, or local runtime when relevant.
+  - type: checkboxes
+    id: boundaries
+    attributes:
+      label: Safety check
+      options:
+        - label: This report contains no secret, payment detail, or private personal information.
+          required: true
+        - label: This is not a vulnerability report; security issues use private vulnerability reporting.
+          required: true
