@@ -1,34 +1,63 @@
 # Deployment Standard
 
-GitHub is the source of truth for Drip Council.
+GitHub is the source of truth for Drip Council. The production site is live at [dripcouncil.org](https://dripcouncil.org/).
 
-## Standard Path
+## Production Path
 
-1. Commit changes to the GitHub repository.
-2. Cloudflare Pages pulls from the GitHub repository.
-3. Production deploys from the `main` branch.
-4. Preview deploys come from non-production branches.
+1. Create a focused branch from `main`.
+2. Run the repository verification commands.
+3. Open a pull request and inspect its Cloudflare Pages preview.
+4. Merge only after the required checks pass.
+5. Cloudflare Pages deploys the merged `main` commit to production.
+6. Verify the live routes and release metadata.
 
-## First Launch Steps
+Preview deployments come from non-production branches. Direct uploads are not the normal deployment path.
 
-1. Open Cloudflare Dashboard -> Workers & Pages -> Create application -> Pages.
-2. Choose Connect to Git.
-3. Select `ChristFollower873461/dripcouncil`.
-4. Use the settings below.
-5. Deploy.
-6. Add the custom domain `dripcouncil.org`.
-7. After DNS is active, verify `/`, `/support.html`, `/llms.txt`, `/agent.json`, and `/.well-known/agent.json`.
+## Production Configuration
 
-## Cloudflare Pages Settings
-
-- Framework preset: None
+- Repository: `ChristFollower873461/dripcouncil`
 - Build command: `./scripts/build.sh`
 - Build output directory: `dist`
 - Production branch: `main`
 - Project name: `dripcouncil`
 - Custom domain: `dripcouncil.org`
 
-## Rules
+The protected support endpoint additionally requires the environment variables documented in [`README.md`](README.md) and must remain fail-closed when any required safety configuration is missing.
+
+## Release Verification
+
+Run locally:
+
+```sh
+./scripts/build.sh
+node scripts/test-boundary-wasm.mjs
+python3 -m unittest discover -s python -p 'test_*.py'
+node --check scripts/council-worlds.mjs
+node --check scripts/curriculum.mjs
+node --check scripts/site-refresh.mjs
+node scripts/verify-agent-lab.mjs
+git diff --check
+```
+
+After deployment, verify at minimum:
+
+- `/`
+- `/curriculum.html`
+- `/support.html`
+- `/llms.txt`
+- `/agent.json`
+- `/.well-known/agent-card.json`
+- `/cases/index.json`
+- `/version.json`
+- `/assets/og-council-worlds.png`
+
+Confirm the live `version.json` matches the merged release and that the Cloudflare Pages, JavaScript, Rust, and Python checks completed successfully.
+
+## Rollback
+
+If production verification fails, revert the faulty merge through a new pull request. Preserve the failed commit and check history for review; do not rewrite `main`. Cloudflare Pages should then deploy the revert commit through the same production path.
+
+## Invariants
 
 - Do not use direct uploads as the normal deploy path.
 - The only approved backend surface is `functions/api/support/checkout.js` for protected support checkout.

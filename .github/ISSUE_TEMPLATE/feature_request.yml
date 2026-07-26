@@ -1,0 +1,44 @@
+name: Feature request
+description: Propose a focused improvement or a new harmless learning case.
+title: "[Idea]: "
+labels:
+  - enhancement
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What need does this address?
+      description: Describe the human or agent learning problem before the solution.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed experience
+      description: Explain the smallest useful version and what someone can observe.
+    validations:
+      required: true
+  - type: textarea
+    id: teaching
+    attributes:
+      label: Distinct teaching point
+      description: What will this teach that the existing five levels do not?
+    validations:
+      required: true
+  - type: dropdown
+    id: state
+    attributes:
+      label: Does it require server state or external writes?
+      options:
+        - No; it is static, read-only, draft-only, or local-only.
+        - Maybe; it needs design and threat-model review.
+        - Yes; it requires explicit maintainer approval and a written safety model.
+    validations:
+      required: true
+  - type: textarea
+    id: safety
+    attributes:
+      label: Safety, privacy, and recovery
+      description: Name relevant boundaries, failure modes, and recovery behavior.
+    validations:
+      required: true

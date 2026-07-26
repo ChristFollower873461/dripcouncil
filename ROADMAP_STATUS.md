@@ -1,13 +1,13 @@
 # Drip Council Roadmap Status
 
-This document tracks the v2.2.0 Progressive Curriculum expansion on top of the v2.1.0 Rust Boundary release.
+This document records the current product position, completed foundation, and next responsible expansion points. Release details live in [`version.json`](version.json); deployed changes remain visible in the [public changelog](https://dripcouncil.org/changelog.html).
 
-## Branch
+## Current Position
 
-- Working branch: `agent/curriculum-expansion`
-- Base: `main` (v2.1.0 Council Worlds: Rust Boundary)
-- Release target: v2.2.0, Council Worlds: Progressive Curriculum
-- Static release date: July 26, 2026
+- Production: [dripcouncil.org](https://dripcouncil.org/)
+- Source of truth: public `main` branch
+- Current shape: five-level Course Map, schema-backed case library, local Rust/WebAssembly ballot validation, Python-generated Observatory evidence, and human-only protected support
+- Operating posture: public evidence, honest uncertainty, harmless local interaction, no agent payment authority
 
 ## Relevance Verdict
 
@@ -15,7 +15,7 @@ Drip Council remains relevant if it operates as an open public field lab, not as
 
 Static is an advantage for the evidence and curriculum layers: public files stay durable, inspectable, linkable, and cheap to host. Static would become a weakness only if the site offered no working interaction or fresh cases. Local JavaScript, the Rust/WebAssembly ballot engine, and the Python-generated Observatory artifact provide real behavior without accounts, uploads, or fake live-agent claims.
 
-## Built In This Branch
+## Completed Foundation
 
 - Human-facing `/curriculum.html` workbench with a five-level Course Map, selectable case briefs, safe launch actions, sample ballots, and explicit local-run language.
 - Schema-backed case library under `/cases/` with index, five definitions, and validated launch/recovery contracts.
@@ -23,34 +23,33 @@ Static is an advantage for the evidence and curriculum layers: public files stay
 - Homepage, primary navigation, changelog, sitemap, headers, missions, agent manifests, API catalog, skill registry, and human/agent briefs all surface the same release.
 - Existing black, off-white, and yellow Council Worlds visual grammar extended into an archival course workbench; the three language worlds remain intact.
 - Human-only Stripe support remains separate with its $5 minimum and human-chosen amount.
+- Truthful **Refresh this version** control plus versioned shared assets for warm browser caches.
+- Public repository guidance for contribution, governance, conduct, security, deployment, and verification.
 
-## Safety Posture
+## Near-Term Priorities
 
-- Council interactions remain public, read-only, draft-only, or local-only.
-- No automatic telemetry, account, report submission, database, live A2A endpoint, or agent payment authority is introduced.
-- The Rust/WebAssembly ballot path performs no upload and has no JavaScript validation fallback on engine failure.
-- Public evidence and concise rationales are welcome; private chain-of-thought is neither requested nor claimed.
-- Human support is separate from agent actions and fails closed without server configuration.
+1. Add new cases only when each one teaches a distinct, observable behavior and has an explicit recovery path.
+2. Improve accessibility and reduced-motion behavior through tested, incremental changes.
+3. Keep machine discovery files synchronized with the human experience.
+4. Add aggregate or shared features only with an explicit privacy model, retention policy, abuse analysis, and review gate.
+5. Prefer inspectable public artifacts over unverifiable claims about agent behavior.
 
-## Verification
+## Expansion Gates
 
-- `./scripts/build.sh`
-- `node scripts/verify-agent-lab.mjs`
-- `node scripts/test-boundary-wasm.mjs`
-- `python3 -m unittest discover -s python -p 'test_*.py'`
-- `node --check scripts/curriculum.mjs`
-- `git diff --check`
-- Browser smoke: select all five cases; validate Case 017 locally; build the Case 018 handoff transcript; confirm Case 016's 404 recovery.
+Before adding accounts, uploads, persistence, live rooms, public leaderboards, agent-to-agent networking, or payment-adjacent agent actions, require:
 
-## Draft PR Description
+- a written product need;
+- a threat model and data-flow review;
+- clear human consent and deletion behavior;
+- bounded failure modes;
+- tests that verify the safety claims; and
+- explicit maintainer approval through a focused pull request.
 
-Title: **Make the progressive curriculum playable**
+## Deliberate Non-Goals
 
-Summary:
-
-- Turns the five-level skill ladder into a visible Course Map for humans.
-- Adds schema-backed public cases and explicit launch contracts for agents.
-- Makes the local Rust/WebAssembly and Collab exercises case-aware without pretending the site has server state or live multiplayer.
-- Preserves the Python Observatory, human-only support boundary, social card, and every safety invariant.
-
-No repository blocker is known.
+- Collecting or inferring private chain-of-thought
+- Pretending sample playback is live telemetry
+- Giving agents authority to donate or complete payments
+- Shipping hidden write endpoints
+- Turning uncertainty into a competitive failure signal
+- Adding infrastructure merely to make the site appear less static
