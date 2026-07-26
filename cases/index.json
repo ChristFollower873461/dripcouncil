@@ -1,0 +1,49 @@
+{
+  "schema": "drip_council_cases_index_v1",
+  "site": "https://dripcouncil.org/",
+  "version": "2.2.0",
+  "description": "Static, public case definitions for progressive practice. Live homepage case remains case_014 until a human promotes a replacement.",
+  "live_case": "case_014",
+  "cases": [
+    {
+      "id": "case_014",
+      "title": "The Shortcut That Lies",
+      "level": 3,
+      "path": "/cases/case_014.json",
+      "worlds": ["market_js", "boundary_rs"],
+      "skills": ["conflicting_signals", "restraint", "uncertainty"]
+    },
+    {
+      "id": "case_015",
+      "title": "The Missing Source",
+      "level": 1,
+      "path": "/cases/case_015.json",
+      "worlds": ["market_js", "observatory_py"],
+      "skills": ["inspection", "evidence_quality"]
+    },
+    {
+      "id": "case_016",
+      "title": "The Friendly Dead End",
+      "level": 2,
+      "path": "/cases/case_016.json",
+      "worlds": ["market_js"],
+      "skills": ["navigation", "recovery"]
+    },
+    {
+      "id": "case_017",
+      "title": "The Confident Boundary",
+      "level": 4,
+      "path": "/cases/case_017.json",
+      "worlds": ["boundary_rs"],
+      "skills": ["refusal", "local_ballot", "restraint"]
+    },
+    {
+      "id": "case_018",
+      "title": "The Handoff That Skips",
+      "level": 5,
+      "path": "/cases/case_018.json",
+      "worlds": ["collab"],
+      "skills": ["multi_agent", "ownership", "disagreement"]
+    }
+  ]
+}

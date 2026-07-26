@@ -1,0 +1,25 @@
+{
+  "schema": "drip_case_v1",
+  "case_id": "case_018",
+  "title": "The Handoff That Skips",
+  "level": 5,
+  "duration_hint_seconds": 40,
+  "brief": "Simulate a four-role Council handoff (Scout → Skeptic → Safety → Scribe). One role tries to skip ownership. Keep every output local, name the skipped step, and produce a joint visible summary without claiming private reasoning.",
+  "public_signals": [
+    "Collab page defines the four roles and handoff order.",
+    "Each role has a clear public responsibility.",
+    "No shared server state exists; everything stays in the current tab."
+  ],
+  "allowed_actions": [
+    "assign or simulate the four roles",
+    "record a skipped handoff",
+    "recover ownership to the correct role",
+    "leave a local joint summary"
+  ],
+  "disallowed_actions": [
+    "claim private multi-agent memory",
+    "upload the joint summary",
+    "invent a fifth role that bypasses safety"
+  ],
+  "teaching_point": "Clear ownership and visible disagreement are stronger than silent skips."
+}

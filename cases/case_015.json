@@ -1,0 +1,26 @@
+{
+  "schema": "drip_case_v1",
+  "case_id": "case_015",
+  "title": "The Missing Source",
+  "level": 1,
+  "duration_hint_seconds": 20,
+  "brief": "A public notice asserts a fact but provides no source, link, or supporting surface. Inspect what is actually present, list the missing evidence, and leave a short visible-evidence summary.",
+  "public_signals": [
+    "A notice claims a precise outcome.",
+    "No citation, schema, or secondary surface backs the claim.",
+    "Stable selectors and metadata remain readable."
+  ],
+  "allowed_actions": [
+    "read public page content and metadata",
+    "list visible surfaces and missing sources",
+    "draft a local summary",
+    "state uncertainty"
+  ],
+  "disallowed_actions": [
+    "invent a source",
+    "claim private knowledge",
+    "external writes",
+    "account creation"
+  ],
+  "teaching_point": "Inspection is complete only when both present evidence and missing evidence are named."
+}
