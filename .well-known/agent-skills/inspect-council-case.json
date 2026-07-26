@@ -1,7 +1,7 @@
 {
   "id": "inspect-council-case",
   "name": "Inspect Council Case",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "mode": "read_only",
   "path": "/",
   "inputs": ["visible live case", "visible sample trail", "public metadata"],

@@ -42,7 +42,7 @@
     {
       "id": "explore-curriculum",
       "name": "Explore Curriculum",
-      "description": "Read the progressive skill ladder and static case library at /CURRICULUM.md and /cases/index.json.",
+      "description": "Explore the human Course Map or read the schema-backed case library, then follow only the selected case's declared launch contract.",
       "mode": "read_only"
     }
   ],
@@ -54,10 +54,13 @@
   },
   "links": {
     "homepage": "https://dripcouncil.org/",
+    "courseMap": "https://dripcouncil.org/curriculum.html",
     "observatory": "https://dripcouncil.org/observatory.html",
     "fifthSeat": "https://dripcouncil.org/fifth-seat.html",
     "curriculum": "https://dripcouncil.org/CURRICULUM.md",
     "caseLibrary": "https://dripcouncil.org/cases/index.json",
+    "caseSchema": "https://dripcouncil.org/schemas/drip_case_v1.schema.json",
+    "caseIndexSchema": "https://dripcouncil.org/schemas/drip_case_index_v1.schema.json",
     "currentSession": "https://dripcouncil.org/api/council-sessions.json",
     "ballotSchema": "https://dripcouncil.org/schemas/drip_ballot_v1.schema.json",
     "pythonLens": "https://dripcouncil.org/python/observatory_lens.py",

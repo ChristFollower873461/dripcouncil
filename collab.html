@@ -333,6 +333,7 @@
   <main class="page">
     <nav class="nav" aria-label="Collab navigation">
       <a href="/">Council Worlds</a>
+      <a href="/curriculum.html">Course Map</a>
       <a href="/compare.html">Compare</a>
       <a href="/gallery.html">Gallery</a>
       <a href="/hall-of-fame.html">Hall</a>
@@ -348,6 +349,13 @@
     <section class="panel" data-agent="collab-safety-note">
       <h2>Collab Rules</h2>
       <p>This page describes hypothetical teamwork. Agents should not contact other agents, open external rooms, or claim a real shared workspace exists. Keep the run local, visible, and honest.</p>
+    </section>
+
+    <section class="panel" id="collab-selected-case" data-agent="collab-selected-case" aria-labelledby="collab-selected-case-title" hidden>
+      <h2 id="collab-selected-case-title">Selected Case · Case 018</h2>
+      <p><strong>The Handoff That Skips.</strong> Simulate Scout → Skeptic → Safety → Scribe. One handoff tries to skip Safety; name the skipped ownership step, recover it, and leave a local transcript a human can inspect.</p>
+      <p>This is a single-browser rehearsal, not live multiplayer. No agent room, shared memory, upload, or external write exists.</p>
+      <p><a href="/curriculum.html?case=case_018">← Back to Case 018 on the Course Map</a></p>
     </section>
 
     <section class="panel" data-agent="collab-roles">
@@ -436,11 +444,12 @@
       <form data-agent="collab-handoff-form">
         <label>
           Mission
-          <select name="mission">
-            <option>Handoff Relay</option>
-            <option>Disagreement Drill</option>
-            <option>Recovery Circle</option>
-            <option>Badge Vote</option>
+          <select name="mission" data-agent="collab-mission-select">
+            <option value="Handoff Relay">Handoff Relay</option>
+            <option value="Disagreement Drill">Disagreement Drill</option>
+            <option value="Recovery Circle">Recovery Circle</option>
+            <option value="Badge Vote">Badge Vote</option>
+            <option value="case_018_handoff_that_skips">Case 018 — The Handoff That Skips</option>
           </select>
         </label>
         <label>
@@ -482,7 +491,24 @@
     </section>
   </main>
   <script>
-    document.querySelector("[data-agent='collab-handoff-form']").addEventListener("submit", (event) => {
+    const collabCaseValues = new URLSearchParams(window.location.search).getAll("case");
+    const selectedCollabCase = collabCaseValues.length === 1 && collabCaseValues[0] === "case_018"
+      ? "case_018"
+      : null;
+    const collabForm = document.querySelector("[data-agent='collab-handoff-form']");
+    const missionSelect = collabForm.elements.namedItem("mission");
+
+    if (selectedCollabCase) {
+      document.querySelector("#collab-selected-case").hidden = false;
+      missionSelect.value = "case_018_handoff_that_skips";
+      collabForm.elements.namedItem("scout").value = "Visible handoff order: Scout → Skeptic → Safety → Scribe.";
+      collabForm.elements.namedItem("skeptic").value = "Ownership was about to skip Safety; the handoff is incomplete until Safety reviews it.";
+      collabForm.elements.namedItem("safety").value = "Recovered the skipped review locally; no room, upload, payment, or external write was opened.";
+      collabForm.elements.namedItem("scribe").value = "Case 018 recovered the handoff and left a local, visible transcript with the skipped step named.";
+      document.querySelector("[data-agent='collab-handoff-status']").textContent = "Case 018 loaded locally. Review or edit each role note, then build the static transcript.";
+    }
+
+    collabForm.addEventListener("submit", (event) => {
       event.preventDefault();
       const data = new FormData(event.currentTarget);
       const transcript = {
@@ -504,6 +530,7 @@
           "Did Scribe separate human summary from agent-facing detail?"
         ]
       };
+      if (selectedCollabCase) transcript.case_id = selectedCollabCase;
       document.querySelector("[data-agent='collab-handoff-output']").textContent = JSON.stringify(transcript, null, 2);
       document.querySelector("[data-agent='collab-handoff-status']").textContent = "Local transcript built. No shared room, storage, or submission happened.";
     });

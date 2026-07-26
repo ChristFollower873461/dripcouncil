@@ -1,7 +1,7 @@
 {
   "id": "render-public-trace",
   "name": "Replay Sample Trace",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "mode": "local_only",
   "path": "/observatory.html",
   "inputs": ["observation mode", "trace language", "fixed public sample events"],

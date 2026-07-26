@@ -11,17 +11,18 @@ This document tracks the v2.2.0 Progressive Curriculum expansion on top of the v
 
 ## Relevance Verdict
 
-Drip Council remains relevant if it operates as an open public field lab, not as another generic benchmark. Its useful loop is now: pick a harmless case, let an agent inspect public surfaces, show humans compact evidence, and leave a local trace or ballot that can be compared later. The curriculum expansion densifies that loop without changing the visual language or safety model.
+Drip Council remains relevant if it operates as an open public field lab, not as another generic benchmark or a passive manifesto. Its useful loop is now: choose a harmless pressure test, inspect public evidence, try one local interaction, and leave a compact trail a human can review. The five-level Course Map gives that loop a beginning, progression, and reason to return.
+
+Static is an advantage for the evidence and curriculum layers: public files stay durable, inspectable, linkable, and cheap to host. Static would become a weakness only if the site offered no working interaction or fresh cases. Local JavaScript, the Rust/WebAssembly ballot engine, and the Python-generated Observatory artifact provide real behavior without accounts, uploads, or fake live-agent claims.
 
 ## Built In This Branch
 
-- Progressive five-level curriculum documented in `/CURRICULUM.md`.
-- Static case library under `/cases/` with index and individual definitions (case_014–case_018).
-- Expanded `missions.json` / `api/missions.json` with orientation and case-library missions; live homepage case remains case_014.
-- Explicit first-run Orientation Mission in `AGENTS.md`.
-- Updated `version.json`, `ui-map.json`, and `llms.txt` to surface the new paths.
-- Zero visual, CSS, branding, or world-structure changes.
-- All existing Rust/WebAssembly Fifth Seat behavior and Python Observatory lens preserved.
+- Human-facing `/curriculum.html` workbench with a five-level Course Map, selectable case briefs, safe launch actions, sample ballots, and explicit local-run language.
+- Schema-backed case library under `/cases/` with index, five definitions, and validated launch/recovery contracts.
+- Reproducible Level 2 dead-end and recovery, case-aware Rust/WebAssembly Fifth Seat exercises, and a single-browser Level 5 handoff rehearsal.
+- Homepage, primary navigation, changelog, sitemap, headers, missions, agent manifests, API catalog, skill registry, and human/agent briefs all surface the same release.
+- Existing black, off-white, and yellow Council Worlds visual grammar extended into an archival course workbench; the three language worlds remain intact.
+- Human-only Stripe support remains separate with its $5 minimum and human-chosen amount.
 
 ## Safety Posture
 
@@ -34,21 +35,22 @@ Drip Council remains relevant if it operates as an open public field lab, not as
 ## Verification
 
 - `./scripts/build.sh`
-- `node scripts/verify-agent-lab.mjs` (after any path list updates)
+- `node scripts/verify-agent-lab.mjs`
+- `node scripts/test-boundary-wasm.mjs`
+- `python3 -m unittest discover -s python -p 'test_*.py'`
+- `node --check scripts/curriculum.mjs`
 - `git diff --check`
-- Confirm `/cases/index.json` and individual case files are valid JSON.
-- Confirm `missions.json` and `api/missions.json` stay identical.
-- Confirm no CSS or HTML layout files were modified.
+- Browser smoke: select all five cases; validate Case 017 locally; build the Case 018 handoff transcript; confirm Case 016's 404 recovery.
 
 ## Draft PR Description
 
-Title: **Add progressive curriculum and static case library**
+Title: **Make the progressive curriculum playable**
 
 Summary:
 
-- Introduces a five-level skill ladder (Inspection → Recovery → Conflicting Signals → Boundary → Multi-Agent Handoff).
-- Adds a machine-readable case library under `/cases/` while keeping case_014 as the live homepage case.
-- Expands agent orientation and missions without any visual or branding changes.
-- Preserves the real Rust/WebAssembly Fifth Seat and all safety invariants.
+- Turns the five-level skill ladder into a visible Course Map for humans.
+- Adds schema-backed public cases and explicit launch contracts for agents.
+- Makes the local Rust/WebAssembly and Collab exercises case-aware without pretending the site has server state or live multiplayer.
+- Preserves the Python Observatory, human-only support boundary, social card, and every safety invariant.
 
 No repository blocker is known.

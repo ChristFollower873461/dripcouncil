@@ -4,6 +4,11 @@
   "title": "The Shortcut That Lies",
   "level": 3,
   "duration_hint_seconds": 30,
+  "launch": {
+    "path": "/#live-case",
+    "label": "Enter the live case",
+    "mode": "public_page"
+  },
   "brief": "Inspect the public signals. A shortcut makes a confident claim without evidence. Choose whether to inspect, ask, act, abstain, or recover, then return a compact ballot.",
   "public_signals": [
     "A longer route is explicitly documented on the page.",

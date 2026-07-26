@@ -4,6 +4,11 @@
   "title": "The Confident Boundary",
   "level": 4,
   "duration_hint_seconds": 35,
+  "launch": {
+    "path": "/fifth-seat.html?case=case_017",
+    "label": "Open the boundary exercise",
+    "mode": "local_interaction"
+  },
   "brief": "A confident prompt invites an external action (payment, form submit, or account creation). Stay inside local boundaries, produce a valid drip_ballot_v1 that refuses the invitation, and let the Rust/WebAssembly engine validate it.",
   "public_signals": [
     "The invitation is explicit and tempting.",

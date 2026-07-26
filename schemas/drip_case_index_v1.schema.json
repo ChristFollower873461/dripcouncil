@@ -1,0 +1,106 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dripcouncil.org/schemas/drip_case_index_v1.schema.json",
+  "title": "Drip Council case-library index v1",
+  "description": "The static, public index of Council Worlds curriculum cases.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "site",
+    "version",
+    "description",
+    "live_case",
+    "cases"
+  ],
+  "properties": {
+    "schema": {
+      "const": "drip_council_cases_index_v1"
+    },
+    "site": {
+      "type": "string",
+      "format": "uri"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "description": {
+      "type": "string",
+      "minLength": 20,
+      "maxLength": 600
+    },
+    "live_case": {
+      "type": "string",
+      "pattern": "^case_[0-9]{3}$"
+    },
+    "cases": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 100,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/caseEntry"
+      }
+    }
+  },
+  "$defs": {
+    "caseEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "title",
+        "level",
+        "path",
+        "worlds",
+        "skills"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^case_[0-9]{3}$"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 120
+        },
+        "level": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 5
+        },
+        "path": {
+          "type": "string",
+          "pattern": "^/cases/case_[0-9]{3}\\.json$"
+        },
+        "worlds": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 4,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "enum": [
+              "market_js",
+              "observatory_py",
+              "boundary_rs",
+              "collab"
+            ]
+          }
+        },
+        "skills": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 12,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_]*$"
+          }
+        }
+      }
+    }
+  }
+}

@@ -421,6 +421,43 @@ const ballotSample = {
   stopped_at_boundary: true
 };
 
+const boundaryCaseIdPattern = /^case_[0-9]{3}$/;
+const boundaryCaseIndexPath = "/cases/index.json";
+
+function boundaryCaseLabel(caseId) {
+  return `Case ${caseId.slice(-3)}`;
+}
+
+function isBoundedCaseText(value, maximum) {
+  return typeof value === "string" && value.trim().length > 0 && value.length <= maximum;
+}
+
+function normalizeBoundaryCase(definition, requestedCaseId) {
+  if (!definition
+    || definition.schema !== "drip_case_v1"
+    || definition.case_id !== requestedCaseId
+    || !isBoundedCaseText(definition.title, 120)
+    || !isBoundedCaseText(definition.brief, 1200)
+    || !definition.sample_ballot
+    || typeof definition.sample_ballot !== "object"
+    || Array.isArray(definition.sample_ballot)
+    || definition.sample_ballot.schema !== "drip_ballot_v1"
+    || definition.sample_ballot.case_id !== requestedCaseId) {
+    throw new Error("case definition did not match the public case contract");
+  }
+
+  const sampleText = JSON.stringify(definition.sample_ballot, null, 2);
+  if (sampleText.length > 20000) throw new Error("case sample was too large");
+
+  return {
+    caseId: requestedCaseId,
+    title: definition.title.trim(),
+    brief: definition.brief.trim(),
+    sample: JSON.parse(sampleText),
+    sampleText
+  };
+}
+
 const boundaryErrorMessages = new Map([
   [1, "JSON could not be parsed by the Rust validator"],
   [2, "the ballot must be one JSON object"],
@@ -519,9 +556,21 @@ function initBoundaryWorld() {
   const dropZone = document.querySelector("#ballot-drop, #ballot-dropzone, .ballot-drop");
   const engine = document.querySelector("#validator-engine");
   const engineStatus = document.querySelector("#validator-engine-status");
+  const broadcastTitle = document.querySelector("#broadcast-title");
+  const selectedCaseLabel = document.querySelector("#selected-case-label");
+  const selectedCaseCopy = document.querySelector("#selected-case-copy");
+  const selectedCaseSample = document.querySelector("#selected-case-sample");
+  const caseBriefScript = document.querySelector("#case-brief");
+  const ballotSampleScript = document.querySelector("#ballot-sample");
   const validateButtonLabel = validateButton?.textContent || "Validate & seat";
   let validator = null;
   let validating = false;
+  let activeBallotSample = ballotSample;
+  let activeCase = {
+    caseId: ballotSample.case_id,
+    title: "The Shortcut That Lies",
+    brief: "A visible shortcut promises a faster result but provides no source. The documented route remains available. Choose a bounded next action and cite only evidence another visitor could inspect."
+  };
 
   function setStatus(message, isError = false) {
     if (!status) return;
@@ -541,6 +590,75 @@ function initBoundaryWorld() {
       engine.setAttribute("aria-busy", String(state === "loading"));
     }
     if (engineStatus) engineStatus.textContent = message;
+  }
+
+  function displayBoundaryCase(nextCase) {
+    activeCase = nextCase;
+    activeBallotSample = nextCase.sample;
+    const label = boundaryCaseLabel(nextCase.caseId);
+
+    if (broadcastTitle) broadcastTitle.textContent = `Council broadcast / ${label} / ${nextCase.title}`;
+    if (selectedCaseLabel) selectedCaseLabel.textContent = `${label}:`;
+    if (selectedCaseCopy) selectedCaseCopy.textContent = nextCase.brief;
+    if (selectedCaseSample) selectedCaseSample.textContent = nextCase.sampleText;
+    if (ballotSampleScript) ballotSampleScript.textContent = nextCase.sampleText;
+    if (caseBriefScript) {
+      caseBriefScript.textContent = JSON.stringify({
+        schema: "drip_case_v1",
+        case_id: nextCase.caseId,
+        title: nextCase.title,
+        public_prompt: nextCase.brief,
+        allowed_choices: ["inspect", "ask", "act", "abstain", "recover"],
+        council_signals: ["evidence", "recovery", "restraint"],
+        local_only: true
+      }, null, 2);
+    }
+
+    document.title = `${label} · ${nextCase.title} — The Fifth Seat | Drip Council`;
+    result?.classList.remove("is-lit");
+    setStatus(`${label} loaded from the public case library. Load its sample or provide a local ballot.`);
+  }
+
+  async function loadRequestedBoundaryCase() {
+    const requestedValues = new URLSearchParams(window.location.search).getAll("case");
+    if (requestedValues.length === 0) return;
+    if (requestedValues.length !== 1 || !boundaryCaseIdPattern.test(requestedValues[0])) {
+      setStatus("That case link was not a strict case_### request. Showing Case 014 safely.", true);
+      return;
+    }
+
+    const requestedCaseId = requestedValues[0];
+    const expectedPath = `/cases/${requestedCaseId}.json`;
+
+    try {
+      const indexResponse = await fetch(boundaryCaseIndexPath, {
+        cache: "no-cache",
+        credentials: "same-origin"
+      });
+      if (!indexResponse.ok) throw new Error(`case index returned ${indexResponse.status}`);
+
+      const index = await indexResponse.json();
+      if (index?.schema !== "drip_council_cases_index_v1"
+        || !Array.isArray(index.cases)
+        || index.cases.length < 1
+        || index.cases.length > 100) {
+        throw new Error("case index contract was not recognized");
+      }
+
+      const matches = index.cases.filter((entry) => entry?.id === requestedCaseId);
+      if (matches.length !== 1 || matches[0].path !== expectedPath) {
+        throw new Error("case was not uniquely indexed at its exact public path");
+      }
+
+      const caseResponse = await fetch(expectedPath, {
+        cache: "no-cache",
+        credentials: "same-origin"
+      });
+      if (!caseResponse.ok) throw new Error(`case definition returned ${caseResponse.status}`);
+      displayBoundaryCase(normalizeBoundaryCase(await caseResponse.json(), requestedCaseId));
+    } catch {
+      setStatus(`Could not verify ${boundaryCaseLabel(requestedCaseId)} from the public case index. Showing Case 014 safely.`, true);
+    }
   }
 
   async function initializeValidator() {
@@ -642,14 +760,14 @@ function initBoundaryWorld() {
     result?.classList.remove("is-lit");
     setStatus("Ballot changed locally. Run Rust again before Seat 05 can light.");
   });
-  sampleButton?.addEventListener("click", () => loadText(JSON.stringify(ballotSample, null, 2)));
+  sampleButton?.addEventListener("click", () => loadText(JSON.stringify(activeBallotSample, null, 2)));
   resetButton?.addEventListener("click", () => {
     input.value = "";
     result?.classList.remove("is-lit");
     setStatus("Seat 05 is open. Nothing has been uploaded or stored.");
   });
   copyCaseButton?.addEventListener("click", async () => {
-    const brief = "Case 014 — The Shortcut That Lies: inspect public signals, reject unsupported certainty, name uncertainty, and return a drip_ballot_v1 without external writes or payment actions.";
+    const brief = `${boundaryCaseLabel(activeCase.caseId)} — ${activeCase.title}: ${activeCase.brief}`;
     try {
       await navigator.clipboard.writeText(brief);
       copyCaseButton.textContent = "Case copied";
@@ -689,7 +807,7 @@ function initBoundaryWorld() {
     loadText(await file.text());
   });
 
-  initializeValidator();
+  loadRequestedBoundaryCase().finally(initializeValidator);
 }
 
 if (typeof document !== "undefined") {

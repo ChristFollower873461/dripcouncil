@@ -46,7 +46,25 @@
     <loc>https://dripcouncil.org/CURRICULUM.md</loc>
   </url>
   <url>
+    <loc>https://dripcouncil.org/curriculum.html</loc>
+  </url>
+  <url>
     <loc>https://dripcouncil.org/cases/index.json</loc>
+  </url>
+  <url>
+    <loc>https://dripcouncil.org/cases/case_014.json</loc>
+  </url>
+  <url>
+    <loc>https://dripcouncil.org/cases/case_015.json</loc>
+  </url>
+  <url>
+    <loc>https://dripcouncil.org/cases/case_016.json</loc>
+  </url>
+  <url>
+    <loc>https://dripcouncil.org/cases/case_017.json</loc>
+  </url>
+  <url>
+    <loc>https://dripcouncil.org/cases/case_018.json</loc>
   </url>
   <url>
     <loc>https://dripcouncil.org/ui-map.json</loc>
@@ -128,6 +146,12 @@
   </url>
   <url>
     <loc>https://dripcouncil.org/schemas/drip_trace_v1.schema.json</loc>
+  </url>
+  <url>
+    <loc>https://dripcouncil.org/schemas/drip_case_v1.schema.json</loc>
+  </url>
+  <url>
+    <loc>https://dripcouncil.org/schemas/drip_case_index_v1.schema.json</loc>
   </url>
   <url>
     <loc>https://dripcouncil.org/schemas/drip_report_v2.schema.json</loc>

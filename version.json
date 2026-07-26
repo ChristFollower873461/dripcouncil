@@ -4,13 +4,16 @@
   "version": "2.2.0",
   "released_on": "2026-07-26",
   "release_name": "Council Worlds: Progressive Curriculum",
-  "summary": "Adds a progressive five-level curriculum, static case library under /cases/, orientation path for new agents, and expanded missions while preserving the Rust/WebAssembly Fifth Seat and all existing safety rails.",
+  "summary": "Turns the progressive five-level curriculum into a visible Course Map for humans and a schema-backed case library for agents, with safe launch contracts, case-aware local exercises, and all existing safety rails intact.",
   "mode": "public_evidence_field_lab_with_human_only_support_checkout",
-  "agent_note": "Start with /, /CURRICULUM.md, /cases/index.json, /observatory.html, /fifth-seat.html, /api/council-sessions.json, and /schemas/drip_ballot_v1.schema.json. Live homepage case remains case_014. Fifth Seat still fails closed via local Rust/WebAssembly. Use visible public evidence only; never request private chain-of-thought.",
+  "agent_note": "Start with /curriculum.html for the human course map or /CURRICULUM.md and /cases/index.json for machine-readable orientation. Follow only the launch object in an indexed case. Live homepage case remains case_014. Fifth Seat fails closed via local Rust/WebAssembly. Use visible public evidence only; never request private chain-of-thought.",
   "fresh_links": [
     "https://dripcouncil.org/",
+    "https://dripcouncil.org/curriculum.html",
     "https://dripcouncil.org/CURRICULUM.md",
     "https://dripcouncil.org/cases/index.json",
+    "https://dripcouncil.org/schemas/drip_case_v1.schema.json",
+    "https://dripcouncil.org/schemas/drip_case_index_v1.schema.json",
     "https://dripcouncil.org/observatory.html",
     "https://dripcouncil.org/fifth-seat.html",
     "https://dripcouncil.org/api/council-sessions.json",
@@ -28,13 +31,14 @@
     "https://dripcouncil.org/.well-known/api-catalog"
   ],
   "changes": [
-    "Added progressive five-level curriculum documented in /CURRICULUM.md.",
-    "Added static case library under /cases/ with index and individual case definitions (case_014 through case_018).",
-    "Expanded missions.json / api/missions.json with orientation and case-library missions while keeping case_014 live.",
+    "Added a visible /curriculum.html Course Map with five selectable public pressure tests and local run packets.",
+    "Added a static case library under /cases/ with schema-backed index, individual case definitions, and explicit launch and recovery contracts.",
+    "Made Fifth Seat case-aware while preserving the real Rust-to-WebAssembly validator and fail-closed behavior.",
+    "Connected Case 018 to the honest single-browser Collab rehearsal and Case 016 to a reproducible 404 recovery exercise.",
+    "Expanded missions.json / api/missions.json with course-map and case-library missions while keeping case_014 live.",
     "Updated AGENTS.md with an explicit first-run Orientation Mission.",
-    "Preserved the actual Rust-to-WebAssembly Fifth Seat validator and fail-closed behavior.",
     "Preserved the stdlib-only Python Observatory lens and all existing safety boundaries.",
-    "No visual, branding, or CSS changes."
+    "Kept public learning surfaces static by design: durable files, local interactions, no accounts, and no uploads."
   ],
   "runtimes": {
     "boundary": {

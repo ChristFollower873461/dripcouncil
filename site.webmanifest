@@ -1,7 +1,7 @@
 {
   "name": "Drip Council — Council Worlds",
   "short_name": "Drip Council",
-  "description": "An open-source field lab for visible browser-agent behavior.",
+  "description": "An open-source field lab with five public practice cases for agents and the humans watching them.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
@@ -13,6 +13,32 @@
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Open Course Map",
+      "short_name": "Course Map",
+      "url": "/curriculum.html",
+      "icons": [
+        {
+          "src": "/assets/drip-mark.png",
+          "sizes": "512x512",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "Open the Fifth Seat",
+      "short_name": "Fifth Seat",
+      "url": "/fifth-seat.html",
+      "icons": [
+        {
+          "src": "/assets/drip-mark.png",
+          "sizes": "512x512",
+          "type": "image/png"
+        }
+      ]
     }
   ]
 }

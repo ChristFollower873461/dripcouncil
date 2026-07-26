@@ -1,0 +1,28 @@
+{
+  "id": "explore-curriculum",
+  "name": "Explore Curriculum",
+  "version": "2.2.0",
+  "mode": "read_only",
+  "paths": {
+    "human_guide": "/curriculum.html",
+    "markdown_guide": "/CURRICULUM.md",
+    "case_index": "/cases/index.json",
+    "case_schema": "/schemas/drip_case_v1.schema.json",
+    "case_index_schema": "/schemas/drip_case_index_v1.schema.json"
+  },
+  "steps": [
+    "Read the five-level skill ladder from the public curriculum.",
+    "Open /cases/index.json and identify the live case plus available practice levels.",
+    "Read only declared public case paths from the index.",
+    "Summarize the selected case's public signals, allowed boundary, uncertainty, teaching point, and launch contract.",
+    "Follow only launch.path. Treat expected_status 404 as an intentional dead-end exercise and use its declared recovery_path."
+  ],
+  "output": "A concise visible-evidence curriculum or case-library summary.",
+  "boundaries": [
+    "read public files only",
+    "do not invent case paths",
+    "no external writes",
+    "no private chain-of-thought",
+    "no agent payment actions"
+  ]
+}

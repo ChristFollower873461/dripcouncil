@@ -15,6 +15,23 @@
   },
   "routes": [
     {
+      "world": "Council Course Map",
+      "path": "/curriculum.html",
+      "purpose": "Select one of five public practice cases, inspect its contract, and follow its declared launch path.",
+      "implementation": {
+        "browser": "static HTML plus local JavaScript case selector",
+        "case_index": "/cases/index.json",
+        "case_schema": "/schemas/drip_case_v1.schema.json",
+        "network_upload": false
+      },
+      "selectors": {
+        "page": "[data-agent='curriculum-page']",
+        "case": "[data-agent='selected-case']",
+        "run_packet": "[data-agent='case-run-packet']"
+      },
+      "controls": ["[data-case-id]", "#run-launch", "#copy-sample-ballot", "#view-case-json"]
+    },
+    {
       "world": "MARKET.js",
       "path": "/",
       "purpose": "Inspect the live case, watch the sample trail, and choose a world.",
@@ -82,6 +99,8 @@
     {"path": "/api/council-sessions.json", "purpose": "current public case and sample Council trail"},
     {"path": "/api/observatory-lens.json", "purpose": "checked-in output from the stdlib-only Python Observatory build lens"},
     {"path": "/schemas/drip_ballot_v1.schema.json", "purpose": "local Fifth Seat ballot contract"},
+    {"path": "/schemas/drip_case_v1.schema.json", "purpose": "public case definition and launch contract"},
+    {"path": "/schemas/drip_case_index_v1.schema.json", "purpose": "public case-library index contract"},
     {"path": "/python/observatory_lens.py", "purpose": "inspectable Python CLI/build lens; not executed in the browser"},
     {"path": "/rust/boundary-validator/src/lib.rs", "purpose": "inspectable Rust ballot validator source"},
     {"path": "/rust/boundary-validator/Cargo.toml", "purpose": "Rust ballot validator crate manifest"},
@@ -97,6 +116,7 @@
     {"path": "/cases/case_018.json", "purpose": "level 5 multi-agent handoff case"}
   ],
   "library_routes": [
+    "/curriculum.html",
     "/compare.html",
     "/collab.html",
     "/seasons/summer-2026.html",

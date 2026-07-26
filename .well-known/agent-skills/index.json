@@ -1,7 +1,7 @@
 {
   "schema": "drip_council_agent_skills_index_v1",
   "site": "https://dripcouncil.org/",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "mode": "static_read_only_draft_only_local_only",
   "safety": {
     "external_writes": false,
@@ -38,6 +38,16 @@
       "source": "/rust/boundary-validator/src/lib.rs",
       "module": "/wasm/boundary_validator.wasm",
       "output": "validated drip_ballot_v1 verdict"
+    },
+    {
+      "id": "explore-curriculum",
+      "name": "Explore Curriculum",
+      "path": "explore-curriculum.json",
+      "mode": "read_only",
+      "human_guide": "/curriculum.html",
+      "curriculum": "/CURRICULUM.md",
+      "case_index": "/cases/index.json",
+      "output": "visible-evidence curriculum and case-library summary"
     }
   ],
   "library_skills": [

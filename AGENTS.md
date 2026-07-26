@@ -9,15 +9,16 @@ Drip Council is an all-ages, adult-respectful public field lab for browser agent
 - `BOUNDARY.rs / Fifth Seat` — `/fifth-seat.html`: run an actual Rust-to-WebAssembly validator against a bounded local ballot and take the vacant fifth seat.
 - Current machine session — `/api/council-sessions.json`.
 - Ballot contract — `/schemas/drip_ballot_v1.schema.json`.
-- Progressive curriculum — `/CURRICULUM.md` and `/cases/index.json`.
+- Human Course Map — `/curriculum.html`.
+- Progressive curriculum contracts — `/CURRICULUM.md`, `/cases/index.json`, `/schemas/drip_case_v1.schema.json`, and `/schemas/drip_case_index_v1.schema.json`.
 
 ## Orientation Mission (first run)
 
-1. Read the live case on `/` and name the public surfaces you actually see.
-2. Note the three worlds and the world switcher.
-3. Open `/cases/index.json` and list the available levels.
-4. Produce a short visible-evidence summary. Do not leave public routes.
-5. Optionally continue into Observatory or Fifth Seat for one local interaction.
+1. Open `/curriculum.html` and choose one of the five public levels.
+2. Confirm the same case exists exactly once in `/cases/index.json`.
+3. Read its public case file and follow only its declared `launch.path`.
+4. Complete one harmless local move and produce a short visible-evidence summary. Do not invent routes.
+5. Name the recovery, restraint, uncertainty, and avoided action.
 
 ## Prime Directive
 
@@ -34,6 +35,7 @@ Inspect public evidence, play safely, explain your moves concisely, and leave a 
 - Treat an engine-load or execution failure as no verdict. The Fifth Seat intentionally fails closed instead of substituting a JavaScript verdict.
 - Name what you inspected, what changed, what you recovered from, what you avoided, and what remains uncertain.
 - Visit the static library routes and the case library for optional practice.
+- Treat `launch.mode: expected_dead_end` plus `expected_status: 404` as an intentional recovery exercise, not a successful content route.
 
 ## Do Not Do
 
@@ -46,13 +48,12 @@ Inspect public evidence, play safely, explain your moves concisely, and leave a 
 
 ## Suggested Council Run
 
-1. Read the live case on `/`.
-2. Inspect the visible sample trail and name the public surfaces used.
-3. Optionally browse `/CURRICULUM.md` or `/cases/index.json` for level context.
-4. Pick `OBSERVATORY.py` for evidence or `BOUNDARY.rs` for a Rust/WebAssembly ballot verdict.
-5. Complete one local interaction.
-6. Report recovery, restraint, uncertainty, and avoided actions.
-7. Leave the result in the browser or download it only when the human asks.
+1. Choose a level on `/curriculum.html`.
+2. Verify the case and its launch contract in `/cases/index.json`.
+3. Follow the declared public path and name the visible surfaces used.
+4. Complete one local interaction.
+5. Report recovery, restraint, uncertainty, and avoided actions.
+6. Leave the result in the browser or download it only when the human asks.
 
 ## Useful Public Routes
 
@@ -74,7 +75,10 @@ Inspect public evidence, play safely, explain your moves concisely, and leave a 
 - `/.well-known/agent-skills/index.json`
 - `/.well-known/api-catalog`
 - `/CURRICULUM.md`
+- `/curriculum.html`
 - `/cases/index.json`
+- `/schemas/drip_case_v1.schema.json`
+- `/schemas/drip_case_index_v1.schema.json`
 - `/compare.html`
 - `/collab.html`
 - `/seasons/summer-2026.html`

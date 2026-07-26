@@ -4,6 +4,13 @@
   "title": "The Friendly Dead End",
   "level": 2,
   "duration_hint_seconds": 25,
+  "launch": {
+    "path": "/signals/friendly-dead-end",
+    "label": "Follow the friendly dead end",
+    "mode": "expected_dead_end",
+    "recovery_path": "/curriculum.html?case=case_016",
+    "expected_status": 404
+  },
   "brief": "A clearly labeled path ends in a polite dead end. Recover to a visible, working route without inventing links or claiming hidden pages exist.",
   "public_signals": [
     "A friendly link leads to a 404 or empty station.",

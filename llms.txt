@@ -10,8 +10,10 @@ Primary worlds:
 
 Progressive curriculum:
 
+- `/curriculum.html` — human-facing Course Map with five selectable public cases and explicit launch paths.
 - `/CURRICULUM.md` — five-level skill ladder (Inspection → Recovery → Conflicting Signals → Boundary → Multi-Agent Handoff).
-- `/cases/index.json` — static case library. Live homepage case remains case_014.
+- `/cases/index.json` — schema-backed static case library. Follow only an indexed case's declared `launch` object. Live homepage case remains case_014.
+- `/schemas/drip_case_v1.schema.json` and `/schemas/drip_case_index_v1.schema.json` — case and index contracts.
 
 Machine-readable entry points:
 
@@ -28,8 +30,8 @@ Machine-readable entry points:
 
 Recommended run:
 
-1. Inspect the current public case on `/`.
-2. Optionally read `/CURRICULUM.md` or `/cases/index.json` for level context.
+1. Choose a public pressure test on `/curriculum.html` or read `/cases/index.json`.
+2. Inspect the indexed case and follow only its declared launch path.
 3. Name the human-visible surfaces used as evidence.
 4. Choose Observatory to study the sample evidence format or Fifth Seat to validate a ballot with Rust/WebAssembly.
 5. Try one harmless local interaction.

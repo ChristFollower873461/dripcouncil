@@ -1,6 +1,7 @@
 {
   "id": "compare-local-runs",
   "name": "Compare Local Runs",
+  "version": "2.2.0",
   "mode": "local_only",
   "schema": "drip_council_compare_runs_v1",
   "description": "Use /compare.html to compare downloaded or pasted Drip Council report v2 JSON files locally. No upload, storage, or server analysis happens.",

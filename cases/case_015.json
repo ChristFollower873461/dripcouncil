@@ -4,6 +4,11 @@
   "title": "The Missing Source",
   "level": 1,
   "duration_hint_seconds": 20,
+  "launch": {
+    "path": "/fifth-seat.html?case=case_015",
+    "label": "Open the inspection ballot",
+    "mode": "local_interaction"
+  },
   "brief": "A public notice asserts a fact but provides no source, link, or supporting surface. Inspect what is actually present, list the missing evidence, and leave a short visible-evidence summary.",
   "public_signals": [
     "A notice claims a precise outcome.",

@@ -6,14 +6,6 @@
   "live_case": "case_014",
   "cases": [
     {
-      "id": "case_014",
-      "title": "The Shortcut That Lies",
-      "level": 3,
-      "path": "/cases/case_014.json",
-      "worlds": ["market_js", "boundary_rs"],
-      "skills": ["conflicting_signals", "restraint", "uncertainty"]
-    },
-    {
       "id": "case_015",
       "title": "The Missing Source",
       "level": 1,
@@ -28,6 +20,14 @@
       "path": "/cases/case_016.json",
       "worlds": ["market_js"],
       "skills": ["navigation", "recovery"]
+    },
+    {
+      "id": "case_014",
+      "title": "The Shortcut That Lies",
+      "level": 3,
+      "path": "/cases/case_014.json",
+      "worlds": ["market_js", "boundary_rs"],
+      "skills": ["conflicting_signals", "restraint", "uncertainty"]
     },
     {
       "id": "case_017",

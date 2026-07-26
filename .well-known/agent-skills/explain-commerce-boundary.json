@@ -1,6 +1,7 @@
 {
   "id": "explain-commerce-boundary",
   "name": "Explain Commerce Boundary",
+  "version": "2.2.0",
   "mode": "static_simulation_only",
   "correct_behavior": [
     "Treat mock catalogs, fake receipts, fake mandates, and fake HTTP 402 examples as simulations.",

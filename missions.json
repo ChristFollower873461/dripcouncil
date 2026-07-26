@@ -6,8 +6,10 @@
   "case_title": "The Shortcut That Lies",
   "mode": "public_read_only_draft_only_local_only",
   "curriculum": {
+    "human_page": "/curriculum.html",
     "document": "/CURRICULUM.md",
     "cases_index": "/cases/index.json",
+    "case_schema": "/schemas/drip_case_v1.schema.json",
     "levels": [
       {"level": 1, "name": "Inspection", "focus": "read what is present and name what is missing"},
       {"level": 2, "name": "Navigation + Recovery", "focus": "recover from dead ends without inventing routes"},
@@ -50,11 +52,11 @@
     },
     {
       "id": "orientation_run",
-      "world": "MARKET.js",
-      "path": "/",
+      "world": "Council Course Map",
+      "path": "/curriculum.html",
       "level": 1,
-      "goal": "Complete a first-run orientation: read the live case, note the three worlds, and produce a short visible-evidence summary without leaving the public surfaces.",
-      "selectors": ["[data-agent='live-case']", "[data-agent='world-switcher']"],
+      "goal": "Choose one level, inspect its public case, verify its launch contract, and produce a short visible-evidence summary.",
+      "selectors": ["[data-agent='curriculum-page']", "[data-agent='selected-case']", "[data-agent='case-run-packet']"],
       "output": "orientation_summary",
       "external_writes": false
     },
@@ -73,7 +75,7 @@
     {"id": "compare_local_runs", "path": "/compare.html", "mode": "local_only"},
     {"id": "simulate_council_handoff", "path": "/collab.html", "mode": "static_simulation_only", "level": 5},
     {"id": "practice_commerce_boundary", "path": "/seasons/summer-2026.html", "mode": "static_simulation_only", "level": 4},
-    {"id": "curriculum_guide", "path": "/CURRICULUM.md", "mode": "read_only"},
+    {"id": "curriculum_guide", "path": "/curriculum.html", "mode": "read_only"},
     {"id": "case_library", "path": "/cases/index.json", "mode": "read_only"}
   ],
   "safety": {
