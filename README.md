@@ -39,7 +39,7 @@ The Fifth Seat is not a Rust-styled JavaScript demo. Its ballot rules are implem
 - Ballot text is copied into WebAssembly memory for validation and is never uploaded by this workflow.
 - If the WebAssembly module cannot load or execute, the validator fails closed and does not issue a valid verdict.
 
-The compiled module is committed so the static deployment works without a Rust toolchain. The repository pins Rust in [`rust-toolchain.toml`](rust-toolchain.toml), publishes the crate lockfile with the source, and CI rebuilds the module byte-for-byte with `./scripts/build-boundary-wasm.sh`.
+The compiled module is committed so the static deployment works without a Rust toolchain. The repository pins Rust in [`rust-toolchain.toml`](rust-toolchain.toml), publishes the crate lockfile with the source, removes non-executable custom metadata after compilation, and CI rebuilds the canonical module byte-for-byte with `./scripts/build-boundary-wasm.sh`.
 
 ## Real Python Observatory Lens
 
@@ -74,7 +74,7 @@ The Cloudflare Pages Function requires:
 - a `DRIP_SUPPORT_RATE_LIMITER` Durable Object binding to the separately deployed `dripcouncil-checkout-limiter` Worker
 - `DRIP_SUPPORT_RATE_LIMIT_SALT`, a random secret of at least 32 characters
 
-Deploy the limiter first with `npx wrangler@4.36.0 deploy -c workers/checkout-rate-limiter/wrangler.jsonc`, then bind its `CheckoutRateLimiter` namespace to the Pages project as `DRIP_SUPPORT_RATE_LIMITER`. The endpoint reports itself disabled and refuses checkout if the binding, salt, secrets, or exact same-origin return URLs are missing.
+Deploy the limiter first with `npx wrangler@4.36.0 deploy -c workers/checkout-rate-limiter/wrangler.jsonc`, then bind its `CheckoutRateLimiter` namespace to the Pages project as `DRIP_SUPPORT_RATE_LIMITER`. The cross-service binding is intentionally configured in Cloudflare rather than the checked-in Pages config so ordinary previews can deploy before the limiter exists. The endpoint reports itself disabled and refuses checkout if the binding, salt, secrets, or exact same-origin return URLs are missing.
 
 The static page contains no reusable Stripe Payment Link. A human may choose a one-time USD amount from $5 through $10,000. After explicit human confirmation, the browser sends a bounded JSON request with integer `amountCents`; the server independently enforces the range, validates exact origin and Turnstile hostname, applies durable per-client throttling, and creates a fresh Stripe-hosted Checkout Session URL.
 

@@ -24,7 +24,7 @@ Preview deployments come from non-production branches. Direct uploads are not th
 
 The protected support endpoint additionally requires the environment variables and Durable Object binding documented in [`README.md`](README.md) and must remain fail-closed when any required safety configuration is missing.
 
-Deploy `workers/checkout-rate-limiter` as the route-less `dripcouncil-checkout-limiter` Worker before enabling support. Bind its `CheckoutRateLimiter` Durable Object namespace to the Pages project as `DRIP_SUPPORT_RATE_LIMITER` in both production and any preview environment that intentionally exercises checkout. Store a random `DRIP_SUPPORT_RATE_LIMIT_SALT` of at least 32 characters as a secret. The endpoint must report `enabled: false` until both are present.
+Deploy `workers/checkout-rate-limiter` as the route-less `dripcouncil-checkout-limiter` Worker before enabling support. Bind its `CheckoutRateLimiter` Durable Object namespace to the Pages project as `DRIP_SUPPORT_RATE_LIMITER` in both production and any preview environment that intentionally exercises checkout. Configure this cross-service binding in Cloudflare after the Worker exists; it is intentionally absent from the checked-in Pages config so unrelated previews remain deployable and fail closed. Store a random `DRIP_SUPPORT_RATE_LIMIT_SALT` of at least 32 characters as a secret. The endpoint must report `enabled: false` until both are present.
 
 ## Release Verification
 

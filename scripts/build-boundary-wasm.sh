@@ -14,9 +14,12 @@ if ! command -v rustup >/dev/null 2>&1 || ! rustup target list --installed | gre
   exit 1
 fi
 
+unset RUSTFLAGS
+export CARGO_ENCODED_RUSTFLAGS="--remap-path-prefix=$project_root=/workspace"
 cargo build --locked --release --target "$target" --manifest-path "$manifest"
 mkdir -p "$project_root/wasm"
 cp "$artifact" "$destination"
+node "$script_dir/strip-wasm-custom-sections.mjs" "$destination"
 chmod 644 "$destination"
 
 byte_count=$(wc -c < "$destination" | tr -d ' ')
