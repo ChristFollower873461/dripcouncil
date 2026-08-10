@@ -8,19 +8,19 @@
     "schema": { "const": "drip_trace_v1" },
     "mode": { "const": "local_memory_only" },
     "privacy": { "const": "field_values_redacted_no_network" },
-    "started_at": { "type": ["string", "null"], "format": "date-time" },
+    "started_at": { "type": ["string", "null"], "format": "date-time", "maxLength": 64 },
     "active": { "type": "boolean" },
-    "event_count": { "type": "integer", "minimum": 0 },
+    "event_count": { "type": "integer", "minimum": 0, "maximum": 500 },
     "max_scroll_depth_percent": { "type": "integer", "minimum": 0, "maximum": 100 },
     "viewport": {
       "type": "object",
       "properties": {
-        "width": { "type": "integer", "minimum": 0 },
-        "height": { "type": "integer", "minimum": 0 }
+        "width": { "type": "integer", "minimum": 0, "maximum": 100000 },
+        "height": { "type": "integer", "minimum": 0, "maximum": 100000 }
       },
       "additionalProperties": false
     },
-    "user_agent_hint": { "type": "string" },
+    "user_agent_hint": { "type": "string", "maxLength": 256 },
     "events": {
       "type": "array",
       "maxItems": 500,
@@ -50,10 +50,10 @@
               "send_message"
             ]
           },
-          "at": { "type": "string", "format": "date-time" },
-          "elapsed_ms": { "type": "integer", "minimum": 0 },
-          "path": { "type": "string" },
-          "hash": { "type": ["string", "null"] },
+          "at": { "type": "string", "format": "date-time", "maxLength": 64 },
+          "elapsed_ms": { "type": "integer", "minimum": 0, "maximum": 86400000 },
+          "path": { "type": "string", "maxLength": 2048 },
+          "hash": { "type": ["string", "null"], "maxLength": 2048 },
           "details": {
             "type": "object",
             "properties": {

@@ -13,6 +13,11 @@
 ## Verification
 
 - [ ] `./scripts/build.sh`
+- [ ] `node scripts/test-bounded-json.mjs`
+- [ ] `node scripts/test-public-contracts.mjs`
+- [ ] `node scripts/test-report-import.mjs`
+- [ ] `node scripts/test-checkout-rate-limiter.mjs`
+- [ ] `node scripts/test-support-checkout.mjs`
 - [ ] `node scripts/test-boundary-wasm.mjs`
 - [ ] `python3 -m unittest discover -s python -p 'test_*.py'`
 - [ ] `node scripts/verify-agent-lab.mjs`

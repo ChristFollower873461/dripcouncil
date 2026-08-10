@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import { readFile, readdir } from "node:fs/promises";
 import { createHash } from "node:crypto";
+import { isPlainCase, isSafeLocalPath } from "./public-contracts.mjs";
 const skillFiles = (await readdir(".well-known/agent-skills"))
   .filter((name) => name.endsWith(".json"))
   .sort()
@@ -18,9 +19,17 @@ const requiredFiles = [
   "observatory.html",
   "fifth-seat.html",
   "support.html",
+  "package.json",
+  "wrangler.jsonc",
+  "rust-toolchain.toml",
   "functions/api/support/checkout.js",
+  "workers/checkout-rate-limiter/index.js",
+  "workers/checkout-rate-limiter/wrangler.jsonc",
   "styles/council-worlds.css",
+  "scripts/bounded-json.mjs",
   "scripts/council-worlds.mjs",
+  "scripts/public-contracts.mjs",
+  "scripts/report-import.mjs",
   "scripts/site-refresh.mjs",
   "scripts/build-boundary-wasm.sh",
   "scripts/test-boundary-wasm.mjs",
@@ -35,6 +44,7 @@ const requiredFiles = [
   ...sourceCaseFiles,
   "python/observatory_lens.py",
   "rust/boundary-validator/Cargo.toml",
+  "rust/boundary-validator/Cargo.lock",
   "rust/boundary-validator/src/lib.rs",
   "wasm/boundary_validator.wasm",
   ...skillFiles,
@@ -55,6 +65,9 @@ const requiredFiles = [
 
 const jsonFiles = [
   "site.webmanifest",
+  "package.json",
+  "wrangler.jsonc",
+  "workers/checkout-rate-limiter/wrangler.jsonc",
   "api/council-sessions.json",
   "api/observatory-lens.json",
   "cases/index.json",
@@ -196,10 +209,7 @@ function isBoundedString(value, minLength, maxLength) {
 }
 
 function isSafePublicRoute(value) {
-  return typeof value === "string"
-    && value.startsWith("/")
-    && !value.startsWith("//")
-    && !/[\u0000-\u001f\u007f]/.test(value);
+  return isSafeLocalPath(value);
 }
 
 function isUniqueStringArray(value, { minItems = 1, maxItems = 12, pattern } = {}) {
@@ -328,6 +338,8 @@ for (const entry of Array.isArray(caseIndex?.cases) ? caseIndex.cases : []) {
   }
   caseDefinitions.push({ entry, definition, file: caseFile });
 
+  if (!isPlainCase(definition, entry.id)) fail(`${caseFile} fails the shared runtime case contract`);
+
   if (!hasOnlyKeys(definition, caseKeys)) fail(`${caseFile} contains fields outside drip_case_v1`);
   if (definition.schema !== "drip_case_v1") fail(`${caseFile} has the wrong schema id`);
   if (definition.case_id !== entry.id) fail(`${caseFile} case_id differs from the index`);
@@ -434,7 +446,13 @@ const sources = {
   indexMarkdown: await read("index.md"),
   llms: await read("llms.txt"),
   agents: await read("AGENTS.md"),
-  supportCheckout: await read("functions/api/support/checkout.js")
+  supportCheckout: await read("functions/api/support/checkout.js"),
+  boundedJson: await read("scripts/bounded-json.mjs"),
+  publicContracts: await read("scripts/public-contracts.mjs"),
+  reportImport: await read("scripts/report-import.mjs"),
+  checkoutLimiter: await read("workers/checkout-rate-limiter/index.js"),
+  rustLock: await read("rust/boundary-validator/Cargo.lock"),
+  rustToolchain: await read("rust-toolchain.toml")
 };
 
 const expectations = [
@@ -495,11 +513,22 @@ const expectations = [
   [sources.supportCheckout, "const MINIMUM_CENTS = 500", "server support minimum"],
   [sources.supportCheckout, "const MAXIMUM_CENTS = 1_000_000", "server support maximum"],
   [sources.supportCheckout, "Number.isInteger(amountCents)", "server integer-cent validation"],
-  [sources.supportCheckout, "validateTurnstile(context, token)", "server Turnstile validation"],
-  [sources.supportCheckout, "result.action !== \"drip_support_checkout\"", "strict Turnstile action binding"],
-  [sources.supportCheckout, "!allowedHostname(result.hostname)", "strict Turnstile hostname binding"],
+  [sources.supportCheckout, "MAXIMUM_BODY_BYTES", "server request byte bound"],
+  [sources.supportCheckout, "readJsonBody(context.request)", "bounded server JSON reader"],
+  [sources.supportCheckout, "validateTurnstile(context, turnstileToken)", "server Turnstile validation"],
+  [sources.supportCheckout, 'result.action === "drip_support_checkout"', "strict Turnstile action binding"],
+  [sources.supportCheckout, "verifiedHost === host", "exact Turnstile hostname binding"],
+  [sources.supportCheckout, "DRIP_SUPPORT_RATE_LIMITER", "durable rate limiter binding"],
+  [sources.supportCheckout, "checkoutReturnUrls", "same-origin checkout return validation"],
   [sources.supportCheckout, "throttle(context)", "server support throttling"],
   [sources.supportCheckout, "checkout.stripe.com", "fresh Stripe Checkout URL allowlist"],
+  [sources.checkoutLimiter, 'storage.get("window")', "Durable Object throttle state"],
+  [sources.checkoutLimiter, "MAX_ATTEMPTS_PER_WINDOW = 3", "Durable Object attempt limit"],
+  [sources.boundedJson, "readBoundedResponseBytes", "bounded browser response reader"],
+  [sources.publicContracts, 'value.includes("\\\\")', "backslash navigation rejection"],
+  [sources.publicContracts, "isPlainCase", "shared strict case contract"],
+  [sources.reportImport, "maximumFileBytes", "local report file byte bound"],
+  [sources.reportImport, "completion_under_policy !== \"boolean\"", "strict report boolean validation"],
   [sources.siteRefresh, 'cache: "reload"', "refresh control cache revalidation"],
   [sources.siteRefresh, "startsWith(STORAGE_PREFIX)", "targeted local-state reset"],
   [sources.siteRefresh, "window.location.replace", "refresh control document reload"],
@@ -513,12 +542,15 @@ const expectations = [
   [sources.pythonLens, "standard library", "Python stdlib-only disclosure"],
   [sources.pythonLens, "DETAIL_KEYS", "Python public detail allowlist"],
   [sources.pythonLens, "unknown or private fields", "Python private-detail rejection"],
+  [sources.pythonLens, "MAX_TRACE_BYTES", "Python pre-parse byte bound"],
   [sources.traceSchema, '"additionalProperties": false', "trace detail allowlist"],
   [sources.ballot, "\"const\": \"drip_ballot_v1\"", "ballot schema id"],
   [sources.caseSchema, "\"const\": \"drip_case_v1\"", "case schema id"],
   [sources.caseSchema, "\"sample_ballot\"", "case schema ballot contract"],
   [sources.caseIndexSchema, "\"const\": \"drip_council_cases_index_v1\"", "case-index schema id"],
   [sources.rustManifest, "\"cdylib\"", "Rust WebAssembly crate type"],
+  [sources.rustLock, "checksum =", "Rust lockfile checksums"],
+  [sources.rustToolchain, 'channel = "1.94.0"', "pinned Rust toolchain"],
   [sources.rustSource, "serde_json", "Rust JSON parser"],
   [sources.rustSource, "validate_ballot", "Rust validator export"],
   [sources.rustSource, "pub extern \"C\" fn alloc", "Rust allocation export"],
@@ -548,6 +580,8 @@ const expectations = [
   [sources.build, "cp python/*.py dist/python/", "public Python source build copy"],
   [sources.build, "cp wasm/boundary_validator.wasm dist/wasm/", "WebAssembly build copy"],
   [sources.build, "cp rust/boundary-validator/Cargo.toml dist/rust/boundary-validator/", "Rust manifest build copy"],
+  [sources.build, "cp rust/boundary-validator/Cargo.lock dist/rust/boundary-validator/", "Rust lockfile build copy"],
+  [sources.build, "cp rust-toolchain.toml dist/", "Rust toolchain build copy"],
   [sources.build, "cp rust/boundary-validator/src/lib.rs dist/rust/boundary-validator/src/", "Rust source build copy"],
   [sources.llms, "OBSERVATORY.py", "agent brief Council Worlds orientation"],
   [sources.agents, "BOUNDARY.rs", "AGENTS Council Worlds orientation"]
@@ -715,6 +749,11 @@ const requiredDistMirrors = [
   "schemas/drip_case_v1.schema.json",
   "schemas/drip_case_index_v1.schema.json",
   "scripts/site-refresh.mjs",
+  "scripts/bounded-json.mjs",
+  "scripts/public-contracts.mjs",
+  "scripts/report-import.mjs",
+  "rust/boundary-validator/Cargo.lock",
+  "rust-toolchain.toml",
   ".well-known/api-catalog",
   ".well-known/api-catalog.json",
   ...skillFiles

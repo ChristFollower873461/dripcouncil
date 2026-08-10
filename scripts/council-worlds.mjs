@@ -1,4 +1,13 @@
+import { readBoundedJsonResponse, readBoundedResponseBytes } from "./bounded-json.mjs";
+import { isPlainCase } from "./public-contracts.mjs";
+
 const reducedMotion = typeof window === "undefined" || window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+const MAXIMUM_OBSERVATORY_BYTES = 64 * 1024;
+const MAXIMUM_CASE_INDEX_BYTES = 32 * 1024;
+const MAXIMUM_CASE_BYTES = 128 * 1024;
+const MAXIMUM_WASM_BYTES = 512 * 1024;
+const MAXIMUM_BALLOT_CHARACTERS = 100_000;
 
 const wait = (milliseconds) => new Promise((resolve) => {
   globalThis.setTimeout(resolve, reducedMotion ? 0 : milliseconds);
@@ -232,22 +241,26 @@ function initObservatoryWorld() {
     credentials: "same-origin"
   }).then(async (response) => {
     if (!response.ok) throw new Error(`Python lens artifact returned ${response.status}`);
-    const artifact = await response.json();
+    const artifact = await readBoundedJsonResponse(
+      response,
+      MAXIMUM_OBSERVATORY_BYTES,
+      "Observatory lens"
+    );
     if (artifact.schema !== "drip_observatory_lens_v1"
       || artifact.engine !== "python_stdlib"
       || artifact.engine_source !== "/python/observatory_lens.py") {
       throw new Error("Python lens artifact provenance did not match the public contract");
     }
-    const minutes = Array.isArray(artifact.minutes)
-      ? artifact.minutes.filter((minute) => typeof minute === "string" && minute.length > 0).slice(0, 8)
+    const minutes = Array.isArray(artifact.minutes) && artifact.minutes.length <= 8
+      ? artifact.minutes.filter((minute) => typeof minute === "string" && minute.length > 0 && minute.length <= 360)
       : [];
     return {
       provenance: "python_artifact",
       minutes: minutes.length ? minutes : fallbackObservatoryLens.minutes,
-      uncertainty: typeof artifact.uncertainty === "string" && artifact.uncertainty.length
+      uncertainty: typeof artifact.uncertainty === "string" && artifact.uncertainty.length && artifact.uncertainty.length <= 1000
         ? artifact.uncertainty
         : fallbackObservatoryLens.uncertainty,
-      summary: typeof artifact.summary === "string" && artifact.summary.length
+      summary: typeof artifact.summary === "string" && artifact.summary.length && artifact.summary.length <= 1000
         ? artifact.summary
         : fallbackObservatoryLens.summary
     };
@@ -433,16 +446,9 @@ function isBoundedCaseText(value, maximum) {
 }
 
 function normalizeBoundaryCase(definition, requestedCaseId) {
-  if (!definition
-    || definition.schema !== "drip_case_v1"
-    || definition.case_id !== requestedCaseId
+  if (!isPlainCase(definition, requestedCaseId)
     || !isBoundedCaseText(definition.title, 120)
-    || !isBoundedCaseText(definition.brief, 1200)
-    || !definition.sample_ballot
-    || typeof definition.sample_ballot !== "object"
-    || Array.isArray(definition.sample_ballot)
-    || definition.sample_ballot.schema !== "drip_ballot_v1"
-    || definition.sample_ballot.case_id !== requestedCaseId) {
+    || !isBoundedCaseText(definition.brief, 1200)) {
     throw new Error("case definition did not match the public case contract");
   }
 
@@ -505,7 +511,7 @@ function loadBoundaryValidator() {
     });
     if (!response.ok) throw new Error(`validator request returned ${response.status}`);
 
-    const bytes = await response.arrayBuffer();
+    const bytes = await readBoundedResponseBytes(response, MAXIMUM_WASM_BYTES, "Boundary.rs module");
     const { instance } = await WebAssembly.instantiate(bytes, {});
     const { memory, alloc, dealloc, validate_ballot: validateBallot, validator_version: validatorVersion } = instance.exports;
 
@@ -524,6 +530,9 @@ function loadBoundaryValidator() {
     return {
       version,
       validate(rawBallot) {
+        if (typeof rawBallot !== "string" || rawBallot.length > MAXIMUM_BALLOT_CHARACTERS) {
+          throw new BoundaryInputError("Ballot is too large for the local validator (100 KB maximum)");
+        }
         const encoded = encoder.encode(rawBallot);
         if (encoded.byteLength > 100000) {
           throw new BoundaryInputError("Ballot is too large for the local validator (100 KB maximum)");
@@ -637,7 +646,11 @@ function initBoundaryWorld() {
       });
       if (!indexResponse.ok) throw new Error(`case index returned ${indexResponse.status}`);
 
-      const index = await indexResponse.json();
+      const index = await readBoundedJsonResponse(
+        indexResponse,
+        MAXIMUM_CASE_INDEX_BYTES,
+        "case index"
+      );
       if (index?.schema !== "drip_council_cases_index_v1"
         || !Array.isArray(index.cases)
         || index.cases.length < 1
@@ -655,7 +668,12 @@ function initBoundaryWorld() {
         credentials: "same-origin"
       });
       if (!caseResponse.ok) throw new Error(`case definition returned ${caseResponse.status}`);
-      displayBoundaryCase(normalizeBoundaryCase(await caseResponse.json(), requestedCaseId));
+      const caseDefinition = await readBoundedJsonResponse(
+        caseResponse,
+        MAXIMUM_CASE_BYTES,
+        `${requestedCaseId} definition`
+      );
+      displayBoundaryCase(normalizeBoundaryCase(caseDefinition, requestedCaseId));
     } catch {
       setStatus(`Could not verify ${boundaryCaseLabel(requestedCaseId)} from the public case index. Showing Case 014 safely.`, true);
     }

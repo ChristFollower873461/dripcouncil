@@ -1,6 +1,10 @@
+import { readBoundedJsonResponse } from "./bounded-json.mjs";
+import { isPlainCase } from "./public-contracts.mjs";
+
 const CASE_ID_PATTERN = /^case_\d{3}$/;
 const CASE_PATH_PATTERN = /^\/cases\/case_\d{3}\.json$/;
-const LAUNCH_MODES = new Set(["public_page", "local_interaction", "expected_dead_end"]);
+const MAXIMUM_CASE_INDEX_BYTES = 32 * 1024;
+const MAXIMUM_CASE_BYTES = 128 * 1024;
 const LEVEL_NAMES = Object.freeze({
   1: "Inspection",
   2: "Navigation + Recovery",
@@ -84,41 +88,6 @@ const state = {
   paths: new Map([["case_015", "/cases/case_015.json"]]),
   activeId: "case_015",
 };
-
-function isSafeLocalPath(value) {
-  return typeof value === "string"
-    && value.startsWith("/")
-    && !value.startsWith("//")
-    && !/[\u0000-\u001f\u007f]/.test(value);
-}
-
-function isPlainCase(value, expectedId) {
-  return Boolean(
-    value
-    && value.schema === "drip_case_v1"
-    && value.case_id === expectedId
-    && CASE_ID_PATTERN.test(value.case_id)
-    && Number.isInteger(value.level)
-    && value.level >= 1
-    && value.level <= 5
-    && typeof value.title === "string"
-    && typeof value.brief === "string"
-    && Array.isArray(value.public_signals)
-    && Array.isArray(value.allowed_actions)
-    && Array.isArray(value.disallowed_actions)
-    && value.launch
-    && isSafeLocalPath(value.launch.path)
-    && typeof value.launch.label === "string"
-    && value.launch.label.length >= 3
-    && value.launch.label.length <= 120
-    && LAUNCH_MODES.has(value.launch.mode)
-    && (value.launch.mode !== "expected_dead_end"
-      || (value.launch.expected_status === 404 && isSafeLocalPath(value.launch.recovery_path)))
-    && value.sample_ballot?.schema === "drip_ballot_v1"
-    && value.sample_ballot?.case_id === expectedId
-    && typeof value.teaching_point === "string"
-  );
-}
 
 function replaceList(list, values) {
   list.replaceChildren();
@@ -221,7 +190,11 @@ async function loadCourse() {
       headers: { Accept: "application/json" },
     });
     if (!indexResponse.ok) throw new Error(`case index returned ${indexResponse.status}`);
-    const index = await indexResponse.json();
+    const index = await readBoundedJsonResponse(
+      indexResponse,
+      MAXIMUM_CASE_INDEX_BYTES,
+      "case index"
+    );
     if (index?.schema !== "drip_council_cases_index_v1" || !Array.isArray(index.cases)) {
       throw new Error("case index contract did not match");
     }
@@ -239,7 +212,11 @@ async function loadCourse() {
         headers: { Accept: "application/json" },
       });
       if (!response.ok) throw new Error(`${entry.id} returned ${response.status}`);
-      const caseFile = await response.json();
+      const caseFile = await readBoundedJsonResponse(
+        response,
+        MAXIMUM_CASE_BYTES,
+        `${entry.id} definition`
+      );
       if (!isPlainCase(caseFile, entry.id)) throw new Error(`${entry.id} did not match drip_case_v1`);
       return [entry, caseFile];
     }));

@@ -322,7 +322,7 @@
             <input id="report-files" type="file" accept="application/json,.json" multiple data-agent="compare-file-input">
           </div>
         </div>
-        <textarea data-agent="compare-paste-input" placeholder="Paste a Drip report JSON object, array, or local export wrapper."></textarea>
+        <textarea data-agent="compare-paste-input" maxlength="262144" placeholder="Paste a Drip report JSON object, array, or local export wrapper."></textarea>
         <div class="actions">
           <button type="button" data-compare-action="parse">Parse Paste</button>
           <button type="button" data-compare-action="download">Download Aggregate</button>
@@ -352,7 +352,9 @@
     </section>
   </main>
 
-  <script>
+  <script type="module">
+    import { normalizeImportedReports, REPORT_IMPORT_LIMITS } from "/scripts/report-import.mjs?v=2.2.0";
+
     let reports = [];
 
     function countBy(values) {
@@ -371,24 +373,6 @@
     function topCountKey(counts, fallback = "none") {
       const entries = Object.entries(counts || {}).sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
       return entries.length ? entries[0][0] : fallback;
-    }
-
-    function normalizeReport(value, source = "local") {
-      if (!value || typeof value !== "object") return [];
-      if (Array.isArray(value)) return value.flatMap((item, index) => normalizeReport(item, `${source}[${index}]`));
-      const candidates = [
-        value,
-        value.output,
-        value.metadata && value.metadata.report,
-        value.trace && value.trace.metadata && value.trace.metadata.report,
-        value.run && value.run.metadata
-      ].filter(Boolean);
-      const report = candidates.find((item) => item && item.schema === "drip_council_observation_report_v2");
-      if (!report) return [];
-      return [{
-        ...report,
-        _source: source
-      }];
     }
 
     function aggregate() {
@@ -460,15 +444,33 @@
     }
 
     function addParsed(value, source) {
-      const found = normalizeReport(value, source);
+      const found = normalizeImportedReports(value, source, {
+        maximumReports: REPORT_IMPORT_LIMITS.maximumReports - reports.length
+      });
       reports = reports.concat(found);
       render();
       return found.length;
     }
 
     async function readFiles(files) {
+      const selected = [...files];
+      const status = document.querySelector("[data-agent='compare-status']");
+      if (selected.length > REPORT_IMPORT_LIMITS.maximumFiles) {
+        status.textContent = `Choose at most ${REPORT_IMPORT_LIMITS.maximumFiles} report files at once.`;
+        return;
+      }
+      if (selected.some((file) => file.size > REPORT_IMPORT_LIMITS.maximumFileBytes)) {
+        status.textContent = "Each report file must be 256 KB or smaller.";
+        return;
+      }
+      const totalBytes = selected.reduce((sum, file) => sum + file.size, 0);
+      if (totalBytes > REPORT_IMPORT_LIMITS.maximumTotalBytes) {
+        status.textContent = "That report batch is larger than the 1 MB local limit.";
+        return;
+      }
+
       let loaded = 0;
-      for (const file of files) {
+      for (const file of selected) {
         try {
           const text = await file.text();
           loaded += addParsed(JSON.parse(text), file.name);
@@ -514,6 +516,9 @@
     document.querySelector("[data-compare-action='parse']").addEventListener("click", () => {
       const input = document.querySelector("[data-agent='compare-paste-input']");
       try {
+        if (input.value.length > REPORT_IMPORT_LIMITS.maximumPasteCharacters) {
+          throw new Error("Pasted JSON is larger than the 256 KB local limit.");
+        }
         const loaded = addParsed(JSON.parse(input.value), "pasted-json");
         if (!loaded) {
           document.querySelector("[data-agent='compare-status']").textContent = "Parsed JSON, but no report v2 object was found.";

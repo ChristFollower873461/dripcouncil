@@ -51,6 +51,8 @@ cp python/*.py dist/python/
 cp python/*.json dist/python/
 cp wasm/boundary_validator.wasm dist/wasm/
 cp rust/boundary-validator/Cargo.toml dist/rust/boundary-validator/
+cp rust/boundary-validator/Cargo.lock dist/rust/boundary-validator/
 cp rust/boundary-validator/src/lib.rs dist/rust/boundary-validator/src/
+cp rust-toolchain.toml dist/
 cp scripts/*.mjs dist/scripts/
 cp styles/*.css dist/styles/
