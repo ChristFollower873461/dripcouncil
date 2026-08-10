@@ -39,7 +39,7 @@ The Fifth Seat is not a Rust-styled JavaScript demo. Its ballot rules are implem
 - Ballot text is copied into WebAssembly memory for validation and is never uploaded by this workflow.
 - If the WebAssembly module cannot load or execute, the validator fails closed and does not issue a valid verdict.
 
-The compiled module is committed so the static deployment works without a Rust toolchain. The repository pins Rust in [`rust-toolchain.toml`](rust-toolchain.toml), publishes the crate lockfile with the source, removes non-executable custom metadata after compilation, and CI rebuilds the canonical module byte-for-byte with `./scripts/build-boundary-wasm.sh`.
+The compiled module is committed so the static deployment works without a Rust toolchain. The repository pins Rust in [`rust-toolchain.toml`](rust-toolchain.toml), publishes the crate lockfile with the source, remaps build paths, and removes non-executable custom metadata after compilation. The pinned Ubuntu CI job is the canonical release builder: it uploads the rebuilt module and requires the checked-in browser module to match it byte-for-byte. Builds on other host platforms are behavior-tested but may not be byte-identical because Rust/LLVM code generation is host-specific.
 
 ## Real Python Observatory Lens
 

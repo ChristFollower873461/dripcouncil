@@ -52,7 +52,7 @@ jobs:
         run: git diff --check
 
   rust-and-wasm:
-    name: Rust, advisories, and reproducible WASM
+    name: Rust, advisories, and canonical WASM
     runs-on: ubuntu-latest
     timeout-minutes: 25
     steps:
@@ -78,7 +78,7 @@ jobs:
           if-no-files-found: error
           retention-days: 7
 
-      - name: Require reproducible WebAssembly
+      - name: Require canonical Linux WebAssembly
         run: git diff --exit-code -- wasm/boundary_validator.wasm
 
       - name: Exercise rebuilt WebAssembly

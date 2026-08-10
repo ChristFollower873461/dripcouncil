@@ -50,7 +50,7 @@ node scripts/verify-agent-lab.mjs
 git diff --check
 ```
 
-If you change Rust boundary rules, rebuild the checked-in WebAssembly module with the pinned toolchain via `./scripts/build-boundary-wasm.sh`. The build strips non-executable custom metadata before comparison; include both the source and canonical module change.
+If you change Rust boundary rules, exercise a local build with the pinned toolchain via `./scripts/build-boundary-wasm.sh` and `node scripts/test-boundary-wasm.mjs`. The pinned Ubuntu CI job uploads the canonical release artifact before checking its bytes. Include that CI-built module with the source change; builds from another host may be behaviorally equivalent without being byte-identical.
 
 ## Pull Requests
 
