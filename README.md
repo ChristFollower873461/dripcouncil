@@ -39,7 +39,7 @@ The Fifth Seat is not a Rust-styled JavaScript demo. Its ballot rules are implem
 - Ballot text is copied into WebAssembly memory for validation and is never uploaded by this workflow.
 - If the WebAssembly module cannot load or execute, the validator fails closed and does not issue a valid verdict.
 
-The compiled module is committed so the static deployment works without a Rust toolchain. Maintainers with Rust installed can reproduce it with `./scripts/build-boundary-wasm.sh`.
+The compiled module is committed so the static deployment works without a Rust toolchain. The repository pins Rust in [`rust-toolchain.toml`](rust-toolchain.toml), publishes the crate lockfile with the source, remaps build paths, and removes non-executable custom metadata after compilation. The pinned Ubuntu CI job is the canonical release builder: it uploads the rebuilt module and requires the checked-in browser module to match it byte-for-byte. Builds on other host platforms are behavior-tested but may not be byte-identical because Rust/LLVM code generation is host-specific.
 
 ## Real Python Observatory Lens
 
@@ -71,8 +71,12 @@ The Cloudflare Pages Function requires:
 - `TURNSTILE_SITE_KEY`
 - `TURNSTILE_SECRET_KEY`
 - `STRIPE_SECRET_KEY` or `STRIPE_API_KEY`
+- a `DRIP_SUPPORT_RATE_LIMITER` Durable Object binding to the separately deployed `dripcouncil-checkout-limiter` Worker
+- `DRIP_SUPPORT_RATE_LIMIT_SALT`, a random secret of at least 32 characters
 
-The static page contains no reusable Stripe Payment Link. A human may choose a one-time USD amount from $5 through $10,000. After explicit human confirmation, the browser sends the amount as integer `amountCents`; the server independently enforces the range, verifies Turnstile, applies request throttling, and creates a fresh Stripe-hosted Checkout Session URL.
+Deploy the limiter first with `npx wrangler@4.125.0 deploy -c workers/checkout-rate-limiter/wrangler.jsonc`. The checked-in Pages configuration then binds that Worker's `CheckoutRateLimiter` namespace as `DRIP_SUPPORT_RATE_LIMITER`; previews remain fail-closed until the Worker and their environment-specific secrets exist. The endpoint reports itself disabled and refuses checkout if the binding, salt, secrets, or exact same-origin return URLs are missing.
+
+The static page contains no reusable Stripe Payment Link. A human may choose a one-time USD amount from $5 through $10,000. After explicit human confirmation, the browser sends a bounded JSON request with integer `amountCents`; the server independently enforces the range, validates exact origin and Turnstile hostname, applies a 20-attempt pre-validation bucket and a separate three-session checkout bucket per client over ten minutes, and creates a fresh Stripe-hosted Checkout Session URL.
 
 ## Contributing and Governance
 
@@ -84,14 +88,21 @@ GitHub is the public source of truth. Production deployment details and rollback
 
 ```sh
 ./scripts/build.sh
+node scripts/test-bounded-json.mjs
+node scripts/test-public-contracts.mjs
+node scripts/test-report-import.mjs
+node scripts/test-checkout-rate-limiter.mjs
+node scripts/test-support-checkout.mjs
 node scripts/test-boundary-wasm.mjs
 python3 -m unittest discover -s python -p 'test_*.py'
 node --check scripts/council-worlds.mjs
+node --check scripts/curriculum.mjs
+node --check scripts/site-refresh.mjs
 node scripts/verify-agent-lab.mjs
 git diff --check
 ```
 
-The verifier checks agent manifest mirrors, advertised JSON, build output, WebAssembly magic bytes and ballot behavior, public Rust-source discovery, social image dimensions, trace schema shape, and ballot constraints.
+The verifier checks agent manifest mirrors, advertised JSON, bounded import and checkout contracts, build output, WebAssembly magic bytes and ballot behavior, public Rust-source discovery, social image dimensions, trace schema shape, and ballot constraints.
 
 It also checks release-version consistency, every case/index contract, case launch integrity, Rust/WASM validation for all sample ballots, curriculum routes, agent-skill registration, and byte-identical build artifacts.
 

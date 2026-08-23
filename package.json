@@ -1,0 +1,10 @@
+{
+  "name": "dripcouncil",
+  "version": "2.2.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node scripts/test-bounded-json.mjs && node scripts/test-public-contracts.mjs && node scripts/test-report-import.mjs && node scripts/test-checkout-rate-limiter.mjs && node scripts/test-support-checkout.mjs && node scripts/test-boundary-wasm.mjs",
+    "verify": "node scripts/verify-agent-lab.mjs"
+  }
+}

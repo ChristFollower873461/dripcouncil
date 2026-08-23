@@ -1,9 +1,10 @@
 import copy
 import json
+import tempfile
 import unittest
 from pathlib import Path
 
-from observatory_lens import LENS_SCHEMA, TraceError, analyze_trace
+from observatory_lens import MAX_TRACE_BYTES, LENS_SCHEMA, TraceError, _read_json, analyze_trace
 
 
 FIXTURE = Path(__file__).with_name("case_014_trace.json")
@@ -84,6 +85,23 @@ class ObservatoryLensTests(unittest.TestCase):
         trace["events"][0]["type"] = "private narrative disguised as an event"
         with self.assertRaisesRegex(TraceError, "public event allowlist"):
             analyze_trace(trace)
+
+    def test_bounded_reader_accepts_the_public_fixture(self):
+        self.assertEqual(_read_json(str(FIXTURE)), self.trace)
+
+    def test_bounded_reader_rejects_oversized_file_before_json_parse(self):
+        with tempfile.NamedTemporaryFile() as handle:
+            handle.write(b" " * (MAX_TRACE_BYTES + 1))
+            handle.flush()
+            with self.assertRaisesRegex(TraceError, "input limit"):
+                _read_json(handle.name)
+
+    def test_bounded_reader_rejects_excessive_nesting_cleanly(self):
+        with tempfile.NamedTemporaryFile() as handle:
+            handle.write((b"[" * 2000) + (b"]" * 2000))
+            handle.flush()
+            with self.assertRaisesRegex(TraceError, "nesting"):
+                _read_json(handle.name)
 
 
 if __name__ == "__main__":

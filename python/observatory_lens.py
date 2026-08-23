@@ -20,6 +20,8 @@ from typing import Any
 LENS_SCHEMA = "drip_observatory_lens_v1"
 TRACE_SCHEMA = "drip_trace_v1"
 MAX_EVENTS = 500
+MAX_TRACE_BYTES = 512 * 1024
+MAX_JSON_NESTING = 64
 TRACE_KEYS = {
     "schema",
     "mode",
@@ -90,6 +92,7 @@ def validate_trace(trace: Any) -> dict[str, Any]:
     if "started_at" in trace:
         _require(trace["started_at"] is None or isinstance(trace["started_at"], str), "started_at must be a string or null")
         if isinstance(trace["started_at"], str):
+            _require(len(trace["started_at"]) <= 64, "started_at must be at most 64 characters")
             _require(_valid_rfc3339(trace["started_at"]), "started_at must be an RFC 3339 date-time")
     if "active" in trace:
         _require(isinstance(trace["active"], bool), "active must be true or false")
@@ -103,9 +106,9 @@ def validate_trace(trace: Any) -> dict[str, Any]:
         for dimension in ("width", "height"):
             if dimension in viewport:
                 value = viewport[dimension]
-                _require(isinstance(value, int) and not isinstance(value, bool) and value >= 0, f"viewport.{dimension} must be a non-negative integer")
+                _require(isinstance(value, int) and not isinstance(value, bool) and 0 <= value <= 100000, f"viewport.{dimension} must be an integer from 0 to 100000")
     if "user_agent_hint" in trace:
-        _require(isinstance(trace["user_agent_hint"], str), "user_agent_hint must be a string")
+        _require(isinstance(trace["user_agent_hint"], str) and len(trace["user_agent_hint"]) <= 256, "user_agent_hint must be a string up to 256 characters")
 
     events = trace.get("events")
     _require(isinstance(events, list), "events must be an array")
@@ -121,7 +124,7 @@ def validate_trace(trace: Any) -> dict[str, Any]:
         _require(not (set(event) - EVENT_KEYS), f"{label} contains unknown fields")
         _require(isinstance(event.get("type"), str) and 1 <= len(event["type"].strip()) <= 80, f"{label}.type must be a 1–80 character string")
         _require(event["type"] in ALLOWED_EVENT_TYPES, f"{label}.type is not in the public event allowlist")
-        _require(isinstance(event.get("at"), str) and _valid_rfc3339(event["at"]), f"{label}.at must be an RFC 3339 date-time")
+        _require(isinstance(event.get("at"), str) and len(event["at"]) <= 64 and _valid_rfc3339(event["at"]), f"{label}.at must be an RFC 3339 date-time up to 64 characters")
         _require(isinstance(event.get("path"), str) and len(event["path"]) <= 2048, f"{label}.path must be a string up to 2048 characters")
         _require(event.get("hash") is None or (isinstance(event.get("hash"), str) and len(event["hash"]) <= 2048), f"{label}.hash must be a string up to 2048 characters or null")
         details = event.get("details")
@@ -137,7 +140,7 @@ def validate_trace(trace: Any) -> dict[str, Any]:
         if "external_write" in details:
             _require(isinstance(details["external_write"], bool), f"{label}.details.external_write must be true or false")
         elapsed = event.get("elapsed_ms")
-        _require(isinstance(elapsed, int) and not isinstance(elapsed, bool) and elapsed >= 0, f"{label}.elapsed_ms must be a non-negative integer")
+        _require(isinstance(elapsed, int) and not isinstance(elapsed, bool) and 0 <= elapsed <= 86400000, f"{label}.elapsed_ms must be an integer from 0 to 86400000")
         _require(elapsed >= previous_elapsed, "events must be ordered by elapsed_ms")
         previous_elapsed = elapsed
 
@@ -225,9 +228,47 @@ def analyze_trace(trace: Any) -> dict[str, Any]:
 
 def _read_json(path: str) -> Any:
     if path == "-":
-        return json.load(sys.stdin)
-    with Path(path).open(encoding="utf-8") as handle:
-        return json.load(handle)
+        stream = getattr(sys.stdin, "buffer", sys.stdin)
+        payload = stream.read(MAX_TRACE_BYTES + 1)
+    else:
+        with Path(path).open("rb") as handle:
+            payload = handle.read(MAX_TRACE_BYTES + 1)
+
+    if isinstance(payload, str):
+        payload = payload.encode("utf-8")
+    if len(payload) > MAX_TRACE_BYTES:
+        raise TraceError(f"trace exceeds the {MAX_TRACE_BYTES}-byte input limit")
+
+    try:
+        source = payload.decode("utf-8")
+    except UnicodeDecodeError as error:
+        raise TraceError("trace must be UTF-8 JSON") from error
+
+    depth = 0
+    in_string = False
+    escaped = False
+    for character in source:
+        if in_string:
+            if escaped:
+                escaped = False
+            elif character == "\\":
+                escaped = True
+            elif character == '"':
+                in_string = False
+            continue
+        if character == '"':
+            in_string = True
+        elif character in "[{":
+            depth += 1
+            if depth > MAX_JSON_NESTING:
+                raise TraceError(f"trace nesting exceeds the {MAX_JSON_NESTING}-level limit")
+        elif character in "]}":
+            depth -= 1
+
+    try:
+        return json.loads(source)
+    except RecursionError as error:
+        raise TraceError("trace nesting exceeds the parser limit") from error
 
 
 def _write_json(payload: dict[str, Any], output: str | None, *, compact: bool) -> None:
@@ -257,7 +298,7 @@ def main(argv: list[str] | None = None) -> int:
     try:
         verdict = analyze_trace(_read_json(args.trace))
         _write_json(verdict, args.output, compact=args.compact)
-    except (OSError, json.JSONDecodeError, TraceError) as error:
+    except (OSError, json.JSONDecodeError, TraceError, RecursionError) as error:
         print(f"observatory_lens: {error}", file=sys.stderr)
         return 2
     return 0

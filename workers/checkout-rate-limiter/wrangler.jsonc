@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json.schemastore.org/wrangler.json",
+  "name": "dripcouncil-checkout-limiter",
+  "main": "index.js",
+  "compatibility_date": "2026-08-10",
+  "workers_dev": false,
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "DRIP_SUPPORT_RATE_LIMITER",
+        "class_name": "CheckoutRateLimiter"
+      }
+    ]
+  },
+  "migrations": [
+    {
+      "tag": "v1",
+      "new_sqlite_classes": ["CheckoutRateLimiter"]
+    }
+  ]
+}

@@ -36,6 +36,11 @@ Run the complete verification set before requesting review:
 
 ```sh
 ./scripts/build.sh
+node scripts/test-bounded-json.mjs
+node scripts/test-public-contracts.mjs
+node scripts/test-report-import.mjs
+node scripts/test-checkout-rate-limiter.mjs
+node scripts/test-support-checkout.mjs
 node scripts/test-boundary-wasm.mjs
 python3 -m unittest discover -s python -p 'test_*.py'
 node --check scripts/council-worlds.mjs
@@ -45,7 +50,7 @@ node scripts/verify-agent-lab.mjs
 git diff --check
 ```
 
-If you change Rust boundary rules, rebuild the checked-in WebAssembly module with `./scripts/build-boundary-wasm.sh` and include both the source and reproducible module change.
+If you change Rust boundary rules, exercise a local build with the pinned toolchain via `./scripts/build-boundary-wasm.sh` and `node scripts/test-boundary-wasm.mjs`. The pinned Ubuntu CI job uploads the canonical release artifact before checking its bytes. Include that CI-built module with the source change; builds from another host may be behaviorally equivalent without being byte-identical.
 
 ## Pull Requests
 

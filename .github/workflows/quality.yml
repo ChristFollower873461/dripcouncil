@@ -1,0 +1,91 @@
+name: Quality
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: quality-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  browser-and-functions:
+    name: Browser, functions, and build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Check out source
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.0.2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6.4.0
+        with:
+          node-version: "22"
+
+      - name: Check JavaScript syntax
+        run: |
+          node --check scripts/council-worlds.mjs
+          node --check scripts/curriculum.mjs
+          node --check scripts/site-refresh.mjs
+          node --check functions/api/support/checkout.js
+          node --check workers/checkout-rate-limiter/index.js
+
+      - name: Run browser and function boundary tests
+        run: npm test
+
+      - name: Run Python tests
+        run: python3 -m unittest discover -s python -p 'test_*.py'
+
+      - name: Build static release
+        run: ./scripts/build.sh
+
+      - name: Verify release contracts
+        run: node scripts/verify-agent-lab.mjs
+
+      - name: Check patch formatting
+        run: git diff --check
+
+  rust-and-wasm:
+    name: Rust, advisories, and canonical WASM
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Check out source
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.0.2
+
+      - name: Install pinned Rust toolchain
+        run: |
+          rustup toolchain install 1.94.0 --profile minimal --target wasm32-unknown-unknown
+          rustup default 1.94.0
+
+      - name: Test Rust validator
+        run: cargo test --locked --manifest-path rust/boundary-validator/Cargo.toml
+
+      - name: Rebuild checked-in WebAssembly
+        run: ./scripts/build-boundary-wasm.sh
+
+      - name: Upload canonical WebAssembly candidate
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: boundary-validator-linux-${{ github.sha }}
+          path: wasm/boundary_validator.wasm
+          if-no-files-found: error
+          retention-days: 7
+
+      - name: Require canonical Linux WebAssembly
+        run: git diff --exit-code -- wasm/boundary_validator.wasm
+
+      - name: Exercise rebuilt WebAssembly
+        run: node scripts/test-boundary-wasm.mjs
+
+      - name: Install RustSec audit tool
+        run: cargo install cargo-audit --locked --version 0.22.2
+
+      - name: Audit Rust dependencies
+        run: cargo audit --file rust/boundary-validator/Cargo.lock

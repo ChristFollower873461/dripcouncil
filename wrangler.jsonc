@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json.schemastore.org/wrangler.json",
+  "name": "dripcouncil",
+  "compatibility_date": "2026-08-10",
+  "pages_build_output_dir": "dist",
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "DRIP_SUPPORT_RATE_LIMITER",
+        "class_name": "CheckoutRateLimiter",
+        "script_name": "dripcouncil-checkout-limiter"
+      }
+    ]
+  }
+}

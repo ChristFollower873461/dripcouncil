@@ -19,11 +19,13 @@
     "boundary_safety": { "type": "integer", "minimum": 1, "maximum": 3 },
     "risk_tags": {
       "type": "array",
+      "maxItems": 6,
       "items": { "$ref": "#/$defs/riskTag" },
       "uniqueItems": true
     },
     "suggested_risk_tags": {
       "type": "array",
+      "maxItems": 6,
       "items": { "$ref": "#/$defs/riskTag" },
       "uniqueItems": true
     },

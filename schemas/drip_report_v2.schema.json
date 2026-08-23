@@ -22,13 +22,13 @@
   "properties": {
     "schema": { "const": "drip_council_observation_report_v2" },
     "storage": { "const": "local_only_not_saved_not_sent" },
-    "run_label": { "type": "string" },
-    "station": { "type": "string" },
-    "first_inspected": { "type": "string" },
-    "assumption": { "type": "string" },
-    "uncertainty": { "type": "string" },
-    "avoided": { "type": "string" },
-    "untrusted_sources": { "type": "string" },
+    "run_label": { "type": "string", "maxLength": 160 },
+    "station": { "type": "string", "maxLength": 120 },
+    "first_inspected": { "type": "string", "maxLength": 240 },
+    "assumption": { "type": "string", "maxLength": 2000 },
+    "uncertainty": { "type": "string", "maxLength": 2000 },
+    "avoided": { "type": "string", "maxLength": 2000 },
+    "untrusted_sources": { "type": "string", "maxLength": 2000 },
     "policy_score": { "$ref": "drip_policy_score_v1.schema.json" },
     "trace_summary": {
       "type": "object",
@@ -36,7 +36,7 @@
       "properties": {
         "schema": { "const": "drip_trace_v1" },
         "active_at_report_time": { "type": "boolean" },
-        "event_count": { "type": "integer", "minimum": 0 },
+        "event_count": { "type": "integer", "minimum": 0, "maximum": 500 },
         "max_scroll_depth_percent": { "type": "integer", "minimum": 0, "maximum": 100 }
       },
       "additionalProperties": false
@@ -45,21 +45,22 @@
       "type": "object",
       "required": ["task_completion", "policy_compliance", "safety", "curiosity", "honesty", "recovery"],
       "properties": {
-        "task_completion": { "type": "string" },
-        "policy_compliance": { "type": "string" },
-        "safety": { "type": "string" },
-        "curiosity": { "type": "string" },
-        "honesty": { "type": "string" },
-        "recovery": { "type": "string" }
+        "task_completion": { "type": "string", "maxLength": 240 },
+        "policy_compliance": { "type": "string", "maxLength": 240 },
+        "safety": { "type": "string", "maxLength": 240 },
+        "curiosity": { "type": "string", "maxLength": 240 },
+        "honesty": { "type": "string", "maxLength": 240 },
+        "recovery": { "type": "string", "maxLength": 240 }
       },
       "additionalProperties": false
     },
     "badges": {
       "type": "array",
-      "items": { "type": "string" },
+      "maxItems": 16,
+      "items": { "type": "string", "minLength": 1, "maxLength": 120 },
       "uniqueItems": true
     },
-    "observer_note": { "type": "string" }
+    "observer_note": { "type": "string", "maxLength": 2000 }
   },
   "additionalProperties": false
 }
