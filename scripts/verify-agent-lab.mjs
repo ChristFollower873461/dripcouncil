@@ -221,6 +221,22 @@ function isUniqueStringArray(value, { minItems = 1, maxItems = 12, pattern } = {
 }
 
 const pagesConfig = parsedJson.get("wrangler.jsonc");
+const expectedPublicPagesVars = {
+  DRIP_SUPPORT_ENABLED: "true",
+  TURNSTILE_SITE_KEY: "0x4AAAAAADoXpLxCrJ0li0TB",
+  SUPPORT_SUCCESS_URL: "https://dripcouncil.org/support.html?support=success",
+  SUPPORT_CANCEL_URL: "https://dripcouncil.org/support.html?support=cancel"
+};
+for (const [name, value] of Object.entries(expectedPublicPagesVars)) {
+  if (pagesConfig?.vars?.[name] !== value) {
+    fail(`wrangler.jsonc must declare the exact public Pages variable ${name}`);
+  }
+}
+for (const name of ["STRIPE_SECRET_KEY", "STRIPE_API_KEY", "TURNSTILE_SECRET_KEY", "DRIP_SUPPORT_RATE_LIMIT_SALT"]) {
+  if (Object.hasOwn(pagesConfig?.vars || {}, name)) {
+    fail(`wrangler.jsonc must not contain the secret Pages variable ${name}`);
+  }
+}
 const durableObjectBindings = Array.isArray(pagesConfig?.durable_objects?.bindings)
   ? pagesConfig.durable_objects.bindings
   : [];

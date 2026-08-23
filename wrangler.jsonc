@@ -3,6 +3,12 @@
   "name": "dripcouncil",
   "compatibility_date": "2026-08-10",
   "pages_build_output_dir": "dist",
+  "vars": {
+    "DRIP_SUPPORT_ENABLED": "true",
+    "TURNSTILE_SITE_KEY": "0x4AAAAAADoXpLxCrJ0li0TB",
+    "SUPPORT_SUCCESS_URL": "https://dripcouncil.org/support.html?support=success",
+    "SUPPORT_CANCEL_URL": "https://dripcouncil.org/support.html?support=cancel"
+  },
   "durable_objects": {
     "bindings": [
       {
