@@ -24,7 +24,7 @@ Preview deployments come from non-production branches. Direct uploads are not th
 
 The protected support endpoint additionally requires the environment variables and Durable Object binding documented in [`README.md`](README.md) and must remain fail-closed when any required safety configuration is missing.
 
-Deploy `workers/checkout-rate-limiter` as the route-less `dripcouncil-checkout-limiter` Worker before enabling support. The checked-in Pages configuration binds its `CheckoutRateLimiter` Durable Object namespace as `DRIP_SUPPORT_RATE_LIMITER`; verify that binding in production and in any preview environment that intentionally exercises checkout. Store a random `DRIP_SUPPORT_RATE_LIMIT_SALT` of at least 32 characters as an environment-specific secret. The endpoint must report `enabled: false` until both are present.
+Deploy `workers/checkout-rate-limiter` as the route-less `dripcouncil-checkout-limiter` Worker before enabling support. Treat the checked-in Pages configuration as the source of truth for the public enable flag, Turnstile site key, canonical return URLs, and `DRIP_SUPPORT_RATE_LIMITER` binding. Keep Stripe, the Turnstile secret, and a random `DRIP_SUPPORT_RATE_LIMIT_SALT` of at least 32 characters as environment-specific Cloudflare secrets. Verify the exact binding and variable names on each deployment; the endpoint must report `enabled: false` until every required value is present.
 
 ## Release Verification
 
