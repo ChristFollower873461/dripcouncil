@@ -74,9 +74,9 @@ The Cloudflare Pages Function requires:
 - a `DRIP_SUPPORT_RATE_LIMITER` Durable Object binding to the separately deployed `dripcouncil-checkout-limiter` Worker
 - `DRIP_SUPPORT_RATE_LIMIT_SALT`, a random secret of at least 32 characters
 
-Deploy the limiter first with `npx wrangler@4.36.0 deploy -c workers/checkout-rate-limiter/wrangler.jsonc`, then bind its `CheckoutRateLimiter` namespace to the Pages project as `DRIP_SUPPORT_RATE_LIMITER`. The cross-service binding is intentionally configured in Cloudflare rather than the checked-in Pages config so ordinary previews can deploy before the limiter exists. The endpoint reports itself disabled and refuses checkout if the binding, salt, secrets, or exact same-origin return URLs are missing.
+Deploy the limiter first with `npx wrangler@4.125.0 deploy -c workers/checkout-rate-limiter/wrangler.jsonc`. The checked-in Pages configuration then binds that Worker's `CheckoutRateLimiter` namespace as `DRIP_SUPPORT_RATE_LIMITER`; previews remain fail-closed until the Worker and their environment-specific secrets exist. The endpoint reports itself disabled and refuses checkout if the binding, salt, secrets, or exact same-origin return URLs are missing.
 
-The static page contains no reusable Stripe Payment Link. A human may choose a one-time USD amount from $5 through $10,000. After explicit human confirmation, the browser sends a bounded JSON request with integer `amountCents`; the server independently enforces the range, validates exact origin and Turnstile hostname, applies durable per-client throttling, and creates a fresh Stripe-hosted Checkout Session URL.
+The static page contains no reusable Stripe Payment Link. A human may choose a one-time USD amount from $5 through $10,000. After explicit human confirmation, the browser sends a bounded JSON request with integer `amountCents`; the server independently enforces the range, validates exact origin and Turnstile hostname, applies a 20-attempt pre-validation bucket and a separate three-session checkout bucket per client over ten minutes, and creates a fresh Stripe-hosted Checkout Session URL.
 
 ## Contributing and Governance
 

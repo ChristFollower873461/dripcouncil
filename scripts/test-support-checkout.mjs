@@ -14,10 +14,14 @@ class MockRateLimiter {
 
   get(id) {
     return {
-      fetch: async () => {
-        const count = (this.counts.get(id) || 0) + 1;
-        this.counts.set(id, count);
-        return new Response(null, { status: count > 3 ? 429 : 204 });
+      fetch: async (request) => {
+        const pathname = new URL(typeof request === "string" ? request : request.url).pathname;
+        const maximum = pathname === "/validation" ? 20 : pathname === "/checkout" ? 3 : 0;
+        if (!maximum) return new Response(null, { status: 404 });
+        const key = `${id}:${pathname}`;
+        const count = (this.counts.get(key) || 0) + 1;
+        this.counts.set(key, count);
+        return new Response(null, { status: count > maximum ? 429 : 204 });
       }
     };
   }
@@ -67,11 +71,14 @@ async function payload(response) {
 
 const realFetch = globalThis.fetch;
 let turnstileHostname = "dripcouncil.org";
+let turnstileSuccess = true;
+let turnstileCalls = 0;
 let stripeCalls = 0;
 globalThis.fetch = async (url) => {
   if (String(url).startsWith("https://challenges.cloudflare.com/")) {
+    turnstileCalls += 1;
     return Response.json({
-      success: true,
+      success: turnstileSuccess,
       action: "drip_support_checkout",
       hostname: turnstileHostname
     });
@@ -133,14 +140,54 @@ try {
   assert.equal((await onRequestPost(context({ method: "POST", body: validBody }))).status, 403);
   turnstileHostname = "dripcouncil.org";
 
+  const validationFloodEnv = environment();
+  const turnstileCallsBeforeFlood = turnstileCalls;
+  const stripeCallsBeforeFlood = stripeCalls;
+  turnstileSuccess = false;
+  for (let attempt = 0; attempt < 20; attempt += 1) {
+    assert.equal((await onRequestPost(context({
+      env: validationFloodEnv,
+      method: "POST",
+      body: validBody
+    }))).status, 403);
+  }
+  assert.equal((await onRequestPost(context({
+    env: validationFloodEnv,
+    method: "POST",
+    body: validBody
+  }))).status, 429);
+  assert.equal(turnstileCalls - turnstileCallsBeforeFlood, 20);
+  assert.equal(stripeCalls, stripeCallsBeforeFlood);
+  assert.equal(
+    validationFloodEnv.DRIP_SUPPORT_RATE_LIMITER.counts.get(
+      `${validationFloodEnv.DRIP_SUPPORT_RATE_LIMIT_SALT}:203.0.113.10:/validation`
+    ),
+    21
+  );
+  turnstileSuccess = true;
+
   const sharedEnv = environment();
+  const turnstileCallsBeforeCheckout = turnstileCalls;
   for (let attempt = 0; attempt < 3; attempt += 1) {
     const response = await onRequestPost(context({ env: sharedEnv, method: "POST", body: validBody }));
     assert.equal(response.status, 200);
     assert.equal((await payload(response)).url, "https://checkout.stripe.com/c/pay/cs_test_safe");
   }
   assert.equal((await onRequestPost(context({ env: sharedEnv, method: "POST", body: validBody }))).status, 429);
+  assert.equal(turnstileCalls - turnstileCallsBeforeCheckout, 4);
   assert.equal(stripeCalls, 3);
+
+  const unavailableLimiter = {
+    idFromName: (name) => name,
+    get: () => ({ fetch: async () => new Response(null, { status: 500 }) })
+  };
+  const turnstileCallsBeforeUnavailable = turnstileCalls;
+  assert.equal((await onRequestPost(context({
+    env: environment({ DRIP_SUPPORT_RATE_LIMITER: unavailableLimiter }),
+    method: "POST",
+    body: validBody
+  }))).status, 503);
+  assert.equal(turnstileCalls, turnstileCallsBeforeUnavailable);
 
   const missingLimiter = environment({ DRIP_SUPPORT_RATE_LIMITER: undefined });
   assert.equal((await onRequestPost(context({ env: missingLimiter, method: "POST", body: validBody }))).status, 503);
@@ -148,4 +195,4 @@ try {
   globalThis.fetch = realFetch;
 }
 
-console.log("Support checkout boundary passed 20 checks.");
+console.log("Support checkout boundary and split throttling tests passed.");

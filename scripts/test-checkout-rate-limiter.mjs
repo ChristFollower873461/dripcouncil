@@ -17,12 +17,15 @@ class MemoryStorage {
     this.values.set(key, structuredClone(value));
   }
 
+  async delete(key) {
+    this.values.delete(key);
+  }
+
   async setAlarm(value) {
     this.alarm = value;
   }
 
-  async deleteAll() {
-    this.values.clear();
+  async deleteAlarm() {
     this.alarm = null;
   }
 }
@@ -34,25 +37,53 @@ Date.now = () => now;
 try {
   const storage = new MemoryStorage();
   const limiter = new CheckoutRateLimiter({ storage });
-  const attempt = () => limiter.fetch(new Request("https://rate-limiter.internal/attempt", { method: "POST" }));
+  const attempt = (bucket) => limiter.fetch(new Request(`https://rate-limiter.internal/${bucket}`, {
+    method: "POST"
+  }));
 
-  assert.equal((await attempt()).status, 204);
-  assert.equal((await attempt()).status, 204);
-  assert.equal((await attempt()).status, 204);
-  assert.equal((await attempt()).status, 429);
-  assert.equal(storage.values.get("window").count, 3);
-  assert.equal(storage.alarm, now + (10 * 60 * 1000));
+  for (let count = 0; count < 20; count += 1) {
+    assert.equal((await attempt("validation")).status, 204);
+  }
+  assert.equal((await attempt("validation")).status, 429);
+  assert.equal(storage.values.get("validation-window").count, 20);
+  const validationResetAt = now + (10 * 60 * 1000);
+  assert.equal(storage.alarm, validationResetAt);
 
-  now = storage.alarm;
-  assert.equal((await attempt()).status, 204);
-  assert.equal(storage.values.get("window").count, 1);
+  now += 60 * 1000;
+  assert.equal((await attempt("checkout")).status, 204);
+  assert.equal((await attempt("checkout")).status, 204);
+  assert.equal((await attempt("checkout")).status, 204);
+  assert.equal((await attempt("checkout")).status, 429);
+  assert.equal(storage.values.get("checkout-window").count, 3);
+  const checkoutResetAt = now + (10 * 60 * 1000);
+  assert.equal(storage.alarm, validationResetAt);
 
+  now = validationResetAt;
+  await limiter.alarm();
+  assert.equal(storage.values.has("validation-window"), false);
+  assert.equal(storage.values.get("checkout-window").count, 3);
+  assert.equal(storage.alarm, checkoutResetAt);
+
+  assert.equal((await attempt("validation")).status, 204);
+  const renewedValidationResetAt = now + (10 * 60 * 1000);
+  assert.equal(storage.values.get("validation-window").count, 1);
+  assert.equal(storage.alarm, checkoutResetAt);
+
+  now = checkoutResetAt;
+  await limiter.alarm();
+  assert.equal(storage.values.has("checkout-window"), false);
+  assert.equal(storage.values.get("validation-window").count, 1);
+  assert.equal(storage.alarm, renewedValidationResetAt);
+
+  now = renewedValidationResetAt;
   await limiter.alarm();
   assert.equal(storage.values.size, 0);
-  assert.equal((await limiter.fetch(new Request("https://rate-limiter.internal/nope", { method: "POST" }))).status, 404);
+  assert.equal(storage.alarm, null);
+  assert.equal((await limiter.fetch(new Request("https://rate-limiter.internal/attempt", { method: "POST" }))).status, 404);
+  assert.equal((await limiter.fetch(new Request("https://rate-limiter.internal/validation"))).status, 404);
   assert.equal((await limiterWorker.fetch(new Request("https://worker.example/"))).status, 404);
 } finally {
   Date.now = realNow;
 }
 
-console.log("Durable checkout limiter passed 10 checks.");
+console.log("Durable validation and checkout limiter tests passed.");

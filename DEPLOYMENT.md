@@ -24,7 +24,7 @@ Preview deployments come from non-production branches. Direct uploads are not th
 
 The protected support endpoint additionally requires the environment variables and Durable Object binding documented in [`README.md`](README.md) and must remain fail-closed when any required safety configuration is missing.
 
-Deploy `workers/checkout-rate-limiter` as the route-less `dripcouncil-checkout-limiter` Worker before enabling support. Bind its `CheckoutRateLimiter` Durable Object namespace to the Pages project as `DRIP_SUPPORT_RATE_LIMITER` in both production and any preview environment that intentionally exercises checkout. Configure this cross-service binding in Cloudflare after the Worker exists; it is intentionally absent from the checked-in Pages config so unrelated previews remain deployable and fail closed. Store a random `DRIP_SUPPORT_RATE_LIMIT_SALT` of at least 32 characters as a secret. The endpoint must report `enabled: false` until both are present.
+Deploy `workers/checkout-rate-limiter` as the route-less `dripcouncil-checkout-limiter` Worker before enabling support. The checked-in Pages configuration binds its `CheckoutRateLimiter` Durable Object namespace as `DRIP_SUPPORT_RATE_LIMITER`; verify that binding in production and in any preview environment that intentionally exercises checkout. Store a random `DRIP_SUPPORT_RATE_LIMIT_SALT` of at least 32 characters as an environment-specific secret. The endpoint must report `enabled: false` until both are present.
 
 ## Release Verification
 
@@ -71,7 +71,7 @@ If production verification fails, revert the faulty merge through a new pull req
 - Do not expose public Stripe Payment Links in static HTML or JavaScript.
 - Keep support checkout fail-closed unless production has `DRIP_SUPPORT_ENABLED=true`, `TURNSTILE_SITE_KEY`, `TURNSTILE_SECRET_KEY`, `STRIPE_SECRET_KEY` or `STRIPE_API_KEY`, `DRIP_SUPPORT_RATE_LIMIT_SALT`, and the `DRIP_SUPPORT_RATE_LIMITER` Durable Object binding.
 - Keep the server-side amount contract at integer `amountCents` from 500 through 1,000,000 ($5 through $10,000 USD). Browser validation is convenience, not authority.
-- Keep exact-origin validation, bounded JSON parsing, durable per-client throttling, and Turnstile verification in front of fresh Stripe Checkout Session creation; never substitute a reusable public checkout URL.
+- Keep exact-origin validation and bounded JSON parsing ahead of the durable pre-validation bucket, then require Turnstile verification and the tighter checkout-session bucket before fresh Stripe Checkout Session creation; never substitute a reusable public checkout URL.
 - Keep success and cancellation destinations on the exact canonical `https://dripcouncil.org/support.html` route and fail closed on configuration drift.
 - Keep support timing local-only until payment-completed webhook handling is added.
 - Keep generated screenshots and local artifacts out of the repo and deploy output.

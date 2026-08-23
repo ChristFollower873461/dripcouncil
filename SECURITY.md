@@ -32,7 +32,7 @@ The maintainer will acknowledge a complete report, validate it, and coordinate r
 
 - Do not commit private credentials.
 - Do not expose public Stripe Payment Links in static HTML or JavaScript.
-- Create support payments only through `/api/support/checkout` after exact-origin validation, bounded request parsing, durable server-side throttling, and Turnstile validation.
+- Create support payments only through `/api/support/checkout` after exact-origin validation, bounded request parsing, a durable pre-validation bucket, Turnstile validation, and the tighter durable checkout-session bucket.
 - Accept only integer `amountCents` values from 500 through 1,000,000 ($5 through $10,000 USD), regardless of browser-side validation.
 - Create a fresh Stripe Checkout Session for each accepted request and return only an HTTPS `checkout.stripe.com` URL.
 - Keep the checkout endpoint fail-closed when secrets, the Durable Object limiter, or safety config are missing.

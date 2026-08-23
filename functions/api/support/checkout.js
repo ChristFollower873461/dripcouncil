@@ -129,7 +129,7 @@ function clientIp(context) {
     : null;
 }
 
-async function throttle(context) {
+async function throttle(context, bucket) {
   const ip = clientIp(context);
   if (!ip || !hasRateLimiter(context.env)) return "unavailable";
 
@@ -138,7 +138,7 @@ async function throttle(context) {
       `${context.env.DRIP_SUPPORT_RATE_LIMIT_SALT}:${ip}`
     );
     const stub = context.env.DRIP_SUPPORT_RATE_LIMITER.get(id);
-    const response = await stub.fetch("https://rate-limiter.internal/attempt", {
+    const response = await stub.fetch(`https://rate-limiter.internal/${bucket}`, {
       method: "POST"
     });
     if (response.status === 204) return "allowed";
@@ -346,12 +346,20 @@ export async function onRequestPost(context) {
     return json({ error: "turnstile_required" }, { status: 400 });
   }
 
+  const validationThrottle = await throttle(context, "validation");
+  if (validationThrottle === "blocked") {
+    return json({ error: "too_many_validation_attempts" }, { status: 429 });
+  }
+  if (validationThrottle !== "allowed") {
+    return json({ error: "rate_limit_unavailable" }, { status: 503 });
+  }
+
   const humanVerified = await validateTurnstile(context, turnstileToken);
   if (!humanVerified) {
     return json({ error: "human_check_failed" }, { status: 403 });
   }
 
-  const throttleResult = await throttle(context);
+  const throttleResult = await throttle(context, "checkout");
   if (throttleResult === "blocked") {
     return json({ error: "too_many_attempts" }, { status: 429 });
   }

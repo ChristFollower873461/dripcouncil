@@ -220,6 +220,19 @@ function isUniqueStringArray(value, { minItems = 1, maxItems = 12, pattern } = {
     && new Set(value).size === value.length;
 }
 
+const pagesConfig = parsedJson.get("wrangler.jsonc");
+const durableObjectBindings = Array.isArray(pagesConfig?.durable_objects?.bindings)
+  ? pagesConfig.durable_objects.bindings
+  : [];
+const supportLimiterBindings = durableObjectBindings.filter(
+  (binding) => isRecord(binding) && binding.name === "DRIP_SUPPORT_RATE_LIMITER"
+);
+if (supportLimiterBindings.length !== 1
+  || supportLimiterBindings[0].class_name !== "CheckoutRateLimiter"
+  || supportLimiterBindings[0].script_name !== "dripcouncil-checkout-limiter") {
+  fail("wrangler.jsonc must declare the exact cross-service support limiter binding");
+}
+
 const agentCard = parsedJson.get(".well-known/agent-card.json");
 const skillIndex = parsedJson.get(".well-known/agent-skills/index.json");
 const indexedSkillEntries = [
@@ -456,7 +469,7 @@ const sources = {
 };
 
 const expectations = [
-  [sources.index, "Send an agent in.", "homepage proposition"],
+  [sources.index, '<h1 id="home-title">Send an agent in.<br>Watch what it does.</h1>', "exact homepage proposition"],
   [sources.index, "data-agent=\"live-case\"", "live case selector"],
   [sources.index, "data-agent=\"visible-evidence-feed\"", "visible evidence selector"],
   [sources.index, "data-agent=\"world-switcher\"", "world switcher selector"],
@@ -520,10 +533,13 @@ const expectations = [
   [sources.supportCheckout, "verifiedHost === host", "exact Turnstile hostname binding"],
   [sources.supportCheckout, "DRIP_SUPPORT_RATE_LIMITER", "durable rate limiter binding"],
   [sources.supportCheckout, "checkoutReturnUrls", "same-origin checkout return validation"],
-  [sources.supportCheckout, "throttle(context)", "server support throttling"],
+  [sources.supportCheckout, 'throttle(context, "validation")', "pre-validation support throttling"],
+  [sources.supportCheckout, 'throttle(context, "checkout")', "checkout-session support throttling"],
   [sources.supportCheckout, "checkout.stripe.com", "fresh Stripe Checkout URL allowlist"],
-  [sources.checkoutLimiter, 'storage.get("window")', "Durable Object throttle state"],
-  [sources.checkoutLimiter, "MAX_ATTEMPTS_PER_WINDOW = 3", "Durable Object attempt limit"],
+  [sources.checkoutLimiter, '"validation-window"', "Durable Object validation state"],
+  [sources.checkoutLimiter, '"checkout-window"', "Durable Object checkout state"],
+  [sources.checkoutLimiter, 'maximum: 20', "Durable Object validation limit"],
+  [sources.checkoutLimiter, 'maximum: 3', "Durable Object checkout limit"],
   [sources.boundedJson, "readBoundedResponseBytes", "bounded browser response reader"],
   [sources.publicContracts, 'value.includes("\\\\")', "backslash navigation rejection"],
   [sources.publicContracts, "isPlainCase", "shared strict case contract"],
@@ -741,6 +757,7 @@ if (!sources.script.includes("validation locked") || !sources.script.includes("n
 }
 
 const requiredDistMirrors = [
+  "index.html",
   "index.md",
   "curriculum.html",
   "CURRICULUM.md",
