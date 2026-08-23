@@ -603,6 +603,10 @@ const expectations = [
   [sources.agents, "BOUNDARY.rs", "AGENTS Council Worlds orientation"]
 ];
 
+if (sources.headers.includes("navigate-to")) {
+  fail("_headers must not include the unsupported CSP navigate-to directive");
+}
+
 for (const [haystack, needle, label] of expectations) {
   if (!haystack.includes(needle)) fail(`missing ${label}: ${needle}`);
 }
