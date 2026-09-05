@@ -23,7 +23,8 @@ Security vulnerabilities belong in a [private security advisory](https://github.
 
 ## Development
 
-The site intentionally uses a small toolchain. Build and preview it with:
+The static build uses shell tools, and the preview server uses Python's standard
+library. These commands do not require npm dependencies:
 
 ```sh
 ./scripts/build.sh
@@ -32,23 +33,29 @@ python3 -m http.server 8088 --directory dist
 
 Open `http://127.0.0.1:8088/`.
 
+JavaScript tests require Node 22.22.2+ within Node 22, Node 24.15.0+ within
+Node 24, or Node 26+. CI uses Node 22. JSDOM is a pinned development dependency
+for actual-page tests; it is not included in the static site or browser code.
+
 Run the complete verification set before requesting review:
 
 ```sh
-./scripts/build.sh
-node scripts/test-bounded-json.mjs
-node scripts/test-public-contracts.mjs
-node scripts/test-report-import.mjs
-node scripts/test-checkout-rate-limiter.mjs
-node scripts/test-support-checkout.mjs
-node scripts/test-boundary-wasm.mjs
+npm ci
+npm audit
+npm test
 python3 -m unittest discover -s python -p 'test_*.py'
 node --check scripts/council-worlds.mjs
 node --check scripts/curriculum.mjs
 node --check scripts/site-refresh.mjs
-node scripts/verify-agent-lab.mjs
+./scripts/build.sh
+npm run verify
 git diff --check
 ```
+
+`npm test` retains the existing boundary suites and includes the Fifth Seat
+page tests. They exercise the real page controls and checked-in WebAssembly
+against local fixtures, including selected-case matching, overlapping file
+imports and recovery from read failures. They do not contact external services.
 
 If you change Rust boundary rules, exercise a local build with the pinned toolchain via `./scripts/build-boundary-wasm.sh` and `node scripts/test-boundary-wasm.mjs`. The pinned Ubuntu CI job uploads the canonical release artifact before checking its bytes. Include that CI-built module with the source change; builds from another host may be behaviorally equivalent without being byte-identical.
 

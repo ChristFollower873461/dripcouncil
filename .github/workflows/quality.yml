@@ -27,6 +27,13 @@ jobs:
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v6.4.0
         with:
           node-version: "22"
+          cache: npm
+
+      - name: Install locked test dependencies
+        run: npm ci
+
+      - name: Audit test dependencies
+        run: npm audit
 
       - name: Check JavaScript syntax
         run: |
