@@ -8,6 +8,7 @@ const MAXIMUM_CASE_INDEX_BYTES = 32 * 1024;
 const MAXIMUM_CASE_BYTES = 128 * 1024;
 const MAXIMUM_WASM_BYTES = 512 * 1024;
 const MAXIMUM_BALLOT_CHARACTERS = 100_000;
+const MAXIMUM_BALLOT_FILE_BYTES = 100_000;
 
 const wait = (milliseconds) => new Promise((resolve) => {
   globalThis.setTimeout(resolve, reducedMotion ? 0 : milliseconds);
@@ -574,6 +575,7 @@ function initBoundaryWorld() {
   const validateButtonLabel = validateButton?.textContent || "Validate & seat";
   let validator = null;
   let validating = false;
+  let draftRevision = 0;
   let activeBallotSample = ballotSample;
   let activeCase = {
     caseId: ballotSample.case_id,
@@ -588,6 +590,7 @@ function initBoundaryWorld() {
   }
 
   function loadText(text) {
+    draftRevision += 1;
     input.value = text;
     result?.classList.remove("is-lit");
     setStatus("Ballot loaded locally. Validate it when ready.");
@@ -602,6 +605,7 @@ function initBoundaryWorld() {
   }
 
   function displayBoundaryCase(nextCase) {
+    draftRevision += 1;
     activeCase = nextCase;
     activeBallotSample = nextCase.sample;
     const label = boundaryCaseLabel(nextCase.caseId);
@@ -756,6 +760,20 @@ function initBoundaryWorld() {
       return;
     }
 
+    // Rust validates the ballot contract; this page also binds it to the case
+    // the visitor is actually inspecting. A valid ballot for another case is
+    // not a verdict for the current brief.
+    if (ballot.case_id !== activeCase.caseId) {
+      setStatus(`This ballot is for ${boundaryCaseLabel(ballot.case_id)}. The current brief is ${boundaryCaseLabel(activeCase.caseId)}. Load its sample or use a ballot for the current case. Seat 05 remains open.`, true);
+      result?.classList.remove("is-lit");
+      validating = false;
+      if (validateButton) {
+        validateButton.disabled = false;
+        validateButton.textContent = validateButtonLabel;
+      }
+      return;
+    }
+
     setStatus("Valid drip_ballot_v1. Seat 05 is lit in this browser only.");
     if (result) {
       result.innerHTML = "";
@@ -775,12 +793,15 @@ function initBoundaryWorld() {
 
   validateButton?.addEventListener("click", validateAndSeat);
   input.addEventListener("input", () => {
+    draftRevision += 1;
     result?.classList.remove("is-lit");
     setStatus("Ballot changed locally. Run Rust again before Seat 05 can light.");
   });
   sampleButton?.addEventListener("click", () => loadText(JSON.stringify(activeBallotSample, null, 2)));
   resetButton?.addEventListener("click", () => {
+    draftRevision += 1;
     input.value = "";
+    if (fileInput) fileInput.value = "";
     result?.classList.remove("is-lit");
     setStatus("Seat 05 is open. Nothing has been uploaded or stored.");
   });
@@ -794,15 +815,38 @@ function initBoundaryWorld() {
     }
   });
 
-  fileInput?.addEventListener("change", async () => {
-    const file = fileInput.files?.[0];
-    if (!file) return;
-    if (file.size > 100000) {
-      setStatus("That file is too large for a compact ballot.", true);
+  async function importBallotFile(file) {
+    // Any newer intent supersedes this read, including an empty/oversize import.
+    // Keep the draft until a current read succeeds, but invalidate its old verdict.
+    const revision = ++draftRevision;
+    result?.classList.remove("is-lit");
+    if (!file) {
+      setStatus("No ballot file selected. Choose a file or paste JSON to continue.");
       return;
     }
-    loadText(await file.text());
+    if (file.size > MAXIMUM_BALLOT_FILE_BYTES) {
+      setStatus("That file is too large for a compact ballot. Choose a JSON file of 100 KB or less.", true);
+      return;
+    }
+    setStatus("Reading ballot locally. Nothing is uploaded.");
+    try {
+      const text = await file.text();
+      if (revision !== draftRevision) return;
+      loadText(text);
+    } catch {
+      if (revision !== draftRevision) return;
+      setStatus("Could not read that ballot file. Choose it again or paste JSON to continue.", true);
+    }
+  }
+
+  fileInput?.addEventListener("change", () => {
+    const file = fileInput.files?.[0];
+    // Allow selecting the same file again after a failed read or a reset.
+    fileInput.value = "";
+    return importBallotFile(file);
   });
+
+  fileInput?.addEventListener("cancel", () => importBallotFile());
 
   ["dragenter", "dragover"].forEach((eventName) => {
     dropZone?.addEventListener(eventName, (event) => {
@@ -816,14 +860,7 @@ function initBoundaryWorld() {
       dropZone.classList.remove("is-dragging");
     });
   });
-  dropZone?.addEventListener("drop", async (event) => {
-    const file = event.dataTransfer?.files?.[0];
-    if (!file || file.size > 100000) {
-      setStatus("Drop one compact JSON file under 100 KB.", true);
-      return;
-    }
-    loadText(await file.text());
-  });
+  dropZone?.addEventListener("drop", (event) => importBallotFile(event.dataTransfer?.files?.[0]));
 
   loadRequestedBoundaryCase().finally(initializeValidator);
 }

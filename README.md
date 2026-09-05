@@ -56,6 +56,9 @@ The compiled module is committed so the static deployment works without a Rust t
 
 ## Local Preview
 
+The static build uses shell tools and the preview server uses Python's standard
+library. Neither command requires npm dependencies.
+
 ```sh
 ./scripts/build.sh
 python3 -m http.server 8088 --directory dist
@@ -86,21 +89,27 @@ GitHub is the public source of truth. Production deployment details and rollback
 
 ## Verify
 
+JavaScript tests require Node 22.22.2+ within Node 22, Node 24.15.0+ within
+Node 24, or Node 26+. CI uses Node 22. Install the locked development dependencies
+before running the complete test suite:
+
 ```sh
-./scripts/build.sh
-node scripts/test-bounded-json.mjs
-node scripts/test-public-contracts.mjs
-node scripts/test-report-import.mjs
-node scripts/test-checkout-rate-limiter.mjs
-node scripts/test-support-checkout.mjs
-node scripts/test-boundary-wasm.mjs
+npm ci
+npm audit
+npm test
 python3 -m unittest discover -s python -p 'test_*.py'
 node --check scripts/council-worlds.mjs
 node --check scripts/curriculum.mjs
 node --check scripts/site-refresh.mjs
-node scripts/verify-agent-lab.mjs
+./scripts/build.sh
+npm run verify
 git diff --check
 ```
+
+The Fifth Seat page tests use pinned, test-only JSDOM to execute the actual page
+module and checked-in WebAssembly against local case files. They cover selected
+case matching, overlapping file imports, and read-failure recovery. JSDOM is not
+shipped in the static site, and these tests make no external requests.
 
 The verifier checks agent manifest mirrors, advertised JSON, bounded import and checkout contracts, build output, WebAssembly magic bytes and ballot behavior, public Rust-source discovery, social image dimensions, trace schema shape, and ballot constraints.
 

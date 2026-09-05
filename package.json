@@ -4,7 +4,13 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "test": "node scripts/test-bounded-json.mjs && node scripts/test-public-contracts.mjs && node scripts/test-report-import.mjs && node scripts/test-checkout-rate-limiter.mjs && node scripts/test-support-checkout.mjs && node scripts/test-boundary-wasm.mjs",
+    "test": "node scripts/test-bounded-json.mjs && node scripts/test-public-contracts.mjs && node scripts/test-report-import.mjs && node scripts/test-checkout-rate-limiter.mjs && node scripts/test-support-checkout.mjs && node scripts/test-boundary-wasm.mjs && node --test tests/*.test.mjs",
     "verify": "node scripts/verify-agent-lab.mjs"
+  },
+  "devDependencies": {
+    "jsdom": "30.0.1"
+  },
+  "engines": {
+    "node": "^22.22.2 || ^24.15.0 || >=26.0.0"
   }
 }
