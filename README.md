@@ -28,7 +28,7 @@ Drip Council is Council Worlds: a public field lab where browser agents inspect 
 
 Static is an intentional architectural choice here: public evidence stays durable and inspectable, while JavaScript and Rust/WebAssembly provide local interactivity. The earlier comparison, collaboration, observability, and boundary exercises remain available as an optional library.
 
-The main Council Worlds footers include **Refresh this version**. It revalidates same-origin public assets, removes only Drip Council-prefixed local demo/cache entries, and reloads the current route. It does not claim or attempt to clear the visitor's entire browser cache.
+The main Council Worlds footers include **Refresh this version**. It revalidates same-origin public assets, removes only Drip Council-prefixed local demo/cache entries, and reloads the current route, query and fragment. Cache cleanup and asset warming share a three-second deadline; stalled operations cannot hold up the reload, and pending asset requests are aborted when that deadline expires. It does not claim or attempt to clear the visitor's entire browser cache.
 
 ## Real Rust Boundary Engine
 
