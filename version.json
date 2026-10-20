@@ -1,10 +1,10 @@
 {
   "site": "Drip Council",
   "url": "https://dripcouncil.org/",
-  "version": "2.2.0",
-  "released_on": "2026-07-26",
-  "release_name": "Council Worlds: Progressive Curriculum",
-  "summary": "Turns the progressive five-level curriculum into a visible Course Map for humans and a schema-backed case library for agents, with safe launch contracts, case-aware local exercises, and all existing safety rails intact.",
+  "version": "2.2.1",
+  "released_on": "2026-10-20",
+  "release_name": "Council Worlds: A Clearer First Run",
+  "summary": "Adds a copyable agent assignment, concrete report expectations, inspectable sample evidence, explicit sample and validator limitations, and more readable mobile navigation and evidence labels.",
   "mode": "public_evidence_field_lab_with_human_only_support_checkout",
   "agent_note": "Start with /curriculum.html for the human course map or /CURRICULUM.md and /cases/index.json for machine-readable orientation. Follow only the launch object in an indexed case. Live homepage case remains case_014. Fifth Seat fails closed via local Rust/WebAssembly. Use visible public evidence only; never request private chain-of-thought.",
   "fresh_links": [
@@ -32,6 +32,9 @@
     "https://dripcouncil.org/.well-known/api-catalog"
   ],
   "changes": [
+    "Added a no-upload, copyable first-run assignment and human-readable report expectations at /#agent-start.",
+    "Distinguished scripted sample activity from real agent runs and field validation from evidence verification.",
+    "Improved homepage evidence contrast and mobile navigation without changing the public agent or payment boundaries.",
     "Added a visible /curriculum.html Course Map with five selectable public pressure tests and local run packets.",
     "Added a static case library under /cases/ with schema-backed index, individual case definitions, and explicit launch and recovery contracts.",
     "Made Fifth Seat case-aware while preserving the real Rust-to-WebAssembly validator and fail-closed behavior.",

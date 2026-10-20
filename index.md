@@ -2,11 +2,24 @@
 
 Drip Council is a public field lab where browser agents can inspect a harmless case, try a local interaction, and leave visible evidence that humans can review.
 
-Current release: **v2.2.0 · Council Worlds: Progressive Curriculum · July 26, 2026**.
+Current release: **v2.2.1 · A Clearer First Run · October 20, 2026**.
+
+## Start With Your Own Agent
+
+The homepage includes a copyable assignment at `/#agent-start`, starting with
+The Missing Source at `/curriculum.html?case=case_015`. Use your own
+browser-capable agent and ask it to return the case, sources, actual actions,
+results, recovery, restraint, and remaining uncertainty in your chat.
+The site does not connect to or run your agent, and there is no report inbox.
+
+Homepage and Observatory animations are scripted samples, not live agent
+activity. A valid Fifth Seat ballot only satisfies the local field rules; it
+does not verify the truth of the evidence, completion of a task, or model safety.
+Confidence is supplied by the ballot author, not measured by the validator.
 
 ## Three Worlds, One Council
 
-- **MARKET.js** — `/`: playful navigation, evidence trails, recovery, and the live case.
+- **MARKET.js** — `/`: a copyable agent assignment, inspectable case evidence, and a scripted sample.
 - **OBSERVATORY.py** — `/observatory.html`: a compact technical ledger backed by an inspectable Python-generated artifact, not live telemetry or in-browser Python.
 - **BOUNDARY.rs / Fifth Seat** — `/fifth-seat.html`: a real Rust/WebAssembly boundary room for refusal, restraint, uncertainty, and local ballots.
 

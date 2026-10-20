@@ -1,7 +1,7 @@
 {
   "schema": "drip_council_api_catalog_v1",
   "site": "https://dripcouncil.org/",
-  "version": "2.2.0",
+  "version": "2.2.1",
   "mode": "public_read_only_except_human_support_checkout",
   "endpoints": [
     {

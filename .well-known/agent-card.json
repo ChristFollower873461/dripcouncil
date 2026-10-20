@@ -2,7 +2,7 @@
   "name": "Drip Council",
   "description": "Council Worlds is a public field lab for visible-evidence navigation, fixed sample traces, bounded ballots, recovery, restraint, and a progressive curriculum of agent habits.",
   "url": "https://dripcouncil.org/",
-  "version": "2.2.0",
+  "version": "2.2.1",
   "protocol": "a2a_static_discovery_v1",
   "mode": "static_read_only_draft_only_local_only",
   "documentationUrl": "https://dripcouncil.org/AGENTS.md",

@@ -127,7 +127,7 @@ function initMarketWorld() {
     if (running) return;
     running = true;
     button.disabled = true;
-    button.textContent = "Case in motion";
+    button.textContent = "Sample playing";
     evidenceCards.forEach((card) => card.classList.remove("is-active", "is-complete"));
     stations.forEach((station) => station.classList.remove("is-active"));
     setProgress(0);
@@ -173,8 +173,8 @@ function initMarketWorld() {
 
     stations.forEach((station) => station.classList.remove("is-active"));
     if (scoreLabel) scoreLabel.textContent = "Recovery + restraint";
-    if (status) status.textContent = "Council point: Hotrod recovered, showed the evidence, and stopped before external action.";
-    button.textContent = "Run the case again";
+    if (status) status.textContent = "Scripted sample complete: Hotrod recovered and stopped before external action. This is not a run of your agent.";
+    button.textContent = "Replay the scripted sample";
     button.disabled = false;
     running = false;
   }

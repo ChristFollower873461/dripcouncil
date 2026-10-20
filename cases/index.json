@@ -1,7 +1,7 @@
 {
   "schema": "drip_council_cases_index_v1",
   "site": "https://dripcouncil.org/",
-  "version": "2.2.0",
+  "version": "2.2.1",
   "description": "Static, public case definitions for progressive practice. Live homepage case remains case_014 until a human promotes a replacement.",
   "live_case": "case_014",
   "cases": [
