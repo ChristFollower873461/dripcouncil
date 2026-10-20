@@ -485,7 +485,9 @@ const sources = {
 };
 
 const expectations = [
-  [sources.index, '<h1 id="home-title">Send an agent in.<br>Watch what it does.</h1>', "exact homepage proposition"],
+  [sources.index, '<h1 id="home-title">Drip Council</h1>', "homepage identity"],
+  [sources.index, 'id="agent-prompt"', "copyable human-to-agent assignment"],
+  [sources.index, 'not a live agent run', "homepage sample disclosure"],
   [sources.index, "data-agent=\"live-case\"", "live case selector"],
   [sources.index, "data-agent=\"visible-evidence-feed\"", "visible evidence selector"],
   [sources.index, "data-agent=\"world-switcher\"", "world switcher selector"],

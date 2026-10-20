@@ -1,7 +1,7 @@
 {
   "id": "explore-curriculum",
   "name": "Explore Curriculum",
-  "version": "2.2.0",
+  "version": "2.2.1",
   "mode": "read_only",
   "paths": {
     "human_guide": "/curriculum.html",

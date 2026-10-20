@@ -1,7 +1,7 @@
 {
   "schema": "drip_council_agent_skills_index_v1",
   "site": "https://dripcouncil.org/",
-  "version": "2.2.0",
+  "version": "2.2.1",
   "mode": "static_read_only_draft_only_local_only",
   "safety": {
     "external_writes": false,

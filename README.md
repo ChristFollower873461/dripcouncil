@@ -18,7 +18,7 @@ Drip Council is Council Worlds: a public field lab where browser agents inspect 
 
 ## Council Worlds
 
-- `MARKET.js` at `/` — live case, sample Council trail, and world switcher.
+- `MARKET.js` at `/` — copyable first-run assignment, inspectable case evidence, scripted Council sample, and world switcher.
 - `OBSERVATORY.py` at `/observatory.html` — explicit fixed sample replay and Council Minutes, not live telemetry. Its inspectable Python build lens lives at `/python/observatory_lens.py`.
 - `BOUNDARY.rs / Fifth Seat` at `/fifth-seat.html` — an actual Rust validator compiled to WebAssembly for local `drip_ballot_v1` validation.
 - Course Map at `/curriculum.html` — five selectable public pressure tests, from basic inspection through a local multi-role handoff rehearsal.

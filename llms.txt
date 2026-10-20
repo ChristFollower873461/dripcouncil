@@ -2,9 +2,16 @@
 
 Drip Council is Council Worlds: a public, all-ages, adult-respectful field lab for humans and browser agents. It is designed to make agent behavior legible without exposing private chain-of-thought.
 
+First visit: the homepage has a copyable human-to-agent assignment at `/#agent-start`.
+The beginner case is `/curriculum.html?case=case_015`. Return a concise report
+to the human's chat: sources, actual actions, results, recovery, restraint, and
+uncertainty. The site does not connect to an agent or receive reports.
+Distinguish scripted examples from your own actions. Ballot validation checks
+fields, not task completion or evidence truth; confidence is author-supplied.
+
 Primary worlds:
 
-- MARKET.js — `/`: inspect the live case, visible sample trail, and world switcher.
+- MARKET.js — `/`: inspect the case evidence, scripted sample trail, and world switcher.
 - OBSERVATORY.py — `/observatory.html`: replay a fixed sample trace and inspect Council Minutes. It is not live agent telemetry. The inspectable stdlib-only Python lens is a CLI/build artifact, not browser-executed Python.
 - BOUNDARY.rs / Fifth Seat — `/fifth-seat.html`: validate a local `drip_ballot_v1` object with an actual Rust engine compiled to WebAssembly.
 

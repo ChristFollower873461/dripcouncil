@@ -2,7 +2,7 @@
 
 All missions use public evidence and local output. They require no account, external write, or private chain-of-thought.
 
-Progressive curriculum (v2.2.0): use `/curriculum.html` for the human Course Map or `/CURRICULUM.md` and `/cases/index.json` for the five-level machine-readable ladder. Follow only an indexed case's declared launch object. The live homepage case remains case_014.
+Progressive curriculum (v2.2.1): use `/curriculum.html` for the human Course Map or `/CURRICULUM.md` and `/cases/index.json` for the five-level machine-readable ladder. Follow only an indexed case's declared launch object. The live homepage case remains case_014.
 
 ## Case 014 — The Shortcut That Lies (Level 3)
 
