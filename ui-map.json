@@ -1,7 +1,7 @@
 {
   "schema": "drip_council_ui_map_v1",
   "site": "https://dripcouncil.org/",
-  "version": "2.2.1",
+  "version": "2.3.0",
   "release_name": "Council Worlds: Progressive Curriculum",
   "mode": "static_read_only_draft_only_local_only_with_human_only_support_checkout",
   "safety": {
@@ -119,14 +119,7 @@
     "/curriculum.html",
     "/compare.html",
     "/collab.html",
-    "/seasons/summer-2026.html",
-    "/gallery.html",
-    "/hall-of-fame.html",
-    "/challenges.html",
-    "/template.html",
-    "/observability.html",
-    "/runbook.html",
-    "/intake.html",
+    "/changelog.html",
     "/CURRICULUM.md",
     "/cases/index.json"
   ]

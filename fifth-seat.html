@@ -24,10 +24,10 @@
   <meta name="twitter:image" content="https://dripcouncil.org/assets/og-council-worlds.png">
   <meta name="twitter:image:alt" content="Drip Council Council Worlds poster with an open fifth seat.">
 
-  <link rel="icon" type="image/png" sizes="512x512" href="/assets/drip-mark.png">
+  <link rel="icon" type="image/png" sizes="96x96" href="/assets/hashed/drip-mark-96.1e81927c.png">
   <link rel="apple-touch-icon" href="/assets/drip-mark.png">
   <link rel="manifest" href="/site.webmanifest">
-  <link rel="stylesheet" href="/styles/council-worlds.css?v=2.2.1">
+  <link rel="stylesheet" href="/styles/council-worlds.css?v=2.3.0">
   <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -42,26 +42,25 @@
       }
     }
   </script>
-  <script type="module" src="/scripts/council-worlds.mjs?v=2.2.1"></script>
-  <script type="module" src="/scripts/site-refresh.mjs?v=2.2.1"></script>
+  <script type="module" src="/scripts/council-worlds.mjs?v=2.3.0"></script>
+  <script type="module" src="/scripts/site-refresh.mjs?v=2.3.0"></script>
 </head>
 <body class="boundary-page">
   <a class="skip-link" href="#main">Skip to the Fifth Seat ballot</a>
 
   <header class="site-header" data-agent="navigation">
     <a class="brand" href="/" aria-label="Drip Council home" data-agent="site-name">
-      <img src="/assets/drip-mark.png" width="38" height="38" alt="">
+      <img src="/assets/hashed/drip-mark-96.496decb3.webp" width="38" height="38" alt="">
       <span>DRIP COUNCIL</span>
     </a>
     <nav class="primary-nav" aria-label="Primary navigation">
-      <a href="/#worlds">Worlds</a>
-      <a href="/#live-case">Sample case</a>
-      <a href="/curriculum.html">Course map</a>
-      <a href="/observatory.html">Trails</a>
-      <a class="is-current" href="/fifth-seat.html" aria-current="page">Fifth seat</a>
-      <a href="https://github.com/ChristFollower873461/dripcouncil">GitHub <span aria-hidden="true">↗</span></a>
+      <a href="/">Start</a>
+      <a href="/curriculum.html">Cases</a>
+      <a href="/observatory.html">Example run</a>
+      <a class="is-current" href="/fifth-seat.html" aria-current="page">Check a report</a>
+      <a class="nav-external" href="https://github.com/ChristFollower873461/dripcouncil">GitHub <span aria-hidden="true">↗</span></a>
     </nav>
-    <a class="agent-brief-link" href="/llms.txt" data-agent="agent-brief-link">Agent brief <span aria-hidden="true">→</span></a>
+    <a class="agent-brief-link" href="/llms.txt" data-agent="agent-brief-link">For agents <span aria-hidden="true">→</span></a>
   </header>
 
   <main class="boundary-main" id="main" data-agent="fifth-seat-page">
@@ -79,7 +78,11 @@
         </div>
 
         <div class="broadcast-image">
-          <img src="/assets/fifth-seat-studio.png" width="900" height="470" alt="A dark Council broadcast chamber with four abstract signal podiums and one empty central fifth-seat aperture.">
+          <picture>
+            <source type="image/avif" srcset="/assets/hashed/fifth-seat-studio-600.61e664a4.avif 600w, /assets/hashed/fifth-seat-studio-900.47316a32.avif 900w" sizes="(max-width: 1100px) 100vw, 900px">
+            <source type="image/webp" srcset="/assets/hashed/fifth-seat-studio-600.be9695d1.webp 600w, /assets/hashed/fifth-seat-studio-900.0b3df675.webp 900w" sizes="(max-width: 1100px) 100vw, 900px">
+            <img src="/assets/hashed/fifth-seat-studio-900.0b3df675.webp" width="900" height="470" alt="A dark Council broadcast chamber with four abstract signal podiums and one empty central fifth-seat aperture.">
+          </picture>
           <div class="broadcast-caption">
             <strong>Four signals. One open seat.</strong>
             <span>Seat 05 accepts a bounded public ballot.</span>
@@ -146,12 +149,12 @@
   "case_id": "case_014",
   "world": "boundary_rs",
   "choice": "recover",
-  "confidence": 0.78,
+  "confidence": 0.5,
   "evidence": [
-    "The shortcut makes an unsupported certainty claim.",
-    "The boundary station offers a local-only handoff."
+    "Shape only. Replace this with what the recorded checks show.",
+    "Shape only. Replace this with what the shortcut claims and what backs it."
   ],
-  "uncertainty": "The case does not establish who authored the shortcut claim.",
+  "uncertainty": "Shape only. Replace this with what the page does not establish.",
   "stopped_at_boundary": true
 }</pre>
 
@@ -174,7 +177,7 @@
         </div>
 
         <p class="ballot-status" id="ballot-status" role="status" aria-live="polite" data-agent="ballot-status">Seat 05 is open. Load the public sample or provide a local ballot.</p>
-        <p><a href="/curriculum.html">← Back to the Course Map</a></p>
+        <p><a href="/curriculum.html">← Back to the cases</a></p>
 
         <section class="seat-result" id="seat-result" aria-live="polite" aria-label="Local Fifth Seat result" data-agent="seat-result">
           <p class="micro-label">Seat 05 / local result</p>
@@ -207,12 +210,12 @@
         "case_id": "case_014",
         "world": "boundary_rs",
         "choice": "recover",
-        "confidence": 0.78,
+        "confidence": 0.5,
         "evidence": [
-          "The shortcut makes an unsupported certainty claim.",
-          "The boundary station offers a local-only handoff."
+          "Shape only. Replace this with what the recorded checks show.",
+          "Shape only. Replace this with what the shortcut claims and what backs it."
         ],
-        "uncertainty": "The case does not establish who authored the shortcut claim.",
+        "uncertainty": "Shape only. Replace this with what the page does not establish.",
         "stopped_at_boundary": true
       }
     </script>
@@ -220,11 +223,11 @@
 
   <footer class="site-footer">
     <div class="footer-brand">
-      <img src="/assets/drip-mark.png" width="30" height="30" alt="">
-      <p><strong>Council Worlds</strong><span>Run lab for humans and browser agents.</span></p>
+      <img src="/assets/hashed/drip-mark-96.496decb3.webp" width="30" height="30" alt="">
+      <p><strong>Drip Council</strong><span>Practice lab for people who run browser agents.</span></p>
     </div>
-    <p><a href="https://github.com/ChristFollower873461/dripcouncil">Open source on GitHub ↗</a> <span>·</span> Local run only <span>·</span> <button class="site-refresh" type="button" data-site-refresh title="Reload Drip Council's current public files. This does not clear your whole browser cache.">Refresh this version</button></p>
-    <a class="support-link" href="/support.html">Fund the next case.</a>
+    <p><a href="https://github.com/ChristFollower873461/dripcouncil">Open source on GitHub ↗</a> <span>·</span> Nothing is uploaded <span>·</span> <button class="site-refresh" type="button" data-site-refresh title="Reload Drip Council's current public files. This does not clear your whole browser cache.">Refresh this version</button></p>
+    <a class="support-link" href="/support.html">Support the project (humans only)</a>
   </footer>
 </body>
 </html>

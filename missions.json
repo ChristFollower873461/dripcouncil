@@ -1,7 +1,7 @@
 {
   "schema": "drip_council_missions_v3",
   "site": "https://dripcouncil.org/",
-  "version": "2.2.1",
+  "version": "2.3.0",
   "current_case": "case_014",
   "case_title": "The Shortcut That Lies",
   "mode": "public_read_only_draft_only_local_only",
@@ -74,7 +74,7 @@
   "library": [
     {"id": "compare_local_runs", "path": "/compare.html", "mode": "local_only"},
     {"id": "simulate_council_handoff", "path": "/collab.html", "mode": "static_simulation_only", "level": 5},
-    {"id": "practice_commerce_boundary", "path": "/seasons/summer-2026.html", "mode": "static_simulation_only", "level": 4},
+    {"id": "practice_commerce_boundary", "path": "/curriculum.html?case=case_017", "mode": "static_simulation_only", "level": 4},
     {"id": "curriculum_guide", "path": "/curriculum.html", "mode": "read_only"},
     {"id": "case_library", "path": "/cases/index.json", "mode": "read_only"}
   ],

@@ -10,6 +10,31 @@ const sourceCaseFiles = (await readdir("cases"))
   .filter((name) => /^case_[0-9]{3}\.json$/.test(name))
   .sort()
   .map((name) => `cases/${name}`);
+const fixtureFiles = sourceCaseFiles.map((file) => file.replace(/^cases\/(case_[0-9]{3})\.json$/, "fixtures/$1.html"));
+const keyFiles = ["keys/index.html", ...sourceCaseFiles.map((file) => file.replace(/^cases\/(case_[0-9]{3})\.json$/, "keys/$1.html"))];
+const hashedAssetFiles = (await readdir("assets/hashed")).sort().map((name) => `assets/hashed/${name}`);
+
+// support.html was frozen for the v2.3.0 build (the checkout page was out of scope), so it still
+// carries the cache-busting query from its last release. Bump this together with support.html.
+const supportPageVersion = "2.2.1";
+
+// Pages kept in the core style. support.html is checked separately because it is frozen.
+const styledPages = ["index.html", "curriculum.html", "observatory.html", "fifth-seat.html", "compare.html", "collab.html", "changelog.html", "404.html"];
+
+// Placeholder pages retired in v2.3.0. Each must stay gone and keep a redirect.
+const retiredRoutes = [
+  "/gallery.html",
+  "/hall-of-fame.html",
+  "/intake.html",
+  "/runbook.html",
+  "/runbook.md",
+  "/challenges.html",
+  "/template.html",
+  "/observability.html",
+  "/observability.md",
+  "/agent-readiness.html",
+  "/seasons/summer-2026.html"
+];
 
 const requiredFiles = [
   "index.html",
@@ -19,6 +44,13 @@ const requiredFiles = [
   "observatory.html",
   "fifth-seat.html",
   "support.html",
+  "compare.html",
+  "collab.html",
+  "changelog.html",
+  "404.html",
+  "_redirects",
+  ...fixtureFiles,
+  ...keyFiles,
   "package.json",
   "wrangler.jsonc",
   "rust-toolchain.toml",
@@ -35,8 +67,9 @@ const requiredFiles = [
   "scripts/test-boundary-wasm.mjs",
   "site.webmanifest",
   "assets/drip-mark.png",
-  "assets/council-chamber.png",
-  "assets/fifth-seat-studio.png",
+  "assets-src/council-chamber.png",
+  "assets-src/fifth-seat-studio.png",
+  ...hashedAssetFiles,
   "assets/og-council-worlds.png",
   "api/council-sessions.json",
   "api/observatory-lens.json",
@@ -485,7 +518,9 @@ const sources = {
 };
 
 const expectations = [
-  [sources.index, '<h1 id="home-title">Drip Council</h1>', "homepage identity"],
+  [sources.index, 'data-agent="site-name"', "homepage identity"],
+  [sources.index, '<h1 id="home-title">See how your agent behaves when the easy answer is wrong.</h1>', "homepage outcome headline"],
+  [sources.index, '<p class="example-tag">Example</p>', "homepage example label"],
   [sources.index, 'id="agent-prompt"', "copyable human-to-agent assignment"],
   [sources.index, 'not a live agent run', "homepage sample disclosure"],
   [sources.index, "data-agent=\"live-case\"", "live case selector"],
@@ -539,8 +574,8 @@ const expectations = [
   [sources.support, "/api/support/checkout", "server checkout endpoint"],
   [sources.support, "amountCents", "integer-cent checkout request"],
   [sources.support, "$5 minimum", "support minimum disclosure"],
-  [sources.support, `/styles/council-worlds.css?v=${releaseVersion}`, "versioned support stylesheet"],
-  [sources.support, `/scripts/site-refresh.mjs?v=${releaseVersion}`, "support refresh control"],
+  [sources.support, `/styles/council-worlds.css?v=${supportPageVersion}`, "versioned support stylesheet"],
+  [sources.support, `/scripts/site-refresh.mjs?v=${supportPageVersion}`, "support refresh control"],
   [sources.supportCheckout, "const MINIMUM_CENTS = 500", "server support minimum"],
   [sources.supportCheckout, "const MAXIMUM_CENTS = 1_000_000", "server support maximum"],
   [sources.supportCheckout, "Number.isInteger(amountCents)", "server integer-cent validation"],
@@ -607,6 +642,12 @@ const expectations = [
   [sources.headers, "council-sessions.json", "Council session discovery header"],
   [sources.robots, "Content-Signal: search=yes,ai-input=yes,ai-train=no", "content signal"],
   [sources.build, "cp assets/*.png dist/assets/", "asset build copy"],
+  [sources.build, "cp assets/hashed/* dist/assets/hashed/", "hashed asset build copy"],
+  [sources.build, "cp fixtures/*.html dist/fixtures/", "case fixture build copy"],
+  [sources.build, "cp keys/*.html dist/keys/", "answer key build copy"],
+  [sources.build, "cp _redirects dist/", "redirect rules build copy"],
+  [sources.headers, "/assets/hashed/*\n  Cache-Control: public, max-age=31536000, immutable", "long cache limited to content-hashed assets"],
+  [sources.headers, "/keys/*\n  X-Robots-Tag: noindex, nofollow", "answer key noindex header"],
   [sources.build, "cp observatory.html dist/", "Observatory build copy"],
   [sources.build, "cp curriculum.html dist/", "human curriculum build copy"],
   [sources.build, "cp CURRICULUM.md dist/", "markdown curriculum build copy"],
@@ -654,6 +695,121 @@ function assertPngDimensions(path, expectedWidth, expectedHeight) {
 
 await assertPngDimensions("assets/og-council-worlds.png", 1200, 630);
 await assertPngDimensions("assets/drip-mark.png", 512, 512);
+
+// A long immutable cache is only honest if the URL changes when the file changes.
+for (const file of hashedAssetFiles) {
+  const digest = createHash("sha256").update(await readBinary(file)).digest("hex").slice(0, 8);
+  if (!file.includes(`.${digest}.`)) fail(`${file} does not carry its own content hash (${digest}) in its name`);
+}
+if (/^\/(styles|scripts|assets)\/\*\n\s+Cache-Control:[^\n]*immutable/m.test(sources.headers)) {
+  fail("_headers must not mark unhashed styles, scripts, or assets as immutable");
+}
+
+// Every case must lead to a real fixture, and the fixture must lead on to the Fifth Seat.
+const publicAgentSurfaces = {
+  "sitemap.xml": sources.sitemap,
+  "llms.txt": sources.llms,
+  "index.md": sources.indexMarkdown,
+  "AGENTS.md": sources.agents,
+  "CURRICULUM.md": sources.curriculumMarkdown,
+  "robots.txt": sources.robots,
+  "agent.json": rootAgent,
+  "missions.json": rootMissions,
+  "missions.md": await read("missions.md"),
+  "ui-map.json": await read("ui-map.json"),
+  "version.json": sources.release,
+  "cases/index.json": sources.caseIndex,
+  ".well-known/agent-card.json": await read(".well-known/agent-card.json"),
+  ".well-known/api-catalog": await read(".well-known/api-catalog"),
+  "curriculum.html": sources.curriculum,
+  "fifth-seat.html": sources.fifthSeat,
+  "observatory.html": sources.observatory,
+  "scripts/curriculum.mjs": await read("scripts/curriculum.mjs")
+};
+for (const { definition, file } of caseDefinitions) {
+  const caseId = definition.case_id;
+  const fixtureRoute = `/fixtures/${caseId}.html`;
+  const launch = definition.launch || {};
+  const fixtureEntry = launch.mode === "expected_dead_end" ? launch.recovery_path : launch.path;
+  if (fixtureEntry !== fixtureRoute) fail(`${file} must lead to its fixture ${fixtureRoute}`);
+
+  const fixture = await read(`fixtures/${caseId}.html`);
+  if (!fixture.includes(`href="/fifth-seat.html?case=${caseId}"`)) fail(`fixtures/${caseId}.html must link to its Fifth Seat ballot`);
+  if (!fixture.includes(`href="/curriculum.html?case=${caseId}"`)) fail(`fixtures/${caseId}.html must link back to its case`);
+  if (!fixture.includes("fictional")) fail(`fixtures/${caseId}.html must say plainly that it is fictional`);
+  if (/<form\b/i.test(fixture) || /<script\b/i.test(fixture) || /\son[a-z]+\s*=/i.test(fixture)) {
+    fail(`fixtures/${caseId}.html must stay inert: no form, no script, no inline handlers`);
+  }
+  if (/https?:\/\/(?!dripcouncil\.org\/|github\.com\/ChristFollower873461\/dripcouncil)/.test(fixture)) {
+    fail(`fixtures/${caseId}.html must not reference a URL outside the site`);
+  }
+  if (!/<meta name="robots" content="noindex/.test(fixture)) fail(`fixtures/${caseId}.html must be noindex`);
+  if (fixture.includes("/keys/")) fail(`fixtures/${caseId}.html must not point at an answer key`);
+  publicAgentSurfaces[file] = JSON.stringify(definition);
+
+  // A sample ballot that states the findings can be copied as the answer. Keep it shape-only.
+  const sampleTexts = [...(definition.sample_ballot?.evidence || []), definition.sample_ballot?.uncertainty || ""];
+  if (sampleTexts.some((text) => !text.startsWith("Shape only."))) {
+    fail(`${file} sample ballot must be shape-only so it does not give away the fixture`);
+  }
+
+  const key = await read(`keys/${caseId}.html`);
+  if (!/<meta name="robots" content="noindex, nofollow">/.test(key)) fail(`keys/${caseId}.html must be noindex, nofollow`);
+  if (!key.includes("For the human")) fail(`keys/${caseId}.html must say plainly that it is for the human`);
+}
+if (!/<meta name="robots" content="noindex, nofollow">/.test(await read("keys/index.html"))) fail("keys/index.html must be noindex, nofollow");
+
+// Answer keys stay out of everything an agent is pointed at.
+for (const [name, text] of Object.entries(publicAgentSurfaces)) {
+  if (text.includes("/keys/") || text.includes("keys/case_")) fail(`${name} must not reference the human-only answer keys`);
+}
+const assignment = /<textarea id="agent-prompt"[^>]*>([\s\S]*?)<\/textarea>/.exec(sources.index)?.[1] || "";
+if (assignment.includes("/keys")) fail("the agent assignment must not contain an answer-key address");
+if (!assignment.includes("answer-key pages are for me, the human")) {
+  fail("the agent assignment must say plainly that answer-key pages are for the human");
+}
+
+// Retired placeholder pages stay retired, redirected, and unlisted.
+const redirects = await read("_redirects");
+const redirectRules = new Map(
+  redirects.split("\n").map((line) => line.trim()).filter((line) => line && !line.startsWith("#"))
+    .map((line) => line.split(/\s+/)).map(([from, to, code]) => [from, { to, code }])
+);
+for (const route of retiredRoutes) {
+  if (await fileExists(route.slice(1))) fail(`${route} was retired and must not be restored without updating the contract`);
+  if (await fileExists(`dist${route}`)) fail(`dist${route} is a retired page and must not be built`);
+  const rule = redirectRules.get(route);
+  if (!rule || rule.code !== "301") {
+    fail(`_redirects must send ${route} to a current page with a 301`);
+  } else if (!isSafeLocalPath(rule.to) || !await fileExists(rule.to.split(/[?#]/, 1)[0].slice(1))) {
+    fail(`_redirects sends ${route} to ${rule.to}, which is not a current page`);
+  }
+  for (const [name, text] of Object.entries({ ...publicAgentSurfaces, "index.html": sources.index, "_headers": sources.headers })) {
+    if (text.includes(route)) fail(`${name} still lists the retired page ${route}`);
+  }
+}
+
+// Every kept page shares the core chrome.
+for (const file of styledPages) {
+  const page = await read(file);
+  for (const [needle, label] of [
+    ['class="skip-link"', "skip link"],
+    ['<link rel="icon"', "favicon link"],
+    ['property="og:title"', "Open Graph title"],
+    ['property="og:image"', "Open Graph image"],
+    [`/styles/council-worlds.css?v=${releaseVersion}`, "versioned core stylesheet"],
+    ['>Start</a>', "nav: Start"],
+    ['>Cases</a>', "nav: Cases"],
+    ['>Example run</a>', "nav: Example run"],
+    ['>Check a report</a>', "nav: Check a report"],
+    ['data-agent="agent-brief-link">For agents', "nav: For agents"]
+  ]) {
+    if (!page.includes(needle)) fail(`${file} is missing the shared ${label}`);
+  }
+  if (page.includes("navigate-to") || /http-equiv="Content-Security-Policy"[^>]*frame-ancestors/.test(page)) {
+    fail(`${file} carries a CSP directive that browsers ignore in a meta tag`);
+  }
+}
 
 const { ballotSample, traceSample } = await import("./council-worlds.mjs");
 const traceAllowedKeys = new Set([
@@ -785,6 +941,12 @@ const requiredDistMirrors = [
   "CURRICULUM.md",
   "cases/index.json",
   ...sourceCaseFiles,
+  ...fixtureFiles,
+  ...keyFiles,
+  ...hashedAssetFiles,
+  ...styledPages,
+  "_redirects",
+  "_headers",
   "schemas/drip_case_v1.schema.json",
   "schemas/drip_case_index_v1.schema.json",
   "scripts/site-refresh.mjs",

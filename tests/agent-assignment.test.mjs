@@ -32,6 +32,8 @@ test('assignment works as selectable static content without JavaScript', () => {
   assert.match(prompt.value, /curriculum\.html\?case=case_015/);
   assert.match(prompt.value, /Do not log in, pay, upload, or send anything/);
   assert.match(prompt.value, /Distinguish sample output from your own actions/);
+  assert.match(prompt.value, /answer-key pages are for me, the human\. Do not open them/);
+  assert.doesNotMatch(prompt.value, /\/keys/);
   assert.equal(dom.window.document.querySelector('#copy-agent-prompt').hidden, true);
   dom.window.close();
 });
