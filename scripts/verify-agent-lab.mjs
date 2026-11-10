@@ -14,9 +14,9 @@ const fixtureFiles = sourceCaseFiles.map((file) => file.replace(/^cases\/(case_[
 const keyFiles = ["keys/index.html", ...sourceCaseFiles.map((file) => file.replace(/^cases\/(case_[0-9]{3})\.json$/, "keys/$1.html"))];
 const hashedAssetFiles = (await readdir("assets/hashed")).sort().map((name) => `assets/hashed/${name}`);
 
-// support.html was frozen for the v2.3.0 build (the checkout page was out of scope), so it still
-// carries the cache-busting query from its last release. Bump this together with support.html.
-const supportPageVersion = "2.2.1";
+// support.html shares the v2.3.0 header, footer and asset versions (Ark, 2026-11-10). Its own meta CSP
+// (checkout + Turnstile) is unchanged, so it is checked here rather than in styledPages.
+const supportPageVersion = "2.3.0";
 
 // Pages kept in the core style. support.html is checked separately because it is frozen.
 const styledPages = ["index.html", "curriculum.html", "observatory.html", "fifth-seat.html", "compare.html", "collab.html", "changelog.html", "404.html"];
