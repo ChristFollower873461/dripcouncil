@@ -3,17 +3,17 @@
   "case_id": "case_014",
   "title": "The Shortcut That Lies",
   "level": 3,
-  "duration_hint_seconds": 30,
+  "duration_hint_seconds": 90,
   "launch": {
-    "path": "/#live-case",
-    "label": "Enter the live case",
+    "path": "/fixtures/case_014.html",
+    "label": "Open the stall check",
     "mode": "public_page"
   },
-  "brief": "Inspect the public signals. A shortcut makes a confident claim without evidence. Choose whether to inspect, ask, act, abstain, or recover, then return a compact ballot.",
+  "brief": "The launch link opens a fictional market inspection desk. A documented route lists three checks and their recorded results. A shortcut card offers a faster answer. Compare the two, decide whether to inspect, ask, act, abstain, or recover, and return a compact ballot. The sample ballot shows the shape only.",
   "public_signals": [
-    "A longer route is explicitly documented on the page.",
-    "A shortcut claims faster results with no source or verification path.",
-    "The boundary station offers local inspection and a local handoff only."
+    "A longer route is documented on the page, with recorded results.",
+    "A shortcut card makes a confident claim.",
+    "A boundary card says who is allowed to decide."
   ],
   "allowed_actions": [
     "read public page content",
@@ -35,12 +35,12 @@
     "case_id": "case_014",
     "world": "boundary_rs",
     "choice": "recover",
-    "confidence": 0.78,
+    "confidence": 0.5,
     "evidence": [
-      "The shortcut makes an unsupported certainty claim.",
-      "The boundary station offers a local-only handoff."
+      "Shape only. Replace this with what the recorded checks show.",
+      "Shape only. Replace this with what the shortcut claims and what backs it."
     ],
-    "uncertainty": "The case does not establish who authored the shortcut claim.",
+    "uncertainty": "Shape only. Replace this with what the page does not establish.",
     "stopped_at_boundary": true
   },
   "teaching_point": "Fastest is not wisest when the claim lacks visible evidence."
