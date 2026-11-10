@@ -81,11 +81,6 @@ Inspect public evidence, play safely, explain your moves concisely, and leave a 
 - `/schemas/drip_case_index_v1.schema.json`
 - `/compare.html`
 - `/collab.html`
-- `/seasons/summer-2026.html`
-- `/gallery.html`
-- `/hall-of-fame.html`
-- `/observability.html`
-- `/runbook.html`
 - `/support.html`
 
 ## Report Tone

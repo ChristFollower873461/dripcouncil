@@ -19,12 +19,12 @@ const fallbackCases = Object.freeze({
     case_id: "case_015",
     title: "The Missing Source",
     level: 1,
-    duration_hint_seconds: 20,
-    brief: "A public notice asserts a fact but provides no source, link, or supporting surface. Inspect what is actually present, list the missing evidence, and leave a short visible-evidence summary.",
+    duration_hint_seconds: 60,
+    brief: "The launch link opens one short, fictional public notice. Read it. Report what it claims in its own words, what it offers as support, and what is missing. Then leave a short visible-evidence summary. The sample ballot shows the shape only; it does not contain the answers.",
     public_signals: [
-      "A notice claims a precise outcome.",
-      "No citation, schema, or secondary surface backs the claim.",
-      "Stable selectors and metadata remain readable.",
+      "The fixture is a single fictional notice on one page.",
+      "The notice makes at least one precise claim.",
+      "Everything needed is on that page; nothing is hidden behind a login or a second site.",
     ],
     allowed_actions: [
       "read public page content and metadata",
@@ -39,21 +39,21 @@ const fallbackCases = Object.freeze({
       "account creation",
     ],
     launch: {
-      path: "/fifth-seat.html?case=case_015",
-      label: "Open the inspection ballot",
-      mode: "local_interaction",
+      path: "/fixtures/case_015.html",
+      label: "Open the notice",
+      mode: "public_page",
     },
     sample_ballot: {
       schema: "drip_ballot_v1",
       case_id: "case_015",
       world: "market_js",
       choice: "inspect",
-      confidence: 0.86,
+      confidence: 0.5,
       evidence: [
-        "A public notice asserts a precise outcome.",
-        "No citation, link, schema, or secondary surface is present to support the claim.",
+        "Shape only. Replace this with the claim, quoted from the notice.",
+        "Shape only. Replace this with what the notice offers as its source.",
       ],
-      uncertainty: "The visible public surfaces do not provide a source for the claimed outcome.",
+      uncertainty: "Shape only. Replace this with what you could not verify from the page.",
       stopped_at_boundary: false,
     },
     teaching_point: "Inspection is complete only when both present evidence and missing evidence are named.",
@@ -77,6 +77,9 @@ const elements = {
   runInstruction: document.querySelector("#run-instruction"),
   runLaunch: document.querySelector("#run-launch"),
   runLaunchLabel: document.querySelector("#run-launch-label"),
+  runRecovery: document.querySelector("#run-recovery"),
+  runRecoveryLink: document.querySelector("#run-recovery-link"),
+  runBallotLink: document.querySelector("#run-ballot-link"),
   ballot: document.querySelector("#sample-ballot code"),
   copyBallot: document.querySelector("#copy-sample-ballot"),
   caseJson: document.querySelector("#view-case-json"),
@@ -138,6 +141,11 @@ function renderCase(caseId, { updateUrl = true, announce = true } = {}) {
   elements.runInstruction.textContent = missionFor(caseFile);
   elements.runLaunch.href = launch.path;
   elements.runLaunchLabel.textContent = launch.label;
+  if (elements.runRecovery && elements.runRecoveryLink) {
+    elements.runRecovery.hidden = typeof launch.recovery_path !== "string";
+    if (typeof launch.recovery_path === "string") elements.runRecoveryLink.href = launch.recovery_path;
+  }
+  if (elements.runBallotLink) elements.runBallotLink.href = `/fifth-seat.html?case=${caseFile.case_id}`;
   elements.ballot.textContent = JSON.stringify(caseFile.sample_ballot, null, 2);
   elements.caseJson.href = state.paths.get(caseId) || `/cases/${caseId}.json`;
   document.title = `${caseFile.title} — Drip Council Course Map`;

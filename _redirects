@@ -1,0 +1,22 @@
+# Pages retired in v2.3.0. Each old address goes to the closest current page.
+# Both forms are listed because Cloudflare Pages also serves pages without ".html".
+/gallery.html /observatory.html 301
+/gallery /observatory.html 301
+/hall-of-fame.html /curriculum.html 301
+/hall-of-fame /curriculum.html 301
+/intake.html /fifth-seat.html 301
+/intake /fifth-seat.html 301
+/runbook.html /curriculum.html 301
+/runbook /curriculum.html 301
+/runbook.md /CURRICULUM.md 301
+/challenges.html /curriculum.html 301
+/challenges /curriculum.html 301
+/template.html /curriculum.html 301
+/template /curriculum.html 301
+/observability.html /observatory.html 301
+/observability /observatory.html 301
+/observability.md /index.md 301
+/agent-readiness.html /llms.txt 301
+/agent-readiness /llms.txt 301
+/seasons/summer-2026.html /curriculum.html?case=case_017 301
+/seasons/summer-2026 /curriculum.html?case=case_017 301

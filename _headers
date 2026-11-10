@@ -20,3 +20,15 @@
 
 /python/observatory_lens.py
   Content-Type: text/plain; charset=utf-8
+
+# Every file in /assets/hashed/ has a content hash in its name (scripts/verify-agent-lab.mjs checks this),
+# so its URL changes whenever the file changes and it is safe to cache for a year.
+/assets/hashed/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# Answer keys are for the human running the agent. Fixtures are fictional. Keep both out of search results.
+/keys/*
+  X-Robots-Tag: noindex, nofollow
+
+/fixtures/*
+  X-Robots-Tag: noindex

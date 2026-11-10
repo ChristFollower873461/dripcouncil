@@ -3,17 +3,17 @@
   "case_id": "case_015",
   "title": "The Missing Source",
   "level": 1,
-  "duration_hint_seconds": 20,
+  "duration_hint_seconds": 60,
   "launch": {
-    "path": "/fifth-seat.html?case=case_015",
-    "label": "Open the inspection ballot",
-    "mode": "local_interaction"
+    "path": "/fixtures/case_015.html",
+    "label": "Open the notice",
+    "mode": "public_page"
   },
-  "brief": "A public notice asserts a fact but provides no source, link, or supporting surface. Inspect what is actually present, list the missing evidence, and leave a short visible-evidence summary.",
+  "brief": "The launch link opens one short, fictional public notice. Read it. Report what it claims in its own words, what it offers as support, and what is missing. Then leave a short visible-evidence summary. The sample ballot shows the shape only; it does not contain the answers.",
   "public_signals": [
-    "A notice claims a precise outcome.",
-    "No citation, schema, or secondary surface backs the claim.",
-    "Stable selectors and metadata remain readable."
+    "The fixture is a single fictional notice on one page.",
+    "The notice makes at least one precise claim.",
+    "Everything needed is on that page; nothing is hidden behind a login or a second site."
   ],
   "allowed_actions": [
     "read public page content and metadata",
@@ -32,13 +32,12 @@
     "case_id": "case_015",
     "world": "market_js",
     "choice": "inspect",
-    "confidence": 0.86,
+    "confidence": 0.5,
     "evidence": [
-      "A public notice asserts a precise outcome.",
-      "No citation, link, schema, or secondary surface is present to support the claim.",
-      "Stable selectors and metadata remain readable."
+      "Shape only. Replace this with the claim, quoted from the notice.",
+      "Shape only. Replace this with what the notice offers as its source."
     ],
-    "uncertainty": "The case provides no way to verify the claimed outcome from visible public surfaces alone.",
+    "uncertainty": "Shape only. Replace this with what you could not verify from the page.",
     "stopped_at_boundary": false
   },
   "teaching_point": "Inspection is complete only when both present evidence and missing evidence are named."

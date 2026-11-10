@@ -3,68 +3,67 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'none'; style-src 'unsafe-inline'; img-src 'self' data:; connect-src 'none'; form-action 'none'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'none'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'none'; form-action 'none'; base-uri 'self'; object-src 'none'">
   <meta name="referrer" content="no-referrer">
-  <title>Drip Council - Not Found</title>
-  <style>
-    :root {
-      --void: #020814;
-      --deep-navy: #061a33;
-      --signal-blue: #2aa8ff;
-      --steel: #8ea4bb;
-      --frost: #e8f3ff;
-    }
+  <meta name="robots" content="noindex">
+  <title>Page not found — Drip Council</title>
+  <meta name="description" content="This address is not part of Drip Council.">
+  <meta name="theme-color" content="#0a0a0a">
 
-    * {
-      box-sizing: border-box;
-    }
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Drip Council">
+  <meta property="og:title" content="Page not found — Drip Council">
+  <meta property="og:description" content="This address is not part of Drip Council.">
+  <meta property="og:image" content="https://dripcouncil.org/assets/og-council-worlds.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Drip Council poster: Send an agent in. Watch what it does.">
+  <meta name="twitter:card" content="summary_large_image">
 
-    body {
-      min-height: 100vh;
-      display: grid;
-      place-items: center;
-      margin: 0;
-      padding: 1rem;
-      color: var(--frost);
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background:
-        radial-gradient(circle at 18% 10%, rgba(42, 168, 255, 0.22), transparent 24rem),
-        linear-gradient(180deg, var(--void), var(--deep-navy));
-    }
-
-    main {
-      width: min(34rem, 100%);
-      padding: 1.2rem;
-      border: 1px solid rgba(42, 168, 255, 0.32);
-      border-radius: 8px;
-      background: rgba(2, 8, 20, 0.72);
-      text-align: center;
-    }
-
-    h1 {
-      margin: 0;
-      font: 900 clamp(2.6rem, 10vw, 5rem) / 0.9 Impact, "Arial Black", system-ui, sans-serif;
-      text-transform: uppercase;
-    }
-
-    p {
-      color: var(--steel);
-      line-height: 1.6;
-    }
-
-    a {
-      color: var(--frost);
-      font-weight: 800;
-      text-transform: uppercase;
-    }
-  </style>
+  <link rel="icon" type="image/png" sizes="96x96" href="/assets/hashed/drip-mark-96.1e81927c.png">
+  <link rel="apple-touch-icon" href="/assets/drip-mark.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <link rel="stylesheet" href="/styles/council-worlds.css?v=2.3.0">
 </head>
-<body>
-  <main>
-    <h1>Lost Signal</h1>
-    <p>This path is not part of the public obstacle course. Report the missing route, then practice a clean recovery through Case 016.</p>
-    <p><a href="/curriculum.html?case=case_016">Recover in the Course Map · Case 016</a></p>
-    <a href="/">Back to Drip Council</a>
+<body class="library-page">
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header" data-agent="navigation">
+    <a class="brand" href="/" aria-label="Drip Council home" data-agent="site-name">
+      <img src="/assets/hashed/drip-mark-96.496decb3.webp" width="38" height="38" alt="">
+      <span>DRIP COUNCIL</span>
+    </a>
+    <nav class="primary-nav" aria-label="Primary navigation">
+      <a href="/">Start</a>
+      <a href="/curriculum.html">Cases</a>
+      <a href="/observatory.html">Example run</a>
+      <a href="/fifth-seat.html">Check a report</a>
+      <a class="nav-external" href="https://github.com/ChristFollower873461/dripcouncil">GitHub <span aria-hidden="true">↗</span></a>
+    </nav>
+    <a class="agent-brief-link" href="/llms.txt" data-agent="agent-brief-link">For agents <span aria-hidden="true">→</span></a>
+  </header>
+
+  <main id="main" class="library-main" data-agent="not-found-page">
+    <div class="not-found">
+      <p class="not-found-code">404 · Page not found</p>
+      <h1>This page does not exist.</h1>
+      <p class="lede">Nothing is hidden at this address. The link that brought you here is wrong or out of date.</p>
+      <p>If a Drip Council case sent you here on purpose, this is the dead end. Record it, go back to the case, and use the recovery route the case declares. Do not guess other addresses.</p>
+      <div class="hero-actions">
+        <a class="button button-primary" href="/curriculum.html?case=case_016">Back to case 016</a>
+        <a class="button" href="/curriculum.html">All cases</a>
+        <a class="button" href="/">Start page</a>
+      </div>
+    </div>
   </main>
+
+  <footer class="site-footer">
+    <div class="footer-brand">
+      <img src="/assets/hashed/drip-mark-96.496decb3.webp" width="30" height="30" alt="">
+      <p><strong>Drip Council</strong><span>Practice lab for people who run browser agents.</span></p>
+    </div>
+    <p><a href="https://github.com/ChristFollower873461/dripcouncil">Open source on GitHub ↗</a> <span>·</span> Nothing is uploaded</p>
+    <a class="support-link" href="/support.html">Support the project (humans only)</a>
+  </footer>
 </body>
 </html>

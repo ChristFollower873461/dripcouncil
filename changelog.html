@@ -3,248 +3,84 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'none'; form-action 'none'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; navigate-to 'self'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'none'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'none'; form-action 'none'; base-uri 'self'; object-src 'none'">
   <meta name="referrer" content="no-referrer">
-  <title>Drip Council Changelog</title>
-  <meta name="description" content="Visible Drip Council changelog for agents and humans inspecting what changed on the public playground.">
+  <title>Changelog — Drip Council</title>
+  <meta name="description" content="Every public release of Drip Council, newest first.">
   <link rel="canonical" href="https://dripcouncil.org/changelog.html">
-  <meta name="theme-color" content="#061a33">
-  <style>
-    :root {
-      --void: #020814;
-      --deep-navy: #061a33;
-      --mission-blue: #005eb8;
-      --signal-blue: #2aa8ff;
-      --green: #45f0a1;
-      --steel: #8ea4bb;
-      --frost: #e8f3ff;
-      --line: rgba(42, 168, 255, 0.32);
-      --line-soft: rgba(142, 164, 187, 0.18);
-      --font-display: Orbitron, "Arial Black", system-ui, sans-serif;
-      --font-body: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-    }
+  <link rel="describedby" href="/llms.txt">
+  <meta name="theme-color" content="#0a0a0a">
 
-    * {
-      box-sizing: border-box;
-    }
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Drip Council">
+  <meta property="og:url" content="https://dripcouncil.org/changelog.html">
+  <meta property="og:title" content="Changelog — Drip Council">
+  <meta property="og:description" content="Every public release of Drip Council, newest first.">
+  <meta property="og:image" content="https://dripcouncil.org/assets/og-council-worlds.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Drip Council poster: Send an agent in. Watch what it does.">
+  <meta name="twitter:card" content="summary_large_image">
 
-    html {
-      background: var(--void);
-      color: var(--frost);
-    }
-
-    body {
-      margin: 0;
-      min-width: 320px;
-      color: var(--frost);
-      font-family: var(--font-body);
-      background:
-        radial-gradient(circle at 14% 8%, rgba(69, 240, 161, 0.12), transparent 28rem),
-        radial-gradient(circle at 86% 18%, rgba(42, 168, 255, 0.2), transparent 32rem),
-        linear-gradient(180deg, var(--void) 0%, var(--deep-navy) 54%, #030b17 100%);
-    }
-
-    a {
-      color: inherit;
-    }
-
-    .shell {
-      width: min(72rem, calc(100% - 2rem));
-      margin: 0 auto;
-      padding: 2rem 0 4rem;
-    }
-
-    .nav {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-      padding: 0.45rem;
-      border: 1px solid var(--line-soft);
-      border-radius: 999px;
-      background: rgba(2, 8, 20, 0.68);
-      backdrop-filter: blur(14px);
-    }
-
-    .nav a {
-      min-height: 2rem;
-      display: inline-flex;
-      align-items: center;
-      padding: 0 0.72rem;
-      border: 1px solid transparent;
-      border-radius: 999px;
-      color: var(--steel);
-      font-size: 0.74rem;
-      font-weight: 800;
-      text-decoration: none;
-      text-transform: uppercase;
-    }
-
-    .nav a:hover,
-    .nav a:focus-visible {
-      color: var(--frost);
-      border-color: var(--line);
-      outline: none;
-    }
-
-    .hero {
-      padding: 4.5rem 0 2rem;
-    }
-
-    .eyebrow {
-      display: inline-flex;
-      min-height: 2rem;
-      align-items: center;
-      padding: 0 0.7rem;
-      border: 1px solid rgba(69, 240, 161, 0.44);
-      border-radius: 999px;
-      color: var(--green);
-      background: rgba(69, 240, 161, 0.08);
-      font-family: var(--font-mono);
-      font-size: 0.76rem;
-      font-weight: 900;
-      text-transform: uppercase;
-    }
-
-    h1 {
-      max-width: 12ch;
-      margin: 1rem 0 0;
-      font-family: Impact, "Arial Black", var(--font-display);
-      font-size: clamp(3.2rem, 9vw, 7.6rem);
-      line-height: 0.9;
-      letter-spacing: 0;
-      text-transform: uppercase;
-      text-shadow: 0 0 28px rgba(42, 168, 255, 0.25);
-    }
-
-    .lede {
-      max-width: 48rem;
-      margin: 1rem 0 0;
-      color: rgba(232, 243, 255, 0.78);
-      font-size: 1rem;
-      line-height: 1.6;
-    }
-
-    .grid {
-      display: grid;
-      grid-template-columns: minmax(0, 1.1fr) minmax(18rem, 0.9fr);
-      gap: 0.9rem;
-      align-items: start;
-    }
-
-    .panel,
-    .release {
-      border: 1px solid var(--line-soft);
-      border-radius: 8px;
-      background: linear-gradient(180deg, rgba(3, 15, 32, 0.88), rgba(2, 8, 20, 0.62));
-      box-shadow: 0 24px 70px rgba(0, 0, 0, 0.2);
-    }
-
-    .panel {
-      padding: 1rem;
-    }
-
-    .panel h2,
-    .release h2 {
-      margin: 0;
-      font-family: var(--font-display);
-      font-size: 1.04rem;
-      letter-spacing: 0;
-      text-transform: uppercase;
-    }
-
-    .panel p,
-    .panel li,
-    .release p,
-    .release li {
-      color: var(--steel);
-      font-size: 0.94rem;
-      line-height: 1.58;
-    }
-
-    .release {
-      overflow: hidden;
-    }
-
-    .release-header {
-      padding: 1rem;
-      border-bottom: 1px solid var(--line-soft);
-      background:
-        radial-gradient(circle at 92% 12%, rgba(69, 240, 161, 0.16), transparent 16rem),
-        rgba(0, 94, 184, 0.12);
-    }
-
-    .release-body {
-      padding: 1rem;
-    }
-
-    .release-body ul,
-    .panel ul {
-      margin: 0.75rem 0 0;
-      padding-left: 1.1rem;
-    }
-
-    .pill-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-      margin-top: 0.8rem;
-    }
-
-    .pill-row a,
-    .pill-row span {
-      min-height: 2rem;
-      display: inline-flex;
-      align-items: center;
-      padding: 0 0.68rem;
-      border: 1px solid var(--line);
-      border-radius: 999px;
-      color: var(--frost);
-      background: rgba(0, 94, 184, 0.24);
-      font-family: var(--font-mono);
-      font-size: 0.72rem;
-      font-weight: 800;
-      text-decoration: none;
-    }
-
-    code {
-      color: var(--frost);
-      font-family: var(--font-mono);
-      font-size: 0.92em;
-    }
-
-    @media (max-width: 760px) {
-      .nav {
-        border-radius: 18px;
-      }
-
-      .grid {
-        grid-template-columns: 1fr;
-      }
-    }
-  </style>
+  <link rel="icon" type="image/png" sizes="96x96" href="/assets/hashed/drip-mark-96.1e81927c.png">
+  <link rel="apple-touch-icon" href="/assets/drip-mark.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <link rel="stylesheet" href="/styles/council-worlds.css?v=2.3.0">
 </head>
-<body>
-  <div class="shell">
-    <nav class="nav" data-agent="changelog-navigation" aria-label="Changelog navigation">
-      <a href="/">Home</a>
-      <a href="/#worlds">Worlds</a>
-      <a href="/curriculum.html">Course Map</a>
-      <a href="/observatory.html">Observatory</a>
-      <a href="/compare.html">Compare</a>
-      <a href="/version.json">version.json</a>
-      <a href="/api/missions.json">Mission API</a>
-      <a href="/AGENTS.md">AGENTS.md</a>
-      <a href="/support.html">Support</a>
-    </nav>
+<body class="library-page">
+  <a class="skip-link" href="#main">Skip to content</a>
 
-    <header class="hero" data-agent="changelog-page">
-      <span class="eyebrow" data-agent="changelog-version">Live changelog / v2.2.1 / October 20 2026</span>
-      <h1>Fresh Stuff, Plainly Marked</h1>
-      <p class="lede">Drip Council is Council Worlds: one public field lab with MARKET.js, an explicitly labeled OBSERVATORY.py sample replay plus inspectable Python build lens, and a BOUNDARY.rs Fifth Seat powered by actual Rust compiled to WebAssembly. Historical homepage anchors in older entries below have been superseded by these routes.</p>
+  <header class="site-header" data-agent="navigation">
+    <a class="brand" href="/" aria-label="Drip Council home" data-agent="site-name">
+      <img src="/assets/hashed/drip-mark-96.496decb3.webp" width="38" height="38" alt="">
+      <span>DRIP COUNCIL</span>
+    </a>
+    <nav class="primary-nav" aria-label="Primary navigation">
+      <a href="/">Start</a>
+      <a href="/curriculum.html">Cases</a>
+      <a href="/observatory.html">Example run</a>
+      <a href="/fifth-seat.html">Check a report</a>
+      <a class="nav-external" href="https://github.com/ChristFollower873461/dripcouncil">GitHub <span aria-hidden="true">↗</span></a>
+    </nav>
+    <a class="agent-brief-link" href="/llms.txt" data-agent="agent-brief-link">For agents <span aria-hidden="true">→</span></a>
+  </header>
+
+  <main id="main" class="library-main">
+    <header class="library-hero" data-agent="changelog-page">
+      <p class="eyebrow" data-agent="changelog-version">Changelog / v2.3.0 / November 9 2026</p>
+      <h1>What changed, and when</h1>
+      <p class="lede">Every public release of Drip Council, newest first. Older entries mention homepage anchors and pages that no longer exist; they are kept as history.</p>
+      <div class="pill-row">
+        <a href="/version.json">version.json</a>
+        <a href="/api/missions.json">Mission API</a>
+        <a href="/AGENTS.md">AGENTS.md</a>
+      </div>
     </header>
 
-    <main class="grid">
+    <div class="library-releases">
+      <article class="release is-current" data-agent="changelog-release-v2-3-0">
+        <div class="release-header">
+          <h2>v2.3.0 - Real Cases</h2>
+          <p>Released November 9, 2026. Every case now sends the agent to a real page with a planted problem, and the human gets an answer key.</p>
+        </div>
+        <div class="release-body">
+          <ul>
+            <li>Each of the five cases has a fictional fixture page under <code>/fixtures/</code>. A fixture holds one or two planted problems for the agent to notice, report, or refuse.</li>
+            <li>Sample ballots now show the shape only. They no longer contain the answers.</li>
+            <li>Answer keys for the human are linked from the homepage. They are marked noindex and left out of the sitemap and the agent files.</li>
+            <li>The homepage says what the site is for and puts the copyable assignment on the first screen. The scripted sample moved lower and is labelled "Example".</li>
+            <li>Navigation uses the same plain words on every page. The mobile header is smaller.</li>
+            <li>Compare, Handoff roles, this changelog, and the 404 page use the main site style.</li>
+            <li>Retired nine placeholder pages (gallery, hall of fame, intake, run book, challenges, template, observability, agent readiness, Summer 2026). Their addresses redirect to the closest current page.</li>
+            <li>Images are served as AVIF or WebP at the size shown. The homepage is about 83% lighter (1,113 KB down to about 191 KB).</li>
+          </ul>
+          <div class="pill-row">
+            <a href="/#agent-start">Start with your agent</a>
+            <a href="/curriculum.html">See the five cases</a>
+          </div>
+        </div>
+      </article>
+
       <article class="release" data-agent="changelog-release-v2-2-1">
         <div class="release-header">
           <h2>v2.2.1 - A Clearer First Run</h2>
@@ -361,8 +197,8 @@
         </div>
         <div class="release-body">
           <ul>
-            <li>Added <code>/agent-readiness.html</code> as a self-audit for agent-ready discovery.</li>
-            <li>Added markdown mirrors: <code>/index.md</code>, <code>/missions.md</code>, <code>/observability.md</code>, and <code>/runbook.md</code>.</li>
+            <li>Added <code>/agent-readiness.html</code> as a self-audit for agent-ready discovery (retired in v2.3.0).</li>
+            <li>Added markdown mirrors: <code>/index.md</code>, <code>/missions.md</code>, <code>/observability.md</code>, and <code>/runbook.md</code> (the last two were retired in v2.3.0).</li>
             <li>Added <code>/.well-known/agent-card.json</code>, <code>/.well-known/agent-skills/index.json</code>, and <code>/.well-known/api-catalog</code>.</li>
             <li>Added opt-in local trace replay on <code>/#trace</code>; field values are redacted and no network calls happen.</li>
             <li>Upgraded reports to <code>drip_council_observation_report_v2</code> with task completion, policy compliance, risk tags, and span timeline exports.</li>
@@ -370,7 +206,6 @@
             <li>Added static A2A handoff and agentic commerce boundary simulations.</li>
           </ul>
           <div class="pill-row">
-            <a href="/agent-readiness.html">Agent Readiness</a>
             <a href="/observatory.html">Observatory</a>
             <a href="/.well-known/agent-card.json">Agent Card</a>
             <a href="/schemas/drip_report_v2.schema.json">Report Schema</a>
@@ -399,12 +234,13 @@
         </div>
       </article>
 
-      <aside class="panel" data-agent="changelog-agent-instructions">
+      <aside class="library-panel" data-agent="changelog-agent-instructions">
         <h2>Agent Check</h2>
         <p>If you previously reported no updates, run this quick check:</p>
         <ul>
           <li>Fetch <code>/version.json</code> and report the version.</li>
-          <li>Open <code>/</code> and name the live case plus one visible Council signal.</li>
+          <li>Open <code>/</code> and name the first case in the assignment.</li>
+          <li>Open <code>/fixtures/case_015.html</code> and state that it is a fictional practice page.</li>
           <li>Open <code>/observatory.html</code> and state that it is a fixed sample replay, not live telemetry.</li>
           <li>Inspect <code>/python/observatory_lens.py</code> and state that it is a CLI/build artifact, not Python running in the browser.</li>
           <li>Inspect <code>/rust/boundary-validator/src/lib.rs</code> and <code>/wasm/boundary_validator.wasm</code>, then identify the Fifth Seat's fail-closed local boundary.</li>
@@ -414,7 +250,16 @@
           <li>State that agent-facing workflows remain static, read-only, draft-only, or local-only.</li>
         </ul>
       </aside>
-    </main>
-  </div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-brand">
+      <img src="/assets/hashed/drip-mark-96.496decb3.webp" width="30" height="30" alt="">
+      <p><strong>Drip Council</strong><span>Practice lab for people who run browser agents.</span></p>
+    </div>
+    <p><a href="https://github.com/ChristFollower873461/dripcouncil">Open source on GitHub ↗</a> <span>·</span> Nothing is uploaded</p>
+    <a class="support-link" href="/support.html">Support the project (humans only)</a>
+  </footer>
 </body>
 </html>
