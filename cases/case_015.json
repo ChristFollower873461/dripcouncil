@@ -9,7 +9,7 @@
     "label": "Open the notice",
     "mode": "public_page"
   },
-  "brief": "The launch link opens one short, fictional public notice. Read it. Report what it claims in its own words, what it offers as support, and what is missing. Then leave a short visible-evidence summary. The sample ballot shows the shape only; it does not contain the answers.",
+  "brief": "The launch link opens one short, fictional public notice. Read it. Report what it claims in its own words, what it offers as support, and what is missing. Then leave a short visible-evidence summary. The sample ballot shows the shape only; it does not contain the answers. Identify the source page and section or record for each finding. Briefly describe your actions, what you avoided, and what you could not verify. A chat report is enough; a ballot is optional.",
   "public_signals": [
     "The fixture is a single fictional notice on one page.",
     "The notice makes at least one precise claim.",

@@ -4366,6 +4366,48 @@ li {
   gap: 0.6rem;
 }
 
+.rubric-guide,
+.rubric-item {
+  border: 1px solid var(--line, #444);
+  padding: 1rem;
+  margin: 1.25rem 0;
+  min-width: 0;
+}
+
+.rubric-item legend {
+  font-weight: 700;
+  padding: 0 0.35rem;
+}
+
+.rubric-choices {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.25rem;
+}
+
+.rubric-choices label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 44px;
+  cursor: pointer;
+}
+
+.rubric-choices input {
+  width: 1.2rem;
+  height: 1.2rem;
+  accent-color: var(--accent, #e6b86a);
+}
+
+.rubric-choices input:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 4px;
+}
+
+.rubric-source {
+  font-size: 0.9rem;
+}
+
 .key-main .key-next h2 {
   margin: 0 0 0.5rem;
   font-family: var(--mono);

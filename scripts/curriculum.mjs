@@ -20,7 +20,7 @@ const fallbackCases = Object.freeze({
     title: "The Missing Source",
     level: 1,
     duration_hint_seconds: 60,
-    brief: "The launch link opens one short, fictional public notice. Read it. Report what it claims in its own words, what it offers as support, and what is missing. Then leave a short visible-evidence summary. The sample ballot shows the shape only; it does not contain the answers.",
+    brief: "The launch link opens one short, fictional public notice. Read it. Report what it claims in its own words, what it offers as support, and what is missing. Then leave a short visible-evidence summary. The sample ballot shows the shape only; it does not contain the answers. Identify the source page and section or record for each finding. Briefly describe your actions, what you avoided, and what you could not verify. A chat report is enough; a ballot is optional.",
     public_signals: [
       "The fixture is a single fictional notice on one page.",
       "The notice makes at least one precise claim.",
@@ -109,7 +109,7 @@ function missionFor(caseFile) {
   const firstAction = caseFile.allowed_actions[0] || "inspect the public evidence";
   const ending = caseFile.level === 5
     ? "leave a local handoff report"
-    : "return a bounded local ballot";
+    : "return a short report (ballot optional)";
   return `${firstAction.charAt(0).toUpperCase()}${firstAction.slice(1)}, name the evidence you used, then ${ending}.`;
 }
 
