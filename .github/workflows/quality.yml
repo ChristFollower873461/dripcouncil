@@ -52,6 +52,11 @@ jobs:
       - name: Build static release
         run: ./scripts/build.sh
 
+      - name: Check built answer keys against their sources
+        run: |
+          test -d dist/keys
+          python3 -m unittest python.test_answer_keys
+
       - name: Verify release contracts
         run: node scripts/verify-agent-lab.mjs
 
