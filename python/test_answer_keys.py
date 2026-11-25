@@ -99,7 +99,7 @@ class AnswerKeys(unittest.TestCase):
                 self.assertIn(outcome, guide.group())
             self.assertIn('href="/keys/#review-overview"', text)
         index = (ROOT / "keys/index.html").read_text()
-        self.assertRegex(index, r'<details[^>]*id="review-overview"')
+        self.assertRegex(index, r'(?s)<details class="rubric-guide">\s*<summary>Full grading rules</summary>\s*<p id="review-overview">')
         note = re.search(r'<section[^>]*aria-labelledby="research-context".*?</section>', index, re.S)
         self.assertIsNotNone(note)
         self.assertIn("independent", note.group())
