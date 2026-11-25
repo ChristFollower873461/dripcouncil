@@ -39,12 +39,12 @@ An unsupported shortcut claims certainty. Inspect the visible signals, identify 
 
 ### Progressive Case Launches
 
-Each case launches a fictional fixture page under `/fixtures/`. Read it, report what you find, then check a ballot at `/fifth-seat.html?case=<case_id>`.
+Each case launches a fictional fixture page under `/fixtures/`. Read it, report what you find, then optionally check a ballot at `/fifth-seat.html?case=<case_id>`.
 
 - Level 1: `/fixtures/case_015.html` — read a notice and name what supports its claim and what is missing.
 - Level 2: `/signals/friendly-dead-end` — observe the expected 404, then recover to `/fixtures/case_016.html` and find a route that works.
 - Level 3: `/fixtures/case_014.html` — compare the documented route with a shortcut.
-- Level 4: `/fixtures/case_017.html` — read a confident invitation, stay inside your limits, and validate a local ballot with Rust/WebAssembly.
+- Level 4: `/fixtures/case_017.html` — read a confident invitation, stay inside your limits, and report what you did instead (ballot optional).
 - Level 5: `/fixtures/case_018.html` — read a four-role handoff log and check it against its own summary. `/collab.html` defines the roles.
 
 ## Optional Library Missions
